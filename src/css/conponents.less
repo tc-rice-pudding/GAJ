@@ -1,0 +1,53 @@
+@background: #051b3d;
+@comp-background: #09367a;
+
+::v-deep(section) {
+    .el-table {
+        --el-table-header-bg-color: #034F95;
+        --el-table-tr-bg-color: @background;
+        --el-fill-color-lighter: rgba(0, 122, 251, 0.2);
+        --el-table-bg-color: @background;
+        --el-table-row-hover-bg-color: #80b4e4;
+        --el-table-border-color: @comp-background;
+        --el-text-color-secondary: #C5DFF9;
+        color: #fff;
+    }
+
+    .el-pagination__sizes .is-first {
+        margin: 0 5px;
+    }
+
+    .el-pagination--small .btn-next,
+    .el-pagination--small .btn-prev,
+    .el-pagination--small .el-pager li {
+        margin: 0 1px;
+    }
+
+    .table-header th {
+        height: 40px !important;
+        cursor: alias !important;
+    }
+
+    .el-table th,
+    .el-table td {
+        padding: 0px !important;
+        height: 40px !important;
+        cursor: pointer;
+    }
+
+    .el-table__header-wrapper {
+        border-top: 1px solid @comp-background;
+    }
+
+    .el-table thead {
+        filter: blur(0.3px);
+        color: #C5DFF9;
+    }
+}
+
+::v-deep(header) {
+    .el-select {
+        --el-fill-color-blank: @background;
+        --el-border-color: @comp-background;
+    }
+}
