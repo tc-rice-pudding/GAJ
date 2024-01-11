@@ -27,16 +27,6 @@ const routes = [
         component: () => import(/* webpackChunkName: 'RoomView' */ '/src/views/RoomView.vue'),
     },
     {
-        path: '/cabinetUsage',
-        label: '各层机柜使用量',
-        component: () => import(/* webpackChunkName: 'CabinetUsage' */ '/src/views/CabinetUsage.vue'),
-    },
-    {
-        path: '/vmStatistics',
-        label: '虚拟机统计',
-        component: () => import(/* webpackChunkName: 'UsingUnit' */ '/src/views/vmStatistics.vue'),
-    },
-    {
         path: '/cabinetInfo',
         label: '机柜信息',
         component: () => import(/* webpackChunkName: 'CabinetInfo' */ '/src/views/cabinetInfo.vue'),
@@ -45,6 +35,16 @@ const routes = [
         path: '/energyOverview',
         label: '能耗总览',
         component: () => import(/* webpackChunkName: 'EnergyOverview' */ '/src/views/energyOverview.vue'),
+    },
+    {
+    path: '/cabinetUsage',
+        label: '各层机柜使用量',
+        component: () => import(/* webpackChunkName: 'CabinetUsage' */ '/src/views/CabinetUsage.vue'),
+    },
+    {
+        path: '/vmStatistics',
+        label: '虚拟机统计',
+        component: () => import(/* webpackChunkName: 'UsingUnit' */ '/src/views/vmStatistics.vue'),
     },
 ];
 

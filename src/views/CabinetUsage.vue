@@ -52,7 +52,7 @@
 						header-row-class-name="table-header"
 						:span-method="objectSpanMethod"
 						:height="tableHeight"
-						:data="resInfo.tableData"
+						:data="resInfo.floorList"
 						:cell-style="cellStyle"
 						@row-click="rowClick"
 						stripe
@@ -103,17 +103,6 @@
 							align="center"
 						/>
 					</el-table>
-					<el-pagination
-						class="pagenation"
-						:current-page="currentPage"
-						:page-size="pageSize"
-						:page-sizes="[30, 50, 100]"
-						small="small"
-						layout="sizes, prev, pager, next"
-						:total="total"
-						@size-change="handleSizeChange"
-						@current-change="handleCurrentChange"
-					/>
 				</section>
 			</div>
 		</template>
@@ -132,8 +121,7 @@ export default defineComponent({
 		// 获取当前路由对象
 		const router = useRouter();
 		const resInfo = reactive({
-			tableData: [],
-			usingUnitMap: {},
+			floorList: [],
 			totalCount: 0,
 			usedCount: 0,
 			freeCount: 0,
@@ -141,11 +129,7 @@ export default defineComponent({
 			device3UCount: 0,
 			device23UCount: 0,
 		});
-		const pageInfo = reactive({
-			currentPage: 1,
-			pageSize: 30,
-			total: 0,
-		});
+
 		const loadingInfo = reactive({
 			loading: ref(false),
 			svg: `
@@ -159,50 +143,14 @@ export default defineComponent({
         " style="stroke-width: 4px; fill: rgba(0, 0, 0, 0)"/>
       `,
 		});
-		const getParams = (pageInx, pageSize) => {
-			let params = {
-				page: {
-					number: pageInx,
-					size: pageSize,
-				},
-			};
-			return params;
-		};
+
 		const tableHandler = async () => {
 			try {
 				loadingInfo.loading = true;
-				const res = await axios.post(
-					'/dcim/custom/system/list',
-					getParams(pageInfo.currentPage, pageInfo.pageSize)
-				);
-				resInfo.tableData = res.rows;
-				pageInfo.total = res.total;
+				const res = await axios.get('/dcim/custom/capacity/cabinet/count/floor');
+				Object.assign(resInfo, res);
 			} catch (error) {
 				console.log(error);
-				resInfo.tableData = [
-					{
-						userName: 'gx', //单位名称
-						systemName: '0', //业务系统
-						location: '0', //部署位置
-						cabinetCount: 10, //机柜数量
-						deviceCount: 20, //设备数量
-					},
-					{
-						userName: 'gx', //单位名称
-						systemName: '0', //业务系统
-						location: '0', //部署位置
-						cabinetCount: 10, //机柜数量
-						deviceCount: 20, //设备数量
-					},
-					{
-						userName: 'gx', //单位名称
-						systemName: '0', //业务系统
-						location: '0', //部署位置
-						cabinetCount: 10, //机柜数量
-						deviceCount: 20, //设备数量
-					},
-				];
-				pageInfo.total = 3;
 			} finally {
 				loadingInfo.loading = false;
 			}
@@ -210,13 +158,7 @@ export default defineComponent({
 
 		//行单击事件，跳转到机房视图
 		const rowClick = (row, column, event) => {
-			router.push({
-				path: '/asset/roomSystemView',
-				query: {
-					userName: row.userName,
-					systemName: row.systemName,
-				},
-			});
+			router.push({ path: '/roomView', query: { ...row } });
 		};
 
 		const cellStyle = ({ row, column, rowIndex, columnIndex }) => {
@@ -229,15 +171,6 @@ export default defineComponent({
 			}
 		};
 
-		const handleSizeChange = (size) => {
-			pageInfo.pageSize = size;
-			tableHandler();
-		};
-		const handleCurrentChange = (inx) => {
-			pageInfo.currentPage = inx;
-			tableHandler();
-		};
-
 		const tableContainerRef = ref();
 		let tableHeight = ref(500);
 		onMounted(() => {
@@ -245,18 +178,15 @@ export default defineComponent({
 
 			setTimeout(() => {
 				if (tableContainerRef.value) {
-					const containerH = tableContainerRef.value.clientHeight - 44; // 减去分页的高度
+					const containerH = tableContainerRef.value.clientHeight; // 减去分页的高度
 					tableHeight.value = `${containerH}`;
 				}
 			}, 100);
 		});
 
 		return {
-			...toRefs(pageInfo),
 			...toRefs(loadingInfo),
 			resInfo,
-			handleSizeChange,
-			handleCurrentChange,
 			tableContainerRef,
 			tableHeight,
 			rowClick,
@@ -342,7 +272,7 @@ export default defineComponent({
 			display: inline-grid;
 			align-items: center;
 			background-image: url('@/assets/images/asset/back.png');
-            background-position: center;
+			background-position: center;
 			.font-color-one {
 				font-family: Microsoft YaHei;
 				font-weight: bold;
