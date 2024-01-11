@@ -17,6 +17,11 @@ const routes = [
         component: () => import(/* webpackChunkName: 'SystemMgr' */ '/src/views/SystemMgr.vue'),
     },
     {
+        path: '/usingUnit',
+        label: '使用单位查询',
+        component: () => import(/* webpackChunkName: 'UsingUnit' */ '/src/views/UsingUnit.vue'),
+    },
+    {
         path: '/roomView',
         label: '机房视图',
         component: () => import(/* webpackChunkName: 'RoomView' */ '/src/views/RoomView.vue'),
@@ -25,11 +30,6 @@ const routes = [
         path: '/cabinetUsage',
         label: '各层机柜使用量',
         component: () => import(/* webpackChunkName: 'CabinetUsage' */ '/src/views/CabinetUsage.vue'),
-    },
-    {
-        path: '/usingUnit',
-        label: '使用单位查询',
-        component: () => import(/* webpackChunkName: 'UsingUnit' */ '/src/views/UsingUnit.vue'),
     },
     {
         path: '/vmStatistics',

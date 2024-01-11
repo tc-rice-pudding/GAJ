@@ -7,7 +7,7 @@
 				<header>
 					<div class="query-item">
 						<span>使用单位</span>
-						<el-select v-model="queryInfo.userName" placeholder="请选择" clearable filterable>
+						<el-select v-model="queryInfo.userName" placeholder="请选择" clearable filterable multiple>
 							<el-option
 								v-for="item in optionMap.userNameOptions"
 								:key="item.value"
@@ -18,7 +18,7 @@
 					</div>
 					<div class="query-item">
 						<span>业务系统</span>
-						<el-select v-model="queryInfo.systemName" placeholder="请选择" clearable filterable>
+						<el-select v-model="queryInfo.systemName" placeholder="请选择" clearable filterable multiple>
 							<el-option
 								v-for="item in optionMap.systemNameOptions"
 								:key="item.value"
@@ -33,17 +33,17 @@
 					<div class="item">
 						<span class="subsystem-icon icon"></span>
 						<span>系统</span>
-						<span class="subsystem-font font">{{ resInfo.systemNum }}</span>
+						<span class="subsystem-font font">{{ systemCount }}</span>
 					</div>
 					<div class="item">
 						<span class="rack-icon icon"></span>
 						<span>机柜</span>
-						<span class="rack-font font">{{ resInfo.rackNum }}</span>
+						<span class="rack-font font">{{ cabinetCount }}</span>
 					</div>
 					<div class="item">
 						<span class="device-icon icon"></span>
 						<span>设备</span>
-						<span class="device-font font">{{ resInfo.deviceNum }}</span>
+						<span class="device-font font">{{ deviceCount }}</span>
 					</div>
 				</div>
 				<section
@@ -113,29 +113,97 @@
 </template>
 
 <script>
-import { toRefs, reactive, onMounted, watch, ref } from 'vue';
+import { toRefs, reactive, onMounted, watch, ref, defineComponent } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 
-export default {
+// 获取「使用单位」和「业务系统」 的 options
+export const useOptions = ({ userName, systemName }) => {
+	const optionMap = reactive({
+		userNameOptions: [], // 使用单位
+		systemNameOptions: [], // 业务系统
+	});
+
+	// 获取使用单位
+	const getOption1 = async () => {
+		try {
+			const res = await axios.get(`/dcim/space/getUserName?key=${systemName}`);
+			if (res.data.status === 200) {
+				optionMap.userNameOptions = (res.data.result || []).map((it) => ({ label: it, value: it }));
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	// 获取业务系统
+	const getOption2 = async () => {
+		try {
+			const res = await axios.get(`/dcim/space/getBusinessSystem?key=${userName}`);
+			if (res.data.status === 200) {
+				optionMap.systemNameOptions = (res.data.result || []).map((it) => ({ label: it, value: it }));
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	getOption1();
+	getOption2();
+
+	watch(
+		() => userName,
+		(val) => {
+			getOption2(val);
+		}
+	);
+
+	return { optionMap };
+};
+
+// 获取使用单位的合计数据
+export const useTotal = ({ userName, systemName }) => {
+	const totalInfo = reactive({
+		userCount: 0, //单位数量
+		systemCount: 0, //系统数量
+		cabinetCount: 0, //机柜数量
+		deviceCount: 0, //设备数量
+	});
+
+	const getTotal = async () => {
+		try {
+			const res = await axios.post('/dcim/custom/system/total', {
+				userName: userName || [], //使用单位可多选
+				systemName: systemName || [], //业务系统可多选
+			});
+
+			Object.assign(totalInfo, res);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	getTotal();
+
+	return { totalInfo, getTotal };
+};
+
+export default defineComponent({
 	name: 'UsingUnit',
 	setup() {
 		// 获取当前路由对象
 		const router = useRouter();
 
-		const queryInfo = reactive({
-			userName: '',
-			systemName: '',
-		});
-		const optionMap = reactive({
-			userNameOptions: [],
-			systemNameOptions: [],
-		});
+		const queryInfo = reactive({ userName: '', systemName: '' });
+
+		const { totalInfo, getTotal } = useTotal(queryInfo);
+
 		const resInfo = reactive({
 			tableData: [],
-			systemNum: 0,
-			rackNum: 0,
-			deviceNum: 0,
+			spanObject: {
+				// 'xx': {
+				// 	firstInx: 0,
+				// 	lastInx: 2,
+				// 	spanCount: 3,
+				// }
+			},
 		});
 		const pageInfo = reactive({
 			currentPage: 1,
@@ -158,6 +226,7 @@ export default {
 
 		// 行单击事件，跳转到机房视图
 		const rowClick = (row, column, event) => {
+			// todo
 			router.push({
 				path: '/roomView',
 				query: {
@@ -170,21 +239,123 @@ export default {
 		let tableContainerRef = ref(null);
 		let tableHeight = ref(500);
 
-		const objectSpanMethod = () => {
-			// todo：合并单元格
+		const getParams = () => {
+			const params = {
+				userName: queryInfo.userName || [], //使用单位可多选
+				systemName: queryInfo.systemName || [], //业务系统可多选
+				page: {
+					number: pageInfo.currentPage,
+					Size: pageInfo.pageSize,
+				},
+			};
+			return params;
+		};
+
+		// 合并单元格
+		const buildSpan = (list) => {
+			let userNameList = list.map((it) => it.userName);
+			resInfo.spanObject = Array.from(new Set(userNameList)).reduce((map, curr) => {
+				const firstInx = userNameList.findIndex((it) => it === curr);
+				const lastInx = userNameList.findLastIndex((it) => it === curr);
+				map[curr] = {
+					firstInx,
+					lastInx,
+					spanCount: lastInx - firstInx + 1,
+				};
+				return map;
+			}, {});
+		};
+		const tableHandler = async () => {
+			try {
+				loadingInfo.loading = true;
+				const { total, rows } = await axios.post('/dcim/custom/system/list', getParams());
+				pageInfo.total = total;
+				resInfo.tableData = rows;
+				buildSpan(rows);
+			} catch (error) {
+				console.log(error);
+				resInfo.tableData = [
+					{
+						userName: 'gx', //单位名称
+						systemName: 'niemp', //业务系统
+						location: '', //部署位置
+						cabinetCount: '', //机柜数量
+						deviceCount: '', //设备数量
+					},
+					{
+						userName: 'gx', //单位名称
+						systemName: 'niemp', //业务系统
+						location: '', //部署位置
+						cabinetCount: '', //机柜数量
+						deviceCount: '', //设备数量
+					},
+					{
+						userName: 'gx2', //单位名称
+						systemName: 'niemp', //业务系统
+						location: '', //部署位置
+						cabinetCount: '', //机柜数量
+						deviceCount: '', //设备数量
+					},
+					{
+						userName: 'gx2', //单位名称
+						systemName: 'niemp', //业务系统
+						location: '', //部署位置
+						cabinetCount: '', //机柜数量
+						deviceCount: '', //设备数量
+					},
+					{
+						userName: 'gx3', //单位名称
+						systemName: 'niemp', //业务系统
+						location: '', //部署位置
+						cabinetCount: '', //机柜数量
+						deviceCount: '', //设备数量
+					},
+					{
+						userName: 'gx8', //单位名称
+						systemName: 'niemp', //业务系统
+						location: '', //部署位置
+						cabinetCount: '', //机柜数量
+						deviceCount: '', //设备数量
+					},
+				];
+				buildSpan(resInfo.tableData);
+				console.log(resInfo.data);
+			} finally {
+				loadingInfo.loading = false;
+			}
+		};
+		tableHandler();
+
+		const objectSpanMethod = ({ row, column, rowIndex, columnIndex }) => {
+			const { firstInx, lastInx, spanCount } = resInfo.spanObject[row.userName];
+
+			if (columnIndex === 0 && spanCount > 1) {
+				if (rowIndex === firstInx) {
+					return {
+						rowspan: spanCount,
+						colspan: 1,
+					};
+				} else {
+					return {
+						rowspan: 0,
+						colspan: 0,
+					};
+				}
+			}
 		};
 
 		const handleSizeChange = (size) => {
 			pageInfo.pageSize = size;
-			// todo：分页
+			tableHandler();
 		};
 		const handleCurrentChange = (inx) => {
 			pageInfo.currentPage = inx;
-			// todo：分页
+			tableHandler();
 		};
 
 		const onSearch = () => {
-			// todo：查询
+			getTotal();
+			tableHandler();
 		};
 
 		onMounted(() => {
@@ -200,7 +371,8 @@ export default {
 			queryInfo,
 			...toRefs(pageInfo),
 			...toRefs(loadingInfo),
-			optionMap,
+			...toRefs(useOptions(queryInfo)),
+			...toRefs(totalInfo),
 			resInfo,
 			onSearch,
 			handleSizeChange,
@@ -211,7 +383,7 @@ export default {
 			rowClick,
 		};
 	},
-};
+});
 </script>
 
 <style lang="less" scoped>
@@ -244,7 +416,7 @@ export default {
 			align-items: center;
 			background-size: 100% 100%;
 			background-image: url('@/assets/images/asset/back-icon.png');
-			.icon{
+			.icon {
 				height: 17px;
 				width: 16px;
 				margin-right: 5px;
@@ -258,7 +430,7 @@ export default {
 				font-size: 20px;
 				padding-left: 20px;
 			}
-			.font::after{
+			.font::after {
 				content: '个';
 				font-size: 15px;
 				margin-left: 10px;
