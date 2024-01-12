@@ -226,12 +226,11 @@ export default defineComponent({
 
 		// 行单击事件，跳转到机房视图
 		const rowClick = (row, column, event) => {
-			// todo
 			router.push({
 				path: '/roomView',
 				query: {
-					userName: row.userName,
-					systemName: row.systemName,
+					userName: row.userName.toString(),
+					systemName: row.systemName.toString(),
 				},
 			});
 		};

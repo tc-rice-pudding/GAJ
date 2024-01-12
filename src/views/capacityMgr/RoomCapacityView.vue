@@ -5,8 +5,13 @@
 		<template #body>
 			<div class="room-system-view">
 				<section class="left-content">
-                    <!-- todo: 复用机房视图 -->
-                </section>
+					<RoomView
+						:roomResourceId="roomInfo.resourceId"
+						toolType="capacity"
+						:deviceCountMap="currCabinetObj"
+						:tooltipFieldMap="currCabinetObj"
+					></RoomView>
+				</section>
 				<section class="right-content">
 					<div class="room-info">
 						<span class="room-info-item">
@@ -56,13 +61,14 @@
 	</container-warp>
 </template>
 <script>
-import { toRefs, reactive, onMounted, watch, ref, defineComponent } from 'vue';
+import { toRefs, reactive, onMounted, watch, ref, defineComponent, computed } from 'vue';
 import axios from 'axios';
 import { useRoute } from 'vue-router';
+import RoomView from '@/components/RoomView.vue';
 
 export const useRoomInfo = () => {
 	const route = useRoute();
-	const roomList = ref([]);
+	const roomList = ref([]); // 多个机房信息
 	const roomInfo = reactive({
 		resourceId: '', // 机房ID
 		roomName: '', //机房名称
@@ -71,14 +77,15 @@ export const useRoomInfo = () => {
 		device3UCount: 0, //可部署3U数
 		device23UCount: 0,
 		cabinetList: [
-			// {
-			// 	resourceId: '0_101', //资源ID
-			// 	deviceNum: 'xxx_0001', //机柜名称
-			// 	freeU: 42, //可用U位
-			// 	device2UCount: 11, //可部署2U数
-			// 	device3UCount: 4, //可部署3U数
-			// 	device23UCount: 1, //可部署2+3U数
-			// },
+			// fix: 测试数据
+			{
+				resourceId: '0_101', //资源ID
+				deviceNum: 'xxx_0001', //机柜名称
+				freeU: 42, //可用U位
+				device2UCount: 11, //可部署2U数
+				device3UCount: 4, //可部署3U数
+				device23UCount: 1, //可部署2+3U数
+			},
 		],
 	});
 
@@ -105,20 +112,31 @@ export const useRoomInfo = () => {
 		}
 	);
 
-	// todo: 切换机房，根据 roomId 来切换
-	watch(
-		() => route.query.roomId,
-		() => {
-			const currRoom = roomList.value.find((room) => room.resourceId === route.query.roomId) || {};
-			Object.assign(roomInfo, currRoom);
-		}
-	);
+	const currCabinetObj = computed(() => {
+		const map = roomInfo.cabinetList.reduce((map, curr) => {
+			map[curr.resourceId] = curr;
+			return map;
+		}, {});
+		return map;
+	});
 
-	return { roomInfo };
+	// todo: 切换机房，根据 roomId 来切换
+	// watch(
+	// 	() => route.query.roomId,
+	// 	() => {
+	// 		const currRoom = roomList.value.find((room) => room.resourceId === route.query.roomId) || {};
+	// 		Object.assign(roomInfo, currRoom);
+	// 	}
+	// );
+
+	return { roomInfo, currCabinetObj };
 };
 
 export default defineComponent({
-	name: 'RoomView',
+	name: 'RoomCapacityView',
+	components: {
+		RoomView,
+	},
 	setup() {
 		return {
 			...toRefs(useRoomInfo()),
@@ -162,6 +180,9 @@ export default defineComponent({
 			display: flex;
 			justify-content: space-evenly;
 			color: #fff;
+			background-image: url('@/assets/images/roomView/roomWarp.png');
+			background-repeat: no-repeat;
+			background-size: 100% 100%;
 			&-item {
 				flex: 1;
 				display: flex;

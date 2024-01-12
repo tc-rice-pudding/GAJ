@@ -18,13 +18,13 @@ const routes = [
     },
     {
         path: '/usingUnit',
-        label: '使用单位查询',
+        label: '资产管理：使用单位查询',
         component: () => import(/* webpackChunkName: 'UsingUnit' */ '/src/views/UsingUnit.vue'),
     },
     {
-        path: '/roomView/:id',
-        label: '机房容量视图',
-        component: () => import(/* webpackChunkName: 'RoomView' */ '/src/views/roomView/RoomView.vue'),
+        path: '/roomUsingUnit/:id',
+        label: '资产管理：机房使用单位',
+        component: () => import(/* webpackChunkName: 'UsingUnit' */ '/src/views/RoomUsingUnit/RoomUsingUnit.vue'),
     },
     {
         path: '/cabinetInfo',
@@ -36,11 +36,18 @@ const routes = [
         label: '能耗总览',
         component: () => import(/* webpackChunkName: 'EnergyOverview' */ '/src/views/energyOverview.vue'),
     },
+
     {
-    path: '/cabinetUsage',
-        label: '各层机柜使用量',
-        component: () => import(/* webpackChunkName: 'CabinetUsage' */ '/src/views/CabinetUsage.vue'),
+        path: '/capacityMgr/cabinetUsage',
+        label: '容量：各层机柜使用量',
+        component: () => import(/* webpackChunkName: 'CabinetUsage' */ '/src/views/capacityMgr/CabinetUsage.vue'),
     },
+    {
+        path: '/capacityMgr/RoomCapacityView/:id',
+        label: '容量：机房容量视图',
+        component: () => import(/* webpackChunkName: 'RoomCapacityView' */ '/src/views/capacityMgr/RoomCapacityView.vue'),
+    },
+
     {
         path: '/vmStatistics',
         label: '虚拟机统计',
