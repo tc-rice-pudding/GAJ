@@ -22,9 +22,9 @@ const routes = [
         component: () => import(/* webpackChunkName: 'UsingUnit' */ '/src/views/UsingUnit.vue'),
     },
     {
-        path: '/roomView',
-        label: '机房视图',
-        component: () => import(/* webpackChunkName: 'RoomView' */ '/src/views/RoomView.vue'),
+        path: '/roomView/:id',
+        label: '机房容量视图',
+        component: () => import(/* webpackChunkName: 'RoomView' */ '/src/views/roomView/RoomView.vue'),
     },
     {
         path: '/cabinetInfo',
