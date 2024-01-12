@@ -154,14 +154,14 @@ export default defineComponent({
 			font-size: 20px;
 			color: #fff;
 			font-weight: 600;
-			&::before {
-				content: '<';
-				padding-right: 15px;
-			}
-			&::after {
-				content: '>';
-				padding-left: 15px;
-			}
+			// &::before {
+			// 	content: '<';
+			// 	padding-right: 15px;
+			// }
+			// &::after {
+			// 	content: '>';
+			// 	padding-left: 15px;
+			// }
 		}
 	}
 	> section {

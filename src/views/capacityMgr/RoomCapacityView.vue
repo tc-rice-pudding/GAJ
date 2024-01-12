@@ -3,6 +3,20 @@
 	<container-warp>
 		<template #title> 机房容量视图 </template>
 		<template #body>
+			<el-tabs
+				style="height: 35px; overflow: hidden; padding: 0 20px"
+				v-model="tabInfo.activeName"
+				class="demo-tabs"
+				@tab-click="handleClick"
+			>
+				<el-tab-pane
+					v-for="room in roomList"
+					:key="room.resourceId"
+					:label="room.roomName"
+					:name="room.resourceId"
+				/>
+			</el-tabs>
+
 			<div class="room-system-view">
 				<section class="left-content">
 					<RoomView
@@ -68,7 +82,47 @@ import RoomView from '@/components/RoomView.vue';
 
 export const useRoomInfo = () => {
 	const route = useRoute();
-	const roomList = ref([]); // 多个机房信息
+	const tabInfo = reactive({ activeName: '' });
+
+	const roomList = ref([
+		// fix: 测试数据
+		{
+			resourceId: '222', // 机房ID
+			roomName: '222', //机房名称
+			totalCount: 0, //机柜总数
+			device2UCount: 0, //可部署2U数
+			device3UCount: 0, //可部署3U数
+			device23UCount: 0,
+			cabinetList: [
+				{
+					resourceId: '0_101', //资源ID
+					deviceNum: 'xxx_0001', //机柜名称
+					freeU: 42, //可用U位
+					device2UCount: 11, //可部署2U数
+					device3UCount: 4, //可部署3U数
+					device23UCount: 1, //可部署2+3U数
+				},
+			],
+		},
+		{
+			resourceId: '111', // 机房ID
+			roomName: '111', //机房名称
+			totalCount: 0, //机柜总数
+			device2UCount: 0, //可部署2U数
+			device3UCount: 0, //可部署3U数
+			device23UCount: 0,
+			cabinetList: [
+				{
+					resourceId: '0_101', //资源ID
+					deviceNum: 'xxx_0001', //机柜名称
+					freeU: 42, //可用U位
+					device2UCount: 11, //可部署2U数
+					device3UCount: 4, //可部署3U数
+					device23UCount: 1, //可部署2+3U数
+				},
+			],
+		},
+	]); // 多个机房信息
 	const roomInfo = reactive({
 		resourceId: '', // 机房ID
 		roomName: '', //机房名称
@@ -95,6 +149,7 @@ export const useRoomInfo = () => {
 			roomList.value = res || [];
 
 			const currRoom = roomList.value.find((room) => room.resourceId === route.params.id) || {};
+			tabInfo.activeName = currRoom.resourceId;
 			Object.assign(roomInfo, currRoom);
 		} catch (error) {
 			console.log(error);
@@ -120,16 +175,11 @@ export const useRoomInfo = () => {
 		return map;
 	});
 
-	// todo: 切换机房，根据 roomId 来切换
-	// watch(
-	// 	() => route.query.roomId,
-	// 	() => {
-	// 		const currRoom = roomList.value.find((room) => room.resourceId === route.query.roomId) || {};
-	// 		Object.assign(roomInfo, currRoom);
-	// 	}
-	// );
-
-	return { roomInfo, currCabinetObj };
+	const handleClick = () => {
+		const currRoom = roomList.value.find((room) => room.resourceId === tabInfo.activeName) || {};
+		Object.assign(roomInfo, currRoom);
+	};
+	return { tabInfo, roomList, roomInfo, currCabinetObj, handleClick };
 };
 
 export default defineComponent({
@@ -161,7 +211,7 @@ export default defineComponent({
 		height: 100%;
 	}
 	.right-content {
-		height: 100%;
+		height: calc(100% - 35px);
 		width: 640px;
 		padding: 0 20px;
 		position: relative;
@@ -235,5 +285,13 @@ export default defineComponent({
 			font-size: 15px;
 		}
 	}
+}
+
+
+::v-deep(.el-tabs__item) {
+	color: #fff;
+}
+::v-deep(.el-tabs__item.is-top.is-active) {
+	color: #409eff !important;
 }
 </style>
