@@ -22,13 +22,14 @@ export const lineOpsDefault = {
             color: '#fff',
             fontSize: 12,
         },
+        data: ['功率使用率','机柜使用率','单位3','单位4'],
     },
     grid: {
         left: '3%',
         right: '3%',
         bottom: '5%',
         containLabel: true,
-        show:false,
+        show: false,
     },
     xAxis: {
         type: 'category',
@@ -40,15 +41,15 @@ export const lineOpsDefault = {
         splitLine: {
             show: false,
         },
-        axisLabel:{
-            color:"#9CAEC6",
+        axisLabel: {
+            color: "#9CAEC6",
         },
         data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月'],
     },
     yAxis: {
         type: 'value',
-        axisLabel:{
-            color:"#9CAEC6",
+        axisLabel: {
+            color: "#9CAEC6",
         },
         splitLine: { // y轴线条样式
             lineStyle: {
@@ -61,7 +62,6 @@ export const lineOpsDefault = {
         {
             name: '功率使用率',
             type: 'line',
-            
             areaStyle: {
                 opacity: 0.2
             },
@@ -78,7 +78,7 @@ export const lineOpsDefault = {
             symbol: 'emptyCircle',
             symbolSize: 6,
             data: [20, 32, 10, 54, 10, 20, 30],
-        },{
+        }, {
             name: '单位3',
             type: 'line',
             areaStyle: {
@@ -87,7 +87,7 @@ export const lineOpsDefault = {
             symbol: 'emptyCircle',
             symbolSize: 6,
             data: [80, 42, 30, 14, 20, 90, 20],
-        },{
+        }, {
             name: '单位4',
             type: 'line',
             areaStyle: {
