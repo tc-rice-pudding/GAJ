@@ -1,5 +1,5 @@
 export const lineOpsDefault = {
-    color: ['#FFB00D', '#29E1E5', '#70BB19', '#55B6FF', '#D951D9'],
+    color: ['#007EFF', '#FFCD75', '#0ED3A0', '#2BBDF7'],
     title: {
         text: '资源使用率趋势图',
         top: '10',
@@ -28,40 +28,74 @@ export const lineOpsDefault = {
         right: '3%',
         bottom: '5%',
         containLabel: true,
+        show:false,
     },
     xAxis: {
         type: 'category',
-        boundaryGap: false,
+        boundaryGap: true,
         axisTick: {
             show: false,
             alignWithLabel: true,
         },
         splitLine: {
-            show: true,
+            show: false,
         },
-        data: ['2021-01', '2021-02', '2021-03', '2021-04', '2021-05', '2021-06', '2021-07'],
+        axisLabel:{
+            color:"#9CAEC6",
+        },
+        data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月'],
     },
     yAxis: {
         type: 'value',
-        min: 0,
-        max: 100,
-        axisLabel: {
-            interval: 2,
-            formatter: (value) => `${value}%`,
+        axisLabel:{
+            color:"#9CAEC6",
+        },
+        splitLine: { // y轴线条样式
+            lineStyle: {
+                color: 'rgba(127, 127, 127, 1)',
+                type: 'dashed', // 线型为虚线
+            }
         },
     },
     series: [
         {
             name: '功率使用率',
             type: 'line',
-            symbol: 'none',
+            
+            areaStyle: {
+                opacity: 0.2
+            },
+            symbol: 'emptyCircle',
+            symbolSize: 6,
             data: [20, 32, 51, 74, 60, 80, 30],
         },
         {
             name: '机柜使用率',
             type: 'line',
-            symbol: 'none',
+            areaStyle: {
+                opacity: 0.2
+            },
+            symbol: 'emptyCircle',
+            symbolSize: 6,
             data: [20, 32, 10, 54, 10, 20, 30],
+        },{
+            name: '单位3',
+            type: 'line',
+            areaStyle: {
+                opacity: 0.2
+            },
+            symbol: 'emptyCircle',
+            symbolSize: 6,
+            data: [80, 42, 30, 14, 20, 90, 20],
+        },{
+            name: '单位4',
+            type: 'line',
+            areaStyle: {
+                opacity: 0.2
+            },
+            symbol: 'emptyCircle',
+            symbolSize: 6,
+            data: [87, 22, 56, 54, 35, 20, 45],
         },
     ],
 };
