@@ -11,10 +11,10 @@
 			<resStatis :info="resInfo"></resStatis>
 		</section>
 		<section class="center">
-			<cabinetView :name="cabinetName" :cabinetInfo="resInfo"></cabinetView>
+			<cabinetDetail :name="cabinetName" :cabinetInfo="resInfo"></cabinetDetail>
 		</section>
 		<section class="right">
-			<deviceInfo></deviceInfo>
+			<DeviceDetail></DeviceDetail>
 		</section>
 	</div>
 </template>
@@ -24,12 +24,12 @@ import { toRefs, reactive, onMounted, watch, ref, defineComponent, computed } fr
 import axios from 'axios';
 import { useRoute, useRouter } from 'vue-router';
 import ResStatis from './cabinetAssembly/resStatis.vue';
-import CabinetView from './cabinetAssembly/cabinetView.vue';
-import DeviceInfo from './cabinetAssembly/deviceInfo.vue';
+import CabinetDetail from './cabinetAssembly/cabinetDetail.vue';
+import DeviceDetail from './cabinetAssembly/deviceDetail.vue';
 
 export default defineComponent({
 	name: 'cabinetInfo',
-	components: { ResStatis, CabinetView, DeviceInfo },
+	components: { ResStatis, CabinetDetail, DeviceDetail },
 	setup() {
 		const route = useRoute();
 		const cabinetName = computed(() => route.query.name);

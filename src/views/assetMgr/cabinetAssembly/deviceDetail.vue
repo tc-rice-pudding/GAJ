@@ -3,7 +3,7 @@
 		<template #title> 设备主要信息 </template>
 		<template #body>
 			<div
-				class="device-info-view"
+				class="device-detail-view"
 				v-loading="loading"
 				element-loading-text="Loading..."
 				:element-loading-spinner="svg"
@@ -58,7 +58,7 @@ import axios from 'axios';
 import { useRoute } from 'vue-router';
 
 export default defineComponent({
-	name: 'DeviceInfo',
+	name: 'DeviceDetail',
 	setup() {
 		const route = useRoute();
 
@@ -98,7 +98,7 @@ export default defineComponent({
 <style lang="less" scoped>
 @import 'src/css/conponents.less';
 
-.device-info-view {
+.device-detail-view {
 	width: 100%;
 	height: 100%;
 	box-sizing: border-box;
