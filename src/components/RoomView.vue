@@ -2,7 +2,7 @@
 	<!-- 机房组件 -->
 	<div class="room-component-view" v-loading="loading" element-loading-background="rgba(122, 122, 122, 0.2)">
 		<nav>
-			<label class="title">6F 信息机房</label>
+			<label class="title">{{ roomName }}</label>
 		</nav>
 		<section class="room-matrix">
 			<div class="cabinet-column" v-for="col in roomConstruction" :key="col">
@@ -19,6 +19,7 @@
 								class="cabinet-item empty-cabinet"
 								:class="{ 'use-cabinet-item': cabinet.resourceId in deviceCountMap }"
 								:data-rid="cabinet.resourceId"
+								@click="cabinetClickHandler(cabinet)"
 							></div>
 						</template>
 						<div class="tip-row">
@@ -82,6 +83,10 @@ import { roomConstruct } from './mockData.js';
 export default defineComponent({
 	name: 'RoomComponent',
 	props: {
+		roomName: {
+			type: String,
+			require: true,
+		},
 		// 机房 resourceId
 		roomResourceId: {
 			type: String,
@@ -128,7 +133,11 @@ export default defineComponent({
 			{ immediate: true }
 		);
 
-		return { loading, roomConstruction };
+		const cabinetClickHandler = (cabinetInfo) => {
+			emit('cabinetClickHandler', cabinetInfo, props.roomName);
+		};
+
+		return { loading, roomConstruction, cabinetClickHandler };
 	},
 });
 </script>

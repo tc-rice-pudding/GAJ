@@ -1,8 +1,8 @@
 <template>
 	<container-warp>
-		<template #title> 虚拟机统计 </template>
+		<template #title> {{ name }} </template>
 		<template #body>
-			<div class="cabinet-info-view">
+			<div class="cabinet-view">
 				<!-- todo -->
 			</div>
 		</template>
@@ -15,7 +15,10 @@ import axios from 'axios';
 import { useRouter } from 'vue-router';
 
 export default defineComponent({
-	name: 'cabinetInfo',
+	name: 'CabinetView',
+	props: {
+		name: String,
+	},
 	components: {},
 	setup() {
 		return {};
@@ -26,7 +29,7 @@ export default defineComponent({
 <style lang="less" scoped>
 @import 'src/css/conponents.less';
 
-.cabinet-info-view {
+.cabinet-view {
 	width: 100%;
 	height: 100%;
 	box-sizing: border-box;

@@ -9,32 +9,33 @@ const routes = [
     {
         path: '/homeView',
         label: '资产管理(旧)',
-        component: () => import(/* webpackChunkName: 'HomeView' */ '/src/views/HomeView.vue'),
+        component: () => import(/* webpackChunkName: 'HomeView' */ '/src/views/homeView/HomeView.vue'),
     },
     {
         path: '/systemMgr',
         label: '资产管理(新)',
-        component: () => import(/* webpackChunkName: 'SystemMgr' */ '/src/views/SystemMgr.vue'),
+        component: () => import(/* webpackChunkName: 'SystemMgr' */ '/src/views/systemMgr/SystemMgr.vue'),
     },
     {
         path: '/usingUnit',
         label: '资产管理：使用单位查询',
-        component: () => import(/* webpackChunkName: 'UsingUnit' */ '/src/views/UsingUnit.vue'),
+        component: () => import(/* webpackChunkName: 'UsingUnit' */ '/src/views/assetMgr/UsingUnit.vue'),
     },
     {
         path: '/roomUsingUnit/:id',
         label: '资产管理：机房使用单位',
-        component: () => import(/* webpackChunkName: 'UsingUnit' */ '/src/views/RoomUsingUnit/RoomUsingUnit.vue'),
+        component: () => import(/* webpackChunkName: 'UsingUnit' */ '/src/views/assetMgr/RoomUsingUnit.vue'),
     },
     {
         path: '/cabinetInfo',
         label: '机柜信息',
-        component: () => import(/* webpackChunkName: 'CabinetInfo' */ '/src/views/cabinetInfo.vue'),
+        component: () => import(/* webpackChunkName: 'CabinetInfo' */ '/src/views/assetMgr/cabinetInfo.vue'),
     },
+
     {
         path: '/energyOverview',
         label: '能耗总览',
-        component: () => import(/* webpackChunkName: 'EnergyOverview' */ '/src/views/energyOverview.vue'),
+        component: () => import(/* webpackChunkName: 'EnergyOverview' */ '/src/views/energyMgr/energyOverview.vue'),
     },
 
     {

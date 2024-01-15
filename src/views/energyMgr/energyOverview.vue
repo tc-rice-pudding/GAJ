@@ -26,10 +26,10 @@
 import { toRefs, reactive, onMounted, watch, ref, defineComponent } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
-import Whole from './energyComponents/whole.vue';
-import Unit from './energyComponents/unit.vue';
-import System from './energyComponents/system.vue';
-import Cabinet from '@/views/energyComponents/cabinet.vue';
+import Whole from './whole.vue';
+import Unit from './unit.vue';
+import System from './system.vue';
+import Cabinet from './cabinet.vue';
 
 export default defineComponent({
 	name: 'energyOverview',

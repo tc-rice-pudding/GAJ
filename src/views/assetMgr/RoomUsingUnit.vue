@@ -6,10 +6,12 @@
 			<div class="room-using-unit-view">
 				<section class="left-content">
 					<RoomView
+						:roomName="roomName"
 						:roomResourceId="currRoomInfo.resourceId"
 						toolType="property"
 						:deviceCountMap="currCabinetObj"
 						:tooltipFieldMap="{ userName: roomInfo.userName }"
+						@cabinetClickHandler="cabinetClickHandler"
 					></RoomView>
 				</section>
 				<section class="right-content">
@@ -53,7 +55,7 @@
 <script>
 import { toRefs, reactive, onMounted, watch, ref, defineComponent } from 'vue';
 import axios from 'axios';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import RoomView from '@/components/RoomView.vue';
 
 export default defineComponent({
@@ -62,6 +64,7 @@ export default defineComponent({
 		RoomView,
 	},
 	setup() {
+		const router = useRouter();
 		// 机柜视图所有的机柜数量信息 => { resourceId: deviceCount}
 		const currCabinetObj = reactive({
 			// fix:测试数据
@@ -125,7 +128,15 @@ export default defineComponent({
 			Object.assign(currCabinetObj, transformObj);
 		};
 
-		return { roomInfo, rowClick, currCabinetObj, currRoomInfo };
+		const cabinetClickHandler = (cabinet, roomName) => {
+			// 跳转到机柜视图
+			router.push({
+				path: '/cabinetInfo',
+				query: { cabinetRid: cabinet.resourceId, name: `${roomName || ''} - ${cabinet.name || ''}` },
+			});
+		};
+
+		return { roomInfo, rowClick, currCabinetObj, currRoomInfo, cabinetClickHandler };
 	},
 });
 </script>

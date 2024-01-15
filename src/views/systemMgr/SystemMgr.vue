@@ -316,7 +316,7 @@
 import { toRefs, reactive, onMounted, watch, ref, watchEffect } from 'vue';
 import axios from 'axios';
 import dayjs from 'dayjs';
-import { exportHandler, resizeWindow } from '../utils/';
+import { exportHandler, resizeWindow } from '../../utils';
 import { ElMessage } from 'element-plus';
 
 const useReLayout = () => {
