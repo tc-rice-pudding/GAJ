@@ -4,7 +4,7 @@
 			<p>
 				<el-button :type="btnType[item.type]" @click="menuClick(item)">{{ item.label }}</el-button>
 			</p>
-			<p>{{ item.path }}</p>
+			<p>/#{{ item.path }}</p>
 		</div>
 	</div>
 </template>

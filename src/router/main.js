@@ -44,7 +44,7 @@ export const routes = [
         path: '/vmStatistics',
         label: '资产管理：虚拟机统计',
         type: 2,
-        component: () => import(/* webpackChunkName: 'UsingUnit' */ '/src/views/vmStatistics.vue'),
+        component: () => import(/* webpackChunkName: 'UsingUnit' */ '/src/views/assetMgr/vmStatistics.vue'),
     },
     {
         path: '/capacityMgr/cabinetUsage',
