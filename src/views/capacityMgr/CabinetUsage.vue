@@ -121,7 +121,7 @@ export default defineComponent({
 		// 获取当前路由对象
 		const router = useRouter();
 		const resInfo = reactive({
-			floorList: [],
+			floorList: [{ resourceId: '111' }, { resourceId: '222' }],
 			totalCount: 0,
 			usedCount: 0,
 			freeCount: 0,
@@ -158,7 +158,7 @@ export default defineComponent({
 
 		//行单击事件，跳转到机房视图
 		const rowClick = (row, column, event) => {
-			router.push({ path: '/roomView', query: { ...row } });
+			router.push({ path: `/capacityMgr/RoomCapacityView/${row.resourceId}` });
 		};
 
 		const cellStyle = ({ row, column, rowIndex, columnIndex }) => {

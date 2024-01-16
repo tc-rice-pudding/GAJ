@@ -32,7 +32,7 @@ import System from './system.vue';
 import Cabinet from './cabinet.vue';
 
 export default defineComponent({
-	name: 'energyOverview',
+	name: 'FloorEnergy',
 	components: { Whole, Unit, System, Cabinet },
 	setup() {
 		const energyTab = ref('whole');

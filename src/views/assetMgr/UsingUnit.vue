@@ -227,7 +227,7 @@ export default defineComponent({
 		// 行单击事件，跳转到机房视图
 		const rowClick = (row, column, event) => {
 			router.push({
-				path: '/roomView',
+				path: '/roomUsingUnit',
 				query: {
 					userName: row.userName.toString(),
 					systemName: row.systemName.toString(),
