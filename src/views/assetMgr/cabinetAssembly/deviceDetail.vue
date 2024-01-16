@@ -2,17 +2,10 @@
 	<container-warp>
 		<template #title> 设备主要信息 </template>
 		<template #body>
-			<div
-				class="device-detail-view"
-				v-loading="loading"
-				element-loading-text="Loading..."
-				:element-loading-spinner="svg"
-				element-loading-svg-view-box="-10, -10, 50, 50"
-				element-loading-background="rgba(122, 122, 122, 0.8)"
-			>
+			<div class="device-detail-view">
 				<el-table
 					header-row-class-name="table-header"
-					:data="deviceList"
+					:data="tableData"
 					stripe
 					style="width: 100%; height: 100%"
 				>
@@ -59,38 +52,14 @@ import { useRoute } from 'vue-router';
 
 export default defineComponent({
 	name: 'DeviceDetail',
+	props: {
+		tableData: {
+			type: Array,
+			default: () => [],
+		},
+	},
 	setup() {
-		const route = useRoute();
-
-		const loadingInfo = reactive({
-			loading: ref(false),
-			svg: `
-				<path class="path" d="
-				M 30 15
-				L 28 17
-				M 25.61 25.61
-				A 15 15, 0, 0, 1, 15 30
-				A 15 15, 0, 1, 1, 27.99 7.5
-				L 15 15
-				" style="stroke-width: 4px; fill: rgba(0, 0, 0, 0)"/>
-			`,
-		});
-
-		const deviceList = ref([]);
-		const tableHandler = async () => {
-			try {
-				loadingInfo.loading = true;
-				const list = await axios.get(`/dcim/custom/cabinet/list?resourceId=${route.query.cabinetRid}`);
-				deviceList.value = list;
-			} catch (error) {
-				console.log(error);
-			} finally {
-				loadingInfo.loading = false;
-			}
-		};
-		tableHandler();
-
-		return { ...toRefs(loadingInfo), deviceList };
+		return {};
 	},
 });
 </script>

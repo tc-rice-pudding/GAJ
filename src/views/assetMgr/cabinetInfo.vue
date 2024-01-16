@@ -1,20 +1,20 @@
 <template>
-	<div class="cabinet-info-view">
-		<section
-			class="left"
-			v-loading="loading"
-			element-loading-text="Loading..."
-			:element-loading-spinner="svg"
-			element-loading-svg-view-box="-10, -10, 50, 50"
-			element-loading-background="rgba(122, 122, 122, 0.8)"
-		>
+	<div
+		class="cabinet-info-view"
+		v-loading="loading"
+		element-loading-text="Loading..."
+		:element-loading-spinner="svg"
+		element-loading-svg-view-box="-10, -10, 50, 50"
+		element-loading-background="rgba(122, 122, 122, 0.2)"
+	>
+		<section class="left">
 			<resStatis :info="resInfo"></resStatis>
 		</section>
 		<section class="center">
-			<cabinetDetail :name="cabinetName" :cabinetInfo="resInfo"></cabinetDetail>
+			<cabinetDetail :name="cabinetName" :cabinetInfo="resInfo" :deviceMap="deviceMap"></cabinetDetail>
 		</section>
 		<section class="right">
-			<DeviceDetail></DeviceDetail>
+			<DeviceDetail :tableData="deviceList"></DeviceDetail>
 		</section>
 	</div>
 </template>
@@ -33,6 +33,21 @@ export default defineComponent({
 	setup() {
 		const route = useRoute();
 		const cabinetName = computed(() => route.query.name);
+		const resInfo = reactive({});
+		const deviceList = ref([
+			// {
+			// 	startU: 2,
+			// 	uheight: 2,
+			// },
+			// {
+			// 	startU: 6,
+			// 	uheight: 3,
+			// },
+			// {
+			// 	startU: 12,
+			// 	uheight: 3,
+			// },
+		]);
 
 		const loadingInfo = reactive({
 			loading: ref(false),
@@ -48,21 +63,40 @@ export default defineComponent({
 			`,
 		});
 
-		const resInfo = reactive({});
 		const getResInfo = async () => {
 			try {
-				loadingInfo.loading = true;
 				const res = await axios.get(`/dcim/custom/cabinet/info?resourceId=${route.query.cabinetRid}`);
-				Object.assign(resInfo, res);
+				res && Object.assign(resInfo, res);
 			} catch (error) {
 				console.log(error);
-			} finally {
-				loadingInfo.loading = false;
 			}
 		};
-		getResInfo();
 
-		return { cabinetName, loadingInfo, resInfo };
+		const tableHandler = async () => {
+			try {
+				const list = await axios.get(`/dcim/custom/cabinet/list?resourceId=${route.query.cabinetRid}`);
+				deviceList.value = list || [];
+			} catch (error) {
+				console.log(error);
+			}
+		};
+
+		loadingInfo.loading = true;
+		Promise.all([getResInfo(), tableHandler()])
+			.then()
+			.finally(() => {
+				loadingInfo.loading = false;
+			});
+
+		const deviceMap = computed(() => {
+			return (deviceList.value || []).reduce((map, curr) => {
+				const key = curr.startU + curr.uheight - 1;
+				map[key] = { uHeight: curr.uheight, ...curr };
+				return map;
+			}, {});
+		});
+
+		return { cabinetName, ...toRefs(loadingInfo), resInfo, deviceList, deviceMap };
 	},
 });
 </script>
