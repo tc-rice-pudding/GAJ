@@ -1,7 +1,7 @@
 <template>
-  <div class="bar-container">
-    <div ref="barDomRef" class="chart-bar" :style="{ width: `${chartWidth}px`, height: `${chartHeight}px` }" />
-  </div>
+	<div class="bar-container">
+		<div ref="barDomRef" class="chart-bar" :style="{ width: `${chartWidth}px`, height: `${chartHeight}px` }" />
+	</div>
 </template>
 
 <script>
@@ -25,60 +25,60 @@ export default {
 			default: 250,
 		},
 		options: {
-      type: Object,
-      default: () => ({
-        color: ['#5483FF'],
-        title: {
-          text: '--',
-          top: '10',
-          left: '10',
-          textStyle: {
-            fontSize: 16,
-            color: '#666',
-          },
-        },
-        grid: {
-          left: '3%',
-          right: '4%',
-          bottom: '3%',
-          containLabel: true,
-        },
-        tooltip: {
-          trigger: 'axis',
-          formatter: '{b}: {c}',
-          axisPointer: { type: 'none' },
-          textStyle: { fontSize: 12 },
-        },
-        xAxis: [
-          {
-            type: 'category',
-            data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
-            axisTick: { show: false, alignWithLabel: true },
-          },
-        ],
-        yAxis: [
-          {
-            type: 'value',
-            axisLine: {
-              show: true,
-            },
-          },
-        ],
-        series: [
-          {
-            name: '--',
-            type: 'bar',
-            barWidth: '35%',
-            label: {
-              show: true,
-              position: 'top',
-              color: '#5483FF',
-            },
-            data: [10, 52, 200, 334, 380, 330, 220],
-          },
-        ],
-      }),
-    },
+			type: Object,
+			default: () => ({
+				color: ['#5483FF'],
+				title: {
+					text: '--',
+					top: '10',
+					left: '10',
+					textStyle: {
+						fontSize: 16,
+						color: '#666',
+					},
+				},
+				grid: {
+					left: '3%',
+					right: '4%',
+					bottom: '3%',
+					containLabel: true,
+				},
+				tooltip: {
+					trigger: 'axis',
+					formatter: '{b}: {c}',
+					axisPointer: { type: 'none' },
+					textStyle: { fontSize: 12 },
+				},
+				xAxis: [
+					{
+						type: 'category',
+						data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+						axisTick: { show: false, alignWithLabel: true },
+					},
+				],
+				yAxis: [
+					{
+						type: 'value',
+						axisLine: {
+							show: true,
+						},
+					},
+				],
+				series: [
+					{
+						name: '--',
+						type: 'bar',
+						barWidth: '35%',
+						label: {
+							show: true,
+							position: 'top',
+							color: '#5483FF',
+						},
+						data: [10, 52, 200, 334, 380, 330, 220],
+					},
+				],
+			}),
+		},
 	},
 	data() {
 		return {
@@ -90,6 +90,11 @@ export default {
 			this.myChart = markRaw(echarts.init(this.$refs.barDomRef));
 			this.myChart.setOption(this.optionsRef);
 		}
+
+		window.addEventListener('resize', this.handleResize);
+	},
+	beforeUnmount() {
+		window.removeEventListener('resize', this.handleResize);
 	},
 	watch: {
 		chartWidth() {
@@ -120,13 +125,22 @@ export default {
 			return cloneDeep(this.options);
 		},
 	},
+	methods: {
+		handleResize() {
+			let _resizeTimeout = null;
+			clearTimeout(_resizeTimeout);
+			_resizeTimeout = setTimeout(() => {
+				this.myChart && this.myChart.resize();
+			}, 100);
+		},
+	},
 };
 </script>
 
 <style lang="less" scoped>
 .bar-container {
-  .chart-bar {
-    margin: 0 auto;
-  }
+	.chart-bar {
+		margin: 0 auto;
+	}
 }
 </style>

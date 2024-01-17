@@ -11,11 +11,11 @@
 				<label>{{ realPower }} kW</label>
 			</div>
 		</section>
-		<section class="echarts-comp">
+		<section class="echarts-comp horizontal">
 			<Chart-Bar class="chart-item" :options="electricityMinimumOps"></Chart-Bar>
 			<Chart-Line class="chart-item" :options="totalEnergyOps" />
 		</section>
-		<section class="echarts-comp">
+		<section class="echarts-comp vertical">
 			<Chart-Bar class="chart-item" :options="electricityHighestOps"></Chart-Bar>
 			<Chart-Line class="chart-item" :options="ITEnergyOps" />
 		</section>
@@ -126,19 +126,10 @@ export const useElectricityTopAndBottom = ({ floorId, floorName }) => {
 	let electricityMinimumOps = computed(() => {
 		let defaultOps = deepClone(barOpsDefault);
 
+		defaultOps.color = ['#00DEFF'];
 		defaultOps.title.text = '机柜用电最低（kW）';
-		Object.assign(defaultOps, {
-			xAxis: {
-				type: 'category',
-				data: bot10.value.map((it) => it.deviceNum),
-				axisTick: { show: false, alignWithLabel: true },
-			},
-			series: {
-				type: 'bar',
-				barWidth: 50,
-				data: bot10.value.map((it) => it.value),
-			},
-		});
+		defaultOps.xAxis.data = bot10.value.map((it) => it.deviceNum) || [];
+		defaultOps.series[0].data = bot10.value.map((it) => it.value) || [];
 
 		return defaultOps;
 	});
@@ -147,19 +138,10 @@ export const useElectricityTopAndBottom = ({ floorId, floorName }) => {
 	let electricityHighestOps = computed(() => {
 		let defaultOps = deepClone(barOpsDefault);
 
+		defaultOps.color = ['#00DEFF'];
 		defaultOps.title.text = '机柜用电最高（kW）';
-		Object.assign(defaultOps, {
-			xAxis: {
-				type: 'category',
-				data: top10.value.map((it) => it.deviceNum),
-				axisTick: { show: false, alignWithLabel: true },
-			},
-			series: {
-				type: 'bar',
-				barWidth: 50,
-				data: top10.value.map((it) => it.value),
-			},
-		});
+		defaultOps.xAxis.data = top10.value.map((it) => it.deviceNum) || [];
+		defaultOps.series[0].data = top10.value.map((it) => it.value) || [];
 
 		return defaultOps;
 	});
@@ -189,6 +171,7 @@ export const useTotalEnergy = ({ floorId, floorName }) => {
 
 	let totalEnergyOps = computed(() => {
 		let defaultOps = deepClone(lineOpsDefault);
+		defaultOps.color = ['#00DEFF'];
 		defaultOps.title.text = '总功耗统计';
 		defaultOps.xAxis.data = totalEnergyList.value.map((it) => it.time) || [];
 		defaultOps.legend = null;
@@ -229,6 +212,7 @@ export const useITEnergy = ({ floorId, floorName }) => {
 
 	let ITEnergyOps = computed(() => {
 		let defaultOps = deepClone(lineOpsDefault);
+		defaultOps.color = ['#00DEFF'];
 		defaultOps.title.text = 'IT功耗统计';
 		defaultOps.xAxis.data = ITEnergyList.value.map((it) => it.time) || [];
 		defaultOps.legend = null;
@@ -321,10 +305,35 @@ export default defineComponent({
 		width: 100%;
 		flex: 1;
 		display: flex;
+		position: relative;
+		.chart-item {
+			width: 50%;
+			height: 100%;
+			padding: 5px;
+		}
 	}
-	.chart-item {
-		width: 50%;
-		height: 100%;
+	.horizontal::after {
+		content: '';
+		background-image: linear-gradient(to right, transparent, #0262af, transparent);
+		height: 2px;
+		width: 400px;
+		display: block;
+		position: absolute;
+		z-index: 10;
+		transform: translateX(-200px) rotateZ(270deg);
+		margin-left: 50%;
+		bottom: 0;
+	}
+	.vertical::before {
+		content: '';
+		background-image: linear-gradient(to right, transparent, #0262af, transparent);
+		height: 2px;
+		width: 800px;
+		display: block;
+		position: absolute;
+		z-index: 10;
+		transform: translateX(-400px);
+		margin-left: 50%;
 	}
 }
 </style>

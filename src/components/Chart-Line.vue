@@ -142,6 +142,11 @@ export default {
 			this.myChart = markRaw(echarts.init(this.$refs.lineDomRef));
 			this.myChart.setOption(this.optionsRef);
 		}
+
+		window.addEventListener('resize', this.handleResize);
+	},
+	beforeUnmount() {
+		window.removeEventListener('resize', this.handleResize);
 	},
 	watch: {
 		chartWidth() {
@@ -170,6 +175,15 @@ export default {
 		},
 		optionsRef() {
 			return cloneDeep(this.options);
+		},
+	},
+	methods: {
+		handleResize() {
+			let _resizeTimeout = null;
+			clearTimeout(_resizeTimeout);
+			_resizeTimeout = setTimeout(() => {
+				this.myChart && this.myChart.resize();
+			}, 100);
 		},
 	},
 };

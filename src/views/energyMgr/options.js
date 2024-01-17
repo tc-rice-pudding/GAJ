@@ -1,3 +1,5 @@
+import * as echarts from 'echarts/core';
+
 export const lineOpsDefault = {
     color: ['#007EFF', '#FFCD75', '#0ED3A0', '#2BBDF7'],
     title: {
@@ -11,8 +13,12 @@ export const lineOpsDefault = {
     },
     tooltip: {
         trigger: 'axis',
-        formatter: '{b}: {c}',
-        textStyle: { fontSize: 12 },
+        textStyle: {
+            fontSize: 12, color: '#fff',
+            align: 'left'
+        },
+        backgroundColor: 'RGBA(4, 41, 75, 0.8)',
+        borderColor: 'RGBA(4, 41, 75, 0.8)',
     },
     legend: {
         left: 'center',
@@ -110,7 +116,7 @@ export const barOpsDefault = {
         left: '10',
         textStyle: {
             fontSize: 16,
-            color: '#666',
+            color: '#fff',
         },
     },
     grid: {
@@ -121,26 +127,66 @@ export const barOpsDefault = {
     },
     tooltip: {
         trigger: 'axis',
-        formatter: '{b}: {c}',
-        axisPointer: { type: 'none' },
-        textStyle: { fontSize: 12 },
+        textStyle: {
+            fontSize: 12, color: '#fff',
+            align: 'left'
+        },
+        backgroundColor: 'RGBA(4, 41, 75, 0.8)',
+        borderColor: 'RGBA(4, 41, 75, 0.8)',
     },
     xAxis: {
         type: 'category',
+        axisTick: {
+            show: false,
+            alignWithLabel: true,
+        },
+        splitLine: {
+            show: false,
+        },
+        axisLabel: {
+            color: "#9CAEC6",
+        },
         data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
-        axisTick: { show: false, alignWithLabel: true },
     },
     yAxis: [
         {
             type: 'value',
-            axisLine: {
-                show: true,
+            axisLabel: {
+                color: "#9CAEC6",
+            },
+            splitLine: { // y轴线条样式
+                lineStyle: {
+                    color: 'rgba(127, 127, 127, 1)',
+                    type: 'dashed', // 线型为虚线
+                }
             },
         },
     ],
-    series: {
-        type: 'bar',
-        barWidth: '35%',
-        data: [10, 52, 200, 334, 380, 330, 220],
-    },
+    series: [
+        {
+            type: 'bar',
+            barWidth: '15',
+            // emphasis: {
+            //     barBorderRadius: [50, 50, 0, 0],
+            // },
+            itemStyle: {
+                color: {
+                    type: 'linear',
+                    x: 0,
+                    y: 0,
+                    x2: 0,
+                    y2: 1,
+                    colorStops: [{
+                        offset: 1,
+                        color: 'rgba(0, 222, 255, 0.4)'
+                    }, {
+                        offset: 0,
+                        color: 'rgba(0, 222, 255, 1)'
+                    }]
+                },
+                barBorderRadius: [15, 15, 0, 0],//圆角
+            },
+            data: [10, 52, 200, 334, 380, 330, 200],
+        },
+    ]
 };
