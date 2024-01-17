@@ -1,18 +1,272 @@
 <template>
 	<!-- 整体能耗 -->
-	<div>整体能耗</div>
+	<div class="whole-view">
+		<section class="info">
+			<div class="info-item">
+				<span>{{ floorInfo.floorName }} 昨日总用电量</span>
+				<label>{{ totalElectricity }} kWh</label>
+			</div>
+			<div class="info-item">
+				<span>{{ floorInfo.floorName }} 实时功率</span>
+				<label>{{ realPower }} kW</label>
+			</div>
+		</section>
+		<section class="echarts-comp">
+			<Chart-Bar class="chart-item" :options="electricityMinimumOps"></Chart-Bar>
+			<Chart-Line class="chart-item" :options="totalEnergyOps" />
+		</section>
+		<section class="echarts-comp">
+			<Chart-Bar class="chart-item" :options="electricityHighestOps"></Chart-Bar>
+			<Chart-Line class="chart-item" :options="ITEnergyOps" />
+		</section>
+	</div>
 </template>
 
 <script>
-import { toRefs, reactive, onMounted, watch, ref, defineComponent } from 'vue';
+import { toRefs, reactive, onMounted, watch, ref, defineComponent, computed } from 'vue';
 import axios from 'axios';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
+import ChartBar from '@/components/Chart-Bar.vue';
+import ChartLine from '@/components/Chart-Line.vue';
+import { barOpsDefault, lineOpsDefault } from '../options';
+import { deepClone } from '@/utils';
+
+export const useInfo = (floorId, floorName) => {
+	let realPower = ref('');
+	let totalElectricity = ref('');
+
+	const getFloorInfo = async () => {
+		try {
+			const res = await axios.post('/dcim/custom/energy/batch/point', {
+				pointIds: [`${floorId}_1_6027_0`, `${floorId}_1_6028_0`],
+			});
+
+			totalElectricity.value = res[`${floorId}_1_6028_0`];
+			realPower.value = res[`${floorId}_1_6027_0`];
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	getFloorInfo();
+
+	return { realPower, totalElectricity };
+};
+
+// 用电最低、用电最高
+export const useElectricityTopAndBottom = ({ floorId, floorName }) => {
+	let top10 = ref([
+		{
+			resourceId: '11',
+			deviceNum: '1',
+			value: '1',
+		},
+		{
+			resourceId: '22',
+			deviceNum: '2',
+			value: '2',
+		},
+		{
+			resourceId: '33',
+			deviceNum: '3',
+			value: '3',
+		},
+		{
+			resourceId: '44',
+			deviceNum: '4',
+			value: '4',
+		},
+		{
+			resourceId: '55',
+			deviceNum: '5',
+			value: '5',
+		},
+	]);
+	let bot10 = ref([
+		{
+			resourceId: '1',
+			deviceNum: '1',
+			value: '1',
+		},
+		{
+			resourceId: '2',
+			deviceNum: '2',
+			value: '2',
+		},
+		{
+			resourceId: '3',
+			deviceNum: '3',
+			value: '3',
+		},
+		{
+			resourceId: '4',
+			deviceNum: '4',
+			value: '4',
+		},
+		{
+			resourceId: '5',
+			deviceNum: '5',
+			value: '5',
+		},
+	]);
+
+	const getFloorInfo = async () => {
+		try {
+			const { top10List, bot10List } = await axios.post(
+				`/dcim/custom/energy/cabinet/power/topAndBot10/${floorId}`
+			);
+			top10.value = top10List || [];
+			bot10.value = bot10List || [];
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	getFloorInfo();
+
+	// 最低
+	let electricityMinimumOps = computed(() => {
+		let defaultOps = deepClone(barOpsDefault);
+
+		defaultOps.title.text = '机柜用电最低（kW）';
+		Object.assign(defaultOps, {
+			xAxis: {
+				type: 'category',
+				data: bot10.value.map((it) => it.deviceNum),
+				axisTick: { show: false, alignWithLabel: true },
+			},
+			series: {
+				type: 'bar',
+				barWidth: 50,
+				data: bot10.value.map((it) => it.value),
+			},
+		});
+
+		return defaultOps;
+	});
+
+	// 最高
+	let electricityHighestOps = computed(() => {
+		let defaultOps = deepClone(barOpsDefault);
+
+		defaultOps.title.text = '机柜用电最高（kW）';
+		Object.assign(defaultOps, {
+			xAxis: {
+				type: 'category',
+				data: top10.value.map((it) => it.deviceNum),
+				axisTick: { show: false, alignWithLabel: true },
+			},
+			series: {
+				type: 'bar',
+				barWidth: 50,
+				data: top10.value.map((it) => it.value),
+			},
+		});
+
+		return defaultOps;
+	});
+
+	return { electricityMinimumOps, electricityHighestOps };
+};
+
+// 总功耗
+export const useTotalEnergy = ({ floorId, floorName }) => {
+	const totalEnergyList = ref([
+		{ value: '1', time: '2020-01' },
+		{ value: '2', time: '2020-02' },
+		{ value: '3', time: '2020-03' },
+		{ value: '4', time: '2020-04' },
+		{ value: '5', time: '2020-05' },
+		{ value: '6', time: '2020-05' },
+	]);
+	const getTotalEnergy = async () => {
+		try {
+			const list = await axios.get(`/dcim/custom/energy/floor/power/statistics/${floorId}/3`);
+			totalEnergyList.value = list || [];
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	getTotalEnergy();
+
+	let totalEnergyOps = computed(() => {
+		let defaultOps = deepClone(lineOpsDefault);
+		defaultOps.title.text = '总功耗统计';
+		defaultOps.xAxis.data = totalEnergyList.value.map((it) => it.time) || [];
+		defaultOps.legend = null;
+		defaultOps.series = {
+			type: 'line',
+			areaStyle: {
+				opacity: 0.2,
+			},
+			symbol: 'emptyCircle',
+			symbolSize: 6,
+			data: totalEnergyList.value.map((it) => it.value) || [],
+		};
+		return defaultOps;
+	});
+
+	return { totalEnergyOps };
+};
+
+// IT功耗
+export const useITEnergy = ({ floorId, floorName }) => {
+	const ITEnergyList = ref([
+		{ value: '1', time: '2020-01' },
+		{ value: '2', time: '2020-02' },
+		{ value: '3', time: '2020-03' },
+		{ value: '4', time: '2020-04' },
+		{ value: '5', time: '2020-05' },
+		{ value: '6', time: '2020-05' },
+	]);
+	const getITEnergy = async () => {
+		try {
+			const list = await axios.get(`/dcim/custom/energy/floor/itpower/statistics/${floorId}/3`);
+			ITEnergyList.value = list || [];
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	getITEnergy();
+
+	let ITEnergyOps = computed(() => {
+		let defaultOps = deepClone(lineOpsDefault);
+		defaultOps.title.text = 'IT功耗统计';
+		defaultOps.xAxis.data = ITEnergyList.value.map((it) => it.time) || [];
+		defaultOps.legend = null;
+		defaultOps.series = {
+			type: 'line',
+			areaStyle: {
+				opacity: 0.2,
+			},
+			symbol: 'emptyCircle',
+			symbolSize: 6,
+			data: ITEnergyList.value.map((it) => it.value) || [],
+		};
+
+		return defaultOps;
+	});
+	return { ITEnergyOps };
+};
 
 export default defineComponent({
 	name: 'whole',
-	components: {},
+	components: {
+		ChartBar,
+		ChartLine,
+	},
 	setup() {
-		return {};
+		const route = useRoute();
+		const floorInfo = computed(() => ({
+			floorId: route.query.floorId,
+			floorName: route.query.floorName,
+		}));
+
+		return {
+			floorInfo,
+			...toRefs(useInfo(floorInfo)),
+			...toRefs(useElectricityTopAndBottom(floorInfo)),
+			...toRefs(useTotalEnergy(floorInfo)),
+			...toRefs(useITEnergy(floorInfo)),
+		};
 	},
 });
 </script>
@@ -20,10 +274,57 @@ export default defineComponent({
 <style lang="less" scoped>
 @import 'src/css/conponents.less';
 
-// .energy-overview-view {
-// 	width: 100%;
-// 	height: 100%;
-// 	box-sizing: border-box;
-// 	color: #c5dff9;
-// }
+.whole-view {
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	overflow-y: auto;
+
+	.info {
+		min-height: 100px;
+		width: 500px;
+		background-image: url('@/assets/images/roomView/roomWarp.png');
+		background-size: 100% 100%;
+		background-repeat: no-repeat;
+		margin-left: 10px;
+		display: flex;
+		.info-item {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			padding-left: 100px;
+			background-repeat: no-repeat;
+			> span {
+				color: #fff;
+				font-size: 14px;
+			}
+			> label {
+				color: #0be7fb;
+				font-size: 18px;
+			}
+		}
+		.info-item:first-of-type {
+			background-image: url('@/assets/images/roomView/elec.png');
+			background-position: 55px 50%;
+		}
+		.info-item:last-of-type {
+			background-image: url('@/assets/images/roomView/power.png');
+			background-position: 70px 50%;
+		}
+	}
+
+	.echarts-comp {
+		min-height: 250px;
+		width: 100%;
+		flex: 1;
+		display: flex;
+	}
+	.chart-item {
+		width: 50%;
+		height: 100%;
+	}
+}
 </style>

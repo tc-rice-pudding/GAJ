@@ -22,7 +22,7 @@ export const lineOpsDefault = {
             color: '#fff',
             fontSize: 12,
         },
-        data: ['功率使用率','机柜使用率','单位3','单位4'],
+        data: ['功率使用率', '机柜使用率', '单位3', '单位4'],
     },
     grid: {
         left: '3%',
@@ -98,4 +98,49 @@ export const lineOpsDefault = {
             data: [87, 22, 56, 54, 35, 20, 45],
         },
     ],
+};
+
+
+
+export const barOpsDefault = {
+    color: ['#5483FF'],
+    title: {
+        text: '--',
+        top: '10',
+        left: '10',
+        textStyle: {
+            fontSize: 16,
+            color: '#666',
+        },
+    },
+    grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true,
+    },
+    tooltip: {
+        trigger: 'axis',
+        formatter: '{b}: {c}',
+        axisPointer: { type: 'none' },
+        textStyle: { fontSize: 12 },
+    },
+    xAxis: {
+        type: 'category',
+        data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+        axisTick: { show: false, alignWithLabel: true },
+    },
+    yAxis: [
+        {
+            type: 'value',
+            axisLine: {
+                show: true,
+            },
+        },
+    ],
+    series: {
+        type: 'bar',
+        barWidth: '35%',
+        data: [10, 52, 200, 334, 380, 330, 220],
+    },
 };

@@ -51,7 +51,7 @@ import { toRefs, reactive, onMounted, watch, ref, defineComponent, computed } fr
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 import ChartLine from '@/components/Chart-Line.vue';
-import { lineOpsDefault } from '../options';
+import { lineOpsDefault } from './options';
 import { deepClone } from '@/utils';
 
 export default defineComponent({

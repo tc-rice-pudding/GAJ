@@ -1,6 +1,6 @@
 <template>
-	<!-- 使用系统能耗 -->
-	<div class="system-view">
+	<!-- 使用单位能耗 -->
+	<div class="unit-view">
 		<!-- 折线图 -->
 		<Chart-Line :h="300" :options="lineOptions" />
 
@@ -51,11 +51,11 @@ import { toRefs, reactive, onMounted, watch, ref, defineComponent, computed } fr
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 import ChartLine from '@/components/Chart-Line.vue';
-import { lineOpsDefault } from '../options';
+import { lineOpsDefault } from './options';
 import { deepClone } from '@/utils';
 
 export default defineComponent({
-	name: 'system',
+	name: 'unit',
 	components: { ChartLine },
 	setup() {
 		const resInfo = reactive({
@@ -100,7 +100,7 @@ export default defineComponent({
 <style lang="less" scoped>
 @import 'src/css/conponents.less';
 
-.system-view {
+.unit-view {
 	width: 100%;
 	height: 100%;
 	box-sizing: border-box;

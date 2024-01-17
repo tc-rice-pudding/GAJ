@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import { markRaw } from 'vue';
 import * as echarts from 'echarts/core';
 import { BarChart } from 'echarts/charts';
 import { CanvasRenderer } from 'echarts/renderers';
@@ -86,7 +87,7 @@ export default {
 	},
 	mounted() {
 		if (this.$refs.barDomRef) {
-			this.myChart = echarts.init(this.$refs.barDomRef);
+			this.myChart = markRaw(echarts.init(this.$refs.barDomRef));
 			this.myChart.setOption(this.optionsRef);
 		}
 	},
