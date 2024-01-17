@@ -157,6 +157,7 @@ export default defineComponent({
 	height: 100%;
 	box-sizing: border-box;
 	color: #c5dff9;
+	padding: 5px 14px 0;
 
 	> header {
 		height: 40px;
