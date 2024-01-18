@@ -12,14 +12,17 @@
 			</div>
 		</section>
 		<section class="echarts-comp horizontal">
-			<Chart-Bar class="chart-item" :options="electricityMinimumOps"></Chart-Bar>
+			<Chart-Bar ref="electricityMinRef" class="chart-item" :options="electricityMinimumOps"></Chart-Bar>
 			<Chart-Line class="chart-item" :options="totalEnergyOps" />
 		</section>
 		<section class="echarts-comp vertical">
-			<Chart-Bar class="chart-item" :options="electricityHighestOps"></Chart-Bar>
+			<Chart-Bar ref="electricityHighRef" class="chart-item" :options="electricityHighestOps"></Chart-Bar>
 			<Chart-Line class="chart-item" :options="ITEnergyOps" />
 		</section>
 	</div>
+
+	<!-- 机柜展示 -->
+	<dialogCabinet ref="cabinetRef" :dialogInfo="dialogInfo"></dialogCabinet>
 </template>
 
 <script>
@@ -29,6 +32,7 @@ import { useRoute, useRouter } from 'vue-router';
 import ChartBar from '@/components/Chart-Bar.vue';
 import ChartLine from '@/components/Chart-Line.vue';
 import { barOpsDefault, lineOpsDefault } from '../options';
+import DialogCabinet from './dialogCabinet.vue';
 import { deepClone } from '@/utils';
 
 export const useInfo = (floorId, floorName) => {
@@ -54,34 +58,45 @@ export const useInfo = (floorId, floorName) => {
 
 // 用电最低、用电最高
 export const useElectricityTopAndBottom = ({ floorId, floorName }) => {
+	const electricityMinRef = ref(null);
+	const electricityHighRef = ref(null);
+
+	const cabinetRef = ref(null);
+	const dialogInfo = reactive({
+		dialogCabinetVisible: false,
+		cabinetName: '',
+	});
+
 	let top10 = ref([
+		// fix
 		{
 			resourceId: '11',
-			deviceNum: '1',
+			deviceNum: 'dxc1101',
 			value: '1',
 		},
 		{
 			resourceId: '22',
-			deviceNum: '2',
+			deviceNum: 'dxc11012',
 			value: '2',
 		},
 		{
 			resourceId: '33',
-			deviceNum: '3',
+			deviceNum: 'dxc11013',
 			value: '3',
 		},
 		{
 			resourceId: '44',
-			deviceNum: '4',
+			deviceNum: 'dxc11014',
 			value: '4',
 		},
 		{
 			resourceId: '55',
-			deviceNum: '5',
+			deviceNum: 'dxc11015',
 			value: '5',
 		},
 	]);
 	let bot10 = ref([
+		// fix
 		{
 			resourceId: '1',
 			deviceNum: '1',
@@ -108,6 +123,14 @@ export const useElectricityTopAndBottom = ({ floorId, floorName }) => {
 			value: '5',
 		},
 	]);
+	let hash = reactive({
+		// fix
+		dxc11015: {
+			resourceId: '55',
+			deviceNum: 'dxc11015',
+			value: '5',
+		},
+	}); // {机柜name：机柜info}
 
 	const getFloorInfo = async () => {
 		try {
@@ -116,6 +139,10 @@ export const useElectricityTopAndBottom = ({ floorId, floorName }) => {
 			);
 			top10.value = top10List || [];
 			bot10.value = bot10List || [];
+			hash = [...top10.value, ...bot10.value].reduce((map, curr) => {
+				map[curr.deviceNum] = curr;
+				return map;
+			}, {});
 		} catch (error) {
 			console.log(error);
 		}
@@ -146,12 +173,32 @@ export const useElectricityTopAndBottom = ({ floorId, floorName }) => {
 		return defaultOps;
 	});
 
-	return { electricityMinimumOps, electricityHighestOps };
+	const chartHandler = (params) => {
+		const cabinetRid = hash[params.name]?.resourceId;
+		Object.assign(dialogInfo, { dialogCabinetVisible: true, cabinetName: `机柜编号：${params.name}` });
+		setTimeout(() => {
+			cabinetRef.value?.init(cabinetRid); // 获取机柜信息
+		}, 300);
+	};
+	onMounted(() => {
+		electricityMinRef.value?.myChart.on('click', chartHandler);
+		electricityHighRef.value?.myChart.on('click', chartHandler);
+	});
+
+	return {
+		electricityMinimumOps,
+		electricityHighestOps,
+		electricityMinRef,
+		electricityHighRef,
+		cabinetRef,
+		dialogInfo,
+	};
 };
 
 // 总功耗
 export const useTotalEnergy = ({ floorId, floorName }) => {
 	const totalEnergyList = ref([
+		// fix
 		{ value: '1', time: '2020-01' },
 		{ value: '2', time: '2020-02' },
 		{ value: '3', time: '2020-03' },
@@ -193,6 +240,7 @@ export const useTotalEnergy = ({ floorId, floorName }) => {
 // IT功耗
 export const useITEnergy = ({ floorId, floorName }) => {
 	const ITEnergyList = ref([
+		// fix
 		{ value: '1', time: '2020-01' },
 		{ value: '2', time: '2020-02' },
 		{ value: '3', time: '2020-03' },
@@ -236,6 +284,7 @@ export default defineComponent({
 	components: {
 		ChartBar,
 		ChartLine,
+		DialogCabinet,
 	},
 	setup() {
 		const route = useRoute();

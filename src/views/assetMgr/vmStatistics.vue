@@ -52,7 +52,6 @@
 						:data="resInfo.tableData"
 						stripe
 						style="width: 100%"
-						border
 					>
 						<el-table-column type="index" width="80" label="序号" align="center" />
 						<el-table-column

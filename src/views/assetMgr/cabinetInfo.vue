@@ -35,18 +35,19 @@ export default defineComponent({
 		const cabinetName = computed(() => route.query.name);
 		const resInfo = reactive({});
 		const deviceList = ref([
-			// {
-			// 	startU: 2,
-			// 	uheight: 2,
-			// },
-			// {
-			// 	startU: 6,
-			// 	uheight: 3,
-			// },
-			// {
-			// 	startU: 12,
-			// 	uheight: 3,
-			// },
+			// fix
+			{
+				startU: 2,
+				uheight: 2,
+			},
+			{
+				startU: 6,
+				uheight: 3,
+			},
+			{
+				startU: 12,
+				uheight: 3,
+			},
 		]);
 
 		const loadingInfo = reactive({

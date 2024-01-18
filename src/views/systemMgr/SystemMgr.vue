@@ -169,7 +169,6 @@
 				:data="resInfo.tableData"
 				stripe
 				style="width: 100%"
-				border
 				:row-key="(row) => row.resource_id"
 				@selection-change="(list) => (resInfo.selectedData = list)"
 			>

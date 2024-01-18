@@ -63,7 +63,6 @@
 						@row-click="rowClick"
 						stripe
 						style="width: 100%"
-						border
 					>
 						<el-table-column
 							prop="userName"

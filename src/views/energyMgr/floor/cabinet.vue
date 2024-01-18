@@ -16,7 +16,6 @@
 				:data="resInfo.tableData"
 				stripe
 				style="width: 100%"
-				border
 			>
 				<el-table-column prop="userName" label="机构编号" show-overflow-tooltip min-width="90" align="left" />
 				<el-table-column prop="systemName" label="机柜名称" show-overflow-tooltip min-width="90" align="left" />

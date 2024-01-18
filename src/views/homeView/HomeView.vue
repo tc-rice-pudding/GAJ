@@ -37,7 +37,7 @@
 			element-loading-svg-view-box="-10, -10, 50, 50"
 			element-loading-background="rgba(122, 122, 122, 0.2)"
 		>
-			<el-table header-row-class-name="table-header" :data="resInfo.tableData1" stripe style="width: 100%" border>
+			<el-table header-row-class-name="table-header" :data="resInfo.tableData1" stripe style="width: 100%">
 				<el-table-column prop="userName" label="使用单位" />
 				<el-table-column prop="roomNum" label="机房数量" />
 				<el-table-column prop="deviceNum" label="设备数量" />

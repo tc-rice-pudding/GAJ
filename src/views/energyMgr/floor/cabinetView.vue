@@ -24,22 +24,12 @@
 					></div>
 					<div class="center" v-else />
 				</template>
-				<p class="tip-row"><span class="tip-label">U位</span>{{ deviceMap[u]?.uposition }}</p>
-				<p class="tip-row"><span class="tip-label">高度</span>{{ deviceMap[u]?.uheight }}</p>
-				<p class="tip-row"><span class="tip-label">品牌</span>{{ deviceMap[u]?.brand }}</p>
-				<p class="tip-row"><span class="tip-label">型号</span>{{ deviceMap[u]?.model }}</p>
-				<p class="tip-row"><span class="tip-label">类型</span>{{ deviceMap[u]?.deviceType }}</p>
-				<p class="tip-row"><span class="tip-label">编号</span>{{ deviceMap[u]?.deviceNum }}</p>
-				<p class="tip-row"><span class="tip-label">使用状态</span>{{ deviceMap[u]?.usage }}</p>
-				<p class="tip-row"><span class="tip-label">设备电源</span>{{ deviceMap[u]?.electricSocket }}</p>
-				<p class="tip-row"><span class="tip-label">联网类型</span>{{ deviceMap[u]?.networkingType }}</p>
-				<p class="tip-row"><span class="tip-label">业务系统</span>{{ deviceMap[u]?.systemName }}</p>
-				<p class="tip-row"><span class="tip-label">使用单位</span>{{ deviceMap[u]?.userName }}</p>
-				<p class="tip-row"><span class="tip-label">使用部门</span>{{ deviceMap[u]?.deptName }}</p>
-				<p class="tip-row"><span class="tip-label">设备管理人</span>{{ deviceMap[u]?.ownerName }}</p>
-				<p class="tip-row"><span class="tip-label">联系电话</span>{{ deviceMap[u]?.telephone }}</p>
-				<p class="tip-row"><span class="tip-label">资产备注</span>{{ deviceMap[u]?.decription }}</p>
-				<p class="tip-row"><span class="tip-label">录入时间</span>{{ deviceMap[u]?.createTime }}</p>
+				<p class="tip-row"><span class="tip-label">序列号</span>{{ deviceMap[u]?.serialNum }}</p>
+				<p class="tip-row"><span class="tip-label">设备类型</span>{{ deviceMap[u]?.deviceType }}</p>
+				<p class="tip-row"><span class="tip-label">所在U位</span>{{ deviceMap[u]?.upath }}</p>
+				<p class="tip-row"><span class="tip-label">使用单位</span>{{ deviceMap[u]?.useOrg }}</p>
+				<p class="tip-row"><span class="tip-label">系统名称</span>{{ deviceMap[u]?.sysName }}</p>
+				<p class="tip-row"><span class="tip-label">功耗</span>{{ deviceMap[u]?.power }}</p>
 			</el-popover>
 			<div class="right" />
 		</div>
@@ -169,7 +159,7 @@ export default defineComponent({
 	.tip-label {
 		color: #fff;
 		display: inline-block;
-		width: 125px;
+		width: 80px;
 	}
 }
 </style>
@@ -177,10 +167,10 @@ export default defineComponent({
 .el-popover.custom-popover {
 	background-image: url('@/assets/images/asset/tip-bg.png');
 	background-size: 100% 100%;
-    background-repeat: no-repeat;
-    background-color: transparent;
-    border: none;
-	.el-popper__arrow{
+	background-repeat: no-repeat;
+	background-color: transparent;
+	border: none;
+	.el-popper__arrow {
 		display: none;
 	}
 }

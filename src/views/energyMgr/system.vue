@@ -19,7 +19,6 @@
 				:data="resInfo.tableData"
 				stripe
 				style="height: 100%; width: 100%"
-				border
 			>
 				<el-table-column prop="userName" label="系统名称" show-overflow-tooltip min-width="90" align="center" />
 				<el-table-column

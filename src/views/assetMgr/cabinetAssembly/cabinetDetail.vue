@@ -31,7 +31,7 @@
 import { toRefs, reactive, onMounted, watch, ref, defineComponent, computed } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
-import CabinetView from '@/components/cabinetView.vue';
+import CabinetView from './cabinetView.vue';
 
 export default defineComponent({
 	name: 'CabinetDetail',
