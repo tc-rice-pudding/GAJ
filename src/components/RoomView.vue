@@ -123,7 +123,7 @@ export default defineComponent({
 				try {
 					loading.value = true;
 					const res = await axios.get(`/dcim/custom/room/list?resourceId=${props.roomResourceId}`);
-					roomConstruction.value = res || [];
+					roomConstruction.value = res.data || [];
 				} catch (error) {
 					console.log(error);
 				} finally {

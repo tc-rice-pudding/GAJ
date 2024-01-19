@@ -102,7 +102,7 @@ export default defineComponent({
 		// 获取右侧信息
 		const tableHandler = async () => {
 			try {
-				const res = await axios.post('/dcim/custom/room/data', {
+				const { data: res } = await axios.post('/dcim/custom/room/data', {
 					userName: route.query.userName.split(','),
 					systemName: route.query.systemName.split(','),
 				});

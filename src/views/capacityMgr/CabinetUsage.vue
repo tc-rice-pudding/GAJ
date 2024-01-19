@@ -146,7 +146,7 @@ export default defineComponent({
 		const tableHandler = async () => {
 			try {
 				loadingInfo.loading = true;
-				const res = await axios.get('/dcim/custom/capacity/cabinet/count/floor');
+				const { data: res } = await axios.get('/dcim/custom/capacity/cabinet/count/floor');
 				Object.assign(resInfo, res);
 			} catch (error) {
 				console.log(error);

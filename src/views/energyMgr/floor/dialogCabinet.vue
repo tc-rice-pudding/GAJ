@@ -103,7 +103,7 @@ export default defineComponent({
 		const init = async (cabinetId) => {
 			try {
 				loadingInfo.loading = true;
-				const res = await axios.get(`/dcim/custom/energy/getDevicesByCabinet/${cabinetId}`);
+				const { data: res } = await axios.get(`/dcim/custom/energy/getDevicesByCabinet/${cabinetId}`);
 				deviceList.value = res;
 				loadingInfo.loading = false;
 			} catch (error) {

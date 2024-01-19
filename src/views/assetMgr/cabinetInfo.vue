@@ -66,7 +66,7 @@ export default defineComponent({
 
 		const getResInfo = async () => {
 			try {
-				const res = await axios.get(`/dcim/custom/cabinet/info?resourceId=${route.query.cabinetRid}`);
+				const { data: res } = await axios.get(`/dcim/custom/cabinet/info?resourceId=${route.query.cabinetRid}`);
 				res && Object.assign(resInfo, res);
 			} catch (error) {
 				console.log(error);
@@ -75,8 +75,8 @@ export default defineComponent({
 
 		const tableHandler = async () => {
 			try {
-				const list = await axios.get(`/dcim/custom/cabinet/list?resourceId=${route.query.cabinetRid}`);
-				deviceList.value = list || [];
+				const { data: list } = await axios.get(`/dcim/custom/cabinet/list?resourceId=${route.query.cabinetRid}`);
+				deviceList.value = list|| [];
 			} catch (error) {
 				console.log(error);
 			}

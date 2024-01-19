@@ -99,7 +99,7 @@ export default defineComponent({
 
 		const getAbnormalInfo = async () => {
 			try {
-				const { total, rows } = await axios.post('/dcim/custom/energy/abnormal/list', {
+				const { data: { total, rows } } = await axios.post('/dcim/custom/energy/abnormal/list', {
 					page: {
 						number: pageInfo.currentPage,
 						size: pageInfo.pageSize,

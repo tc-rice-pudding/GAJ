@@ -206,7 +206,7 @@ export default defineComponent({
 		const getUnitInfo = async () => {
 			try {
 				loadingInfo.loading = true;
-				const res = await axios.post(`/dcim/custom/energy/userName/list`, {
+				const { data: res } = await axios.post(`/dcim/custom/energy/userName/list`, {
 					userNameList: unitCheckd.value || [],
 				});
 				unitList.value = res;

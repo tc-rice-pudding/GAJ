@@ -169,7 +169,7 @@ export const useTotal = ({ userName, systemName }) => {
 
 	const getTotal = async () => {
 		try {
-			const res = await axios.post('/dcim/custom/system/total', {
+			const { data: res } = await axios.post('/dcim/custom/system/total', {
 				userName: userName || [], //使用单位可多选
 				systemName: systemName || [], //业务系统可多选
 			});
@@ -266,7 +266,9 @@ export default defineComponent({
 		const tableHandler = async () => {
 			try {
 				loadingInfo.loading = true;
-				const { total, rows } = await axios.post('/dcim/custom/system/list', getParams());
+				const {
+					data: { total, rows },
+				} = await axios.post('/dcim/custom/system/list', getParams());
 				pageInfo.total = total;
 				resInfo.tableData = rows;
 				buildSpan(rows);

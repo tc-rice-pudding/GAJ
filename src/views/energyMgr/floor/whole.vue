@@ -41,7 +41,7 @@ export const useInfo = (floorId, floorName) => {
 
 	const getFloorInfo = async () => {
 		try {
-			const res = await axios.post('/dcim/custom/energy/batch/point', {
+			const { data: res } = await axios.post('/dcim/custom/energy/batch/point', {
 				pointIds: [`${floorId}_1_6027_0`, `${floorId}_1_6028_0`],
 			});
 
@@ -134,7 +134,7 @@ export const useElectricityTopAndBottom = ({ floorId, floorName }) => {
 
 	const getFloorInfo = async () => {
 		try {
-			const { top10List, bot10List } = await axios.post(
+			const { data: { top10List, bot10List } } = await axios.post(
 				`/dcim/custom/energy/cabinet/power/topAndBot10/${floorId}`
 			);
 			top10.value = top10List || [];
@@ -208,7 +208,7 @@ export const useTotalEnergy = ({ floorId, floorName }) => {
 	]);
 	const getTotalEnergy = async () => {
 		try {
-			const list = await axios.get(`/dcim/custom/energy/floor/power/statistics/${floorId}/3`);
+			const { data: list } = await axios.get(`/dcim/custom/energy/floor/power/statistics/${floorId}/3`);
 			totalEnergyList.value = list || [];
 		} catch (error) {
 			console.log(error);
@@ -250,7 +250,7 @@ export const useITEnergy = ({ floorId, floorName }) => {
 	]);
 	const getITEnergy = async () => {
 		try {
-			const list = await axios.get(`/dcim/custom/energy/floor/itpower/statistics/${floorId}/3`);
+			const { data: list } = await axios.get(`/dcim/custom/energy/floor/itpower/statistics/${floorId}/3`);
 			ITEnergyList.value = list || [];
 		} catch (error) {
 			console.log(error);
@@ -296,9 +296,9 @@ export default defineComponent({
 		return {
 			floorInfo,
 			...toRefs(useInfo(floorInfo)),
-			...toRefs(useElectricityTopAndBottom(floorInfo)),
-			...toRefs(useTotalEnergy(floorInfo)),
-			...toRefs(useITEnergy(floorInfo)),
+			...toRefs(useElectricityTopAndBottom(floorInfo.value)),
+			...toRefs(useTotalEnergy(floorInfo.value)),
+			...toRefs(useITEnergy(floorInfo.value)),
 		};
 	},
 });

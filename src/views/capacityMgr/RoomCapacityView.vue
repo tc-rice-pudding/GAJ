@@ -145,7 +145,7 @@ export const useRoomInfo = () => {
 
 	const tableHandler = async () => {
 		try {
-			const res = await axios.get(`/dcim/custom/capacity/cabinet/count/room/${route.params.id}`);
+			const { data: res } = await axios.get(`/dcim/custom/capacity/cabinet/count/room/${route.params.id}`);
 			roomList.value = res || [];
 
 			const currRoom = roomList.value.find((room) => room.resourceId === route.params.id) || {};
