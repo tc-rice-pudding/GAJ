@@ -35,7 +35,7 @@ import { barOpsDefault, lineOpsDefault } from '../options';
 import DialogCabinet from './dialogCabinet.vue';
 import { deepClone } from '@/utils';
 
-export const useInfo = (floorId, floorName) => {
+export const useInfo = ({floorId, floorName}) => {
 	let realPower = ref('');
 	let totalElectricity = ref('');
 
@@ -134,7 +134,7 @@ export const useElectricityTopAndBottom = ({ floorId, floorName }) => {
 
 	const getFloorInfo = async () => {
 		try {
-			const { data: { top10List, bot10List } } = await axios.post(
+			const { data: { top10List, bot10List } } = await axios.get(
 				`/dcim/custom/energy/cabinet/power/topAndBot10/${floorId}`
 			);
 			top10.value = top10List || [];
@@ -208,7 +208,7 @@ export const useTotalEnergy = ({ floorId, floorName }) => {
 	]);
 	const getTotalEnergy = async () => {
 		try {
-			const { data: list } = await axios.get(`/dcim/custom/energy/floor/power/statistics/${floorId}/3`);
+			const { data: list } = await axios.get(`/dcim/custom/energy/floor/power/statistics/${floorId}/2`);
 			totalEnergyList.value = list || [];
 		} catch (error) {
 			console.log(error);
@@ -250,7 +250,7 @@ export const useITEnergy = ({ floorId, floorName }) => {
 	]);
 	const getITEnergy = async () => {
 		try {
-			const { data: list } = await axios.get(`/dcim/custom/energy/floor/itpower/statistics/${floorId}/3`);
+			const { data: list } = await axios.get(`/dcim/custom/energy/floor/itpower/statistics/${floorId}/2`);
 			ITEnergyList.value = list || [];
 		} catch (error) {
 			console.log(error);

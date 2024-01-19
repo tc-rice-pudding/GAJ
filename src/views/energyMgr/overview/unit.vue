@@ -192,7 +192,7 @@ export default defineComponent({
 		// 获取使用单位
 		const getUnitOptions = async () => {
 			try {
-				const res = await axios.get(`/dcim/space/getUserName?key=''`);
+				const res = await axios.get('/dcim/space/getUserName?key=');
 				if (res.data.status === 200) {
 					unitCheckd.value = (res.data.result || []).slice(0, 11); // 默认选中前 10 个
 					unitOptions.value = (res.data.result || []).map((it) => ({ label: it, value: it }));

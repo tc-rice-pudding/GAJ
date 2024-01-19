@@ -181,7 +181,7 @@ export const useTotal = ({ userName, systemName }) => {
 	};
 	getTotal();
 
-	return { ...toRefs(totalInfo), getTotal };
+	return { totalInfo, getTotal };
 };
 
 export default defineComponent({
@@ -228,8 +228,8 @@ export default defineComponent({
 			router.push({
 				path: '/roomUsingUnit',
 				query: {
-					userName: row.userName.toString(),
-					systemName: row.systemName.toString(),
+					userName: row.userName,
+					systemName: row.systemName,
 				},
 			});
 		};

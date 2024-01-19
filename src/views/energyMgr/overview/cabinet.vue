@@ -38,7 +38,7 @@
 					</template>
 				</el-table-column>
 				<el-table-column prop="userName" label="波动原因" show-overflow-tooltip min-width="90" align="left" />
-				<el-table-column prop="userName" label="产生时间" show-overflow-tooltip min-width="90" align="left" />
+				<el-table-column prop="userName" label="产生日期" show-overflow-tooltip min-width="90" align="left" />
 			</el-table>
 			<el-pagination
 				class="pagenation"
@@ -59,11 +59,13 @@
 import { toRefs, reactive, onMounted, watch, ref, defineComponent, computed } from 'vue';
 import axios from 'axios';
 import { useRoute, useRouter } from 'vue-router';
+import dayjs from 'dayjs';
 
 export default defineComponent({
 	name: 'cabinet',
 	components: {},
 	setup() {
+		const yesterday = ref(dayjs().subtract(1, 'day').format('YYYY-MM-DD'));
 		const route = useRoute();
 		const floorInfo = computed(() => ({
 			floorId: route.query.floorId,
@@ -138,6 +140,7 @@ export default defineComponent({
 		});
 
 		return {
+			yesterday,
 			...toRefs(pageInfo),
 			...toRefs(loadingInfo),
 			tableContainerRef,
