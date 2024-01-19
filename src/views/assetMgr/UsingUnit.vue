@@ -181,7 +181,7 @@ export const useTotal = ({ userName, systemName }) => {
 	};
 	getTotal();
 
-	return { totalInfo, getTotal };
+	return { ...toRefs(totalInfo), getTotal };
 };
 
 export default defineComponent({
@@ -243,7 +243,7 @@ export default defineComponent({
 				systemName: queryInfo.systemName || [], //业务系统可多选
 				page: {
 					number: pageInfo.currentPage,
-					Size: pageInfo.pageSize,
+					size: pageInfo.pageSize,
 				},
 			};
 			return params;

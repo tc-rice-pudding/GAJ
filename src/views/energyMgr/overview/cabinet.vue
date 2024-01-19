@@ -13,43 +13,28 @@
 			<el-table
 				header-row-class-name="table-header"
 				:height="tableHeight"
-				:data="resInfo.tableData"
+				:data="abnormalData"
 				stripe
 				style="width: 100%"
 			>
-				<el-table-column prop="userName" label="机构编号" show-overflow-tooltip min-width="90" align="left" />
-				<el-table-column prop="systemName" label="机柜名称" show-overflow-tooltip min-width="90" align="left" />
-				<el-table-column
-					prop="deviceCount"
-					label="平均功率 W"
-					show-overflow-tooltip
-					min-width="90"
-					align="center"
-				>
+				<el-table-column prop="deviceNum" label="机柜编号" show-overflow-tooltip min-width="90" align="left" />
+				<el-table-column prop="name" label="机柜名称" show-overflow-tooltip min-width="90" align="left" />
+				<el-table-column prop="avgValue" label="平均功率 W" show-overflow-tooltip min-width="90" align="center">
 					<template v-slot="{ row }">
-						<span style="color: #2bbdf7">{{ row.deviceCount }}</span>
+						<span style="color: #2bbdf7">{{ row.avgValue }}</span>
 					</template>
 				</el-table-column>
-				<el-table-column
-					prop="deviceCount"
-					label="当前功率 W"
-					show-overflow-tooltip
-					min-width="90"
-					align="center"
-				>
+				<el-table-column prop="value" label="当前功率 W" show-overflow-tooltip min-width="90" align="center">
 					<template v-slot="{ row }">
-						<span style="color: #2bbdf7">{{ row.deviceCount }}</span>
+						<span style="color: #2bbdf7">{{ row.value }}</span>
 					</template>
 				</el-table-column>
-				<el-table-column
-					prop="deviceCount"
-					label="波动率 %"
-					show-overflow-tooltip
-					min-width="90"
-					align="center"
-				>
+				<el-table-column prop="volatility" label="波动率 %" show-overflow-tooltip min-width="90" align="center">
 					<template v-slot="{ row }">
-						<span style="color: #2aca6e">{{ row.deviceCount }}</span>
+						<span style="color: #d80000" v-if="(row.volatility || '').includes('-')">{{
+							row.volatility
+						}}</span>
+						<span style="color: #2aca6e" v-else>{{ row.volatility }}</span>
 					</template>
 				</el-table-column>
 				<el-table-column prop="userName" label="波动原因" show-overflow-tooltip min-width="90" align="left" />
@@ -71,20 +56,28 @@
 </template>
 
 <script>
-import { toRefs, reactive, onMounted, watch, ref, defineComponent } from 'vue';
+import { toRefs, reactive, onMounted, watch, ref, defineComponent, computed } from 'vue';
 import axios from 'axios';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 export default defineComponent({
 	name: 'cabinet',
 	components: {},
 	setup() {
-		const resInfo = reactive({
-			tableData: [],
-			systemNum: 0,
-			rackNum: 0,
-			deviceNum: 0,
-		});
+		const route = useRoute();
+		const floorInfo = computed(() => ({
+			floorId: route.query.floorId,
+			floorName: route.query.floorName,
+		}));
+
+		const abnormalData = ref([
+			// FIX
+			{ volatility: '-10%' },
+			{ volatility: '10%' },
+			{ volatility: '50%' },
+			{ volatility: '-50%' },
+			{ volatility: '-20%' },
+		]);
 		const pageInfo = reactive({
 			currentPage: 1,
 			pageSize: 10,
@@ -104,24 +97,35 @@ export default defineComponent({
 			`,
 		});
 
+		const getAbnormalInfo = async () => {
+			try {
+				const { total, rows } = await axios.post('/dcim/custom/energy/abnormal/list', {
+					page: {
+						number: pageInfo.currentPage,
+						size: pageInfo.pageSize,
+					},
+				});
+				pageInfo.total = total;
+				abnormalData.value = rows || [];
+			} catch (error) {
+				console.log(error);
+			}
+		};
+		getAbnormalInfo();
+
 		let tableContainerRef = ref(null);
 		let tableHeight = ref(500);
 
+		const onSearch = () => {
+			getAbnormalInfo();
+		};
 		const handleSizeChange = (size) => {
 			pageInfo.pageSize = size;
-			// todo：分页
+			onSearch();
 		};
 		const handleCurrentChange = (inx) => {
 			pageInfo.currentPage = inx;
-			// todo：分页
-		};
-
-		const onSearch = () => {
-			// todo：查询
-		};
-
-		const onExport = () => {
-			// todo：查询
+			onSearch();
 		};
 
 		onMounted(() => {
@@ -136,13 +140,12 @@ export default defineComponent({
 		return {
 			...toRefs(pageInfo),
 			...toRefs(loadingInfo),
-			resInfo,
 			tableContainerRef,
 			tableHeight,
 			handleSizeChange,
 			handleCurrentChange,
 			onSearch,
-			onExport,
+			abnormalData,
 		};
 	},
 });
@@ -156,6 +159,7 @@ export default defineComponent({
 	height: 100%;
 	box-sizing: border-box;
 	color: #c5dff9;
+	padding: 10px;
 
 	> header {
 		height: 40px;

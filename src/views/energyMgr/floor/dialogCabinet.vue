@@ -113,7 +113,7 @@ export default defineComponent({
 		};
 
 		watch(
-			deviceList.value,
+			deviceList,
 			() => {
 				// {
 				//     serialNum: 'BJID000011',
