@@ -109,7 +109,7 @@ export default defineComponent({
 				Object.assign(roomInfo, res);
 
 				// 左侧机房的操作
-				currRoomInfo = res.roomList[0]; // 默认展示第一个机房
+				Object.assign(currRoomInfo, res.roomList[0]); // 默认展示第一个机房
 				rowClick(currRoomInfo);
 			} catch (error) {
 				console.log(error);
