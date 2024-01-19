@@ -105,9 +105,9 @@ export default {
 		},
 		optionsRef: {
 			handler() {
-				if (this.$refs.barDomRef) {
-					this.$refs.barDomRef.clear();
-					this.$refs.barDomRef.setOption(this.optionsRef);
+				if (this.myChart) {
+					this.myChart.clear();
+					this.myChart.setOption(this.optionsRef);
 				}
 			},
 			deep: true,

@@ -38,7 +38,11 @@
 					</template>
 				</el-table-column>
 				<el-table-column prop="userName" label="波动原因" show-overflow-tooltip min-width="90" align="left" />
-				<el-table-column prop="userName" label="产生日期" show-overflow-tooltip min-width="90" align="left" />
+				<el-table-column prop="userName" label="产生日期" show-overflow-tooltip min-width="90" align="left">
+					<template v-slot="{ row }">
+						<span>{{ yesterday }}</span>
+					</template>
+				</el-table-column>
 			</el-table>
 			<el-pagination
 				class="pagenation"

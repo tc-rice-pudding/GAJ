@@ -207,6 +207,7 @@ export default defineComponent({
 			try {
 				loadingInfo.loading = true;
 				const { data: res } = await axios.post(`/dcim/custom/energy/userName/list`, {
+					resoureId: floorInfo.floorId || '',
 					userNameList: unitCheckd.value || [],
 				});
 				unitList.value = res;

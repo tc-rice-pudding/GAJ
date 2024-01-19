@@ -157,9 +157,9 @@ export default {
 		},
 		optionsRef: {
 			handler() {
-				if (this.$refs.lineDomRef) {
-					this.$refs.lineDomRef.clear();
-					this.$refs.lineDomRef.setOption(this.optionsRef);
+				if (this.myChart) {
+					this.myChart.clear();
+					this.myChart.setOption(this.optionsRef);
 				}
 			},
 			deep: true,
