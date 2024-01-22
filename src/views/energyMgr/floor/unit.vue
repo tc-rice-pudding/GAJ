@@ -189,14 +189,12 @@ export default defineComponent({
 			},
 		]);
 
-		// 获取使用单位
+		// 获取使用单位（机柜维度）
 		const getUnitOptions = async () => {
 			try {
-				const res = await axios.get('/dcim/space/getUserName?key=');
-				if (res.data.status === 200) {
-					unitCheckd.value = (res.data.result || []).slice(0, 11); // 默认选中前 10 个
-					unitOptions.value = (res.data.result || []).map((it) => ({ label: it, value: it }));
-				}
+				const res = await axios.get(`/dcim/custom/cabinet/userName?resourceId=${floorInfo.value.floorId}`);
+				unitCheckd.value = (res.data || []).slice(0, 11); // 默认选中前 10 个
+				unitOptions.value = (res.data || []).map((it) => ({ label: it, value: it }));
 			} catch (error) {
 				console.log(error);
 			}
