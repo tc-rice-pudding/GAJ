@@ -148,7 +148,7 @@ export const useRoomInfo = () => {
 			const { data: res } = await axios.get(`/dcim/custom/capacity/cabinet/count/room/${route.params.id}`);
 			roomList.value = res || [];
 
-			const currRoom = roomList.value.find((room) => room.resourceId === route.params.id) || {};
+			const currRoom = roomList.value[0] || {};
 			tabInfo.activeName = currRoom.resourceId;
 			Object.assign(roomInfo, currRoom);
 		} catch (error) {
@@ -159,8 +159,10 @@ export const useRoomInfo = () => {
 
 	watch(
 		() => route.params.id,
-		() => {
-			tableHandler();
+		(val) => {
+			if (val) {
+				tableHandler();
+			}
 		},
 		{
 			immediate: true,
@@ -286,7 +288,6 @@ export default defineComponent({
 		}
 	}
 }
-
 
 ::v-deep(.el-tabs__item) {
 	color: #fff;

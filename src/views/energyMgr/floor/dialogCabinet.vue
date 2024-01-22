@@ -57,33 +57,7 @@ export default defineComponent({
 		},
 	},
 	setup() {
-		const deviceList = ref([
-			// fix
-			{
-				serialNum: 'BJID000011',
-				deviceType: '服务器',
-				upath: '39-42U',
-				useOrg: '单位',
-				sysName: '系统名称',
-				power: '12',
-			},
-			{
-				serialNum: 'BJID000012',
-				deviceType: '服务器',
-				upath: '12-15U',
-				useOrg: '单位',
-				sysName: '系统名称',
-				power: '12',
-			},
-			{
-				serialNum: 'BJID000013',
-				deviceType: '服务器',
-				upath: '1-3U',
-				useOrg: '单位',
-				sysName: '系统名称',
-				power: '12',
-			},
-		]);
+		const deviceList = ref([]);
 		let deviceMap = reactive({});
 
 		const loadingInfo = reactive({
@@ -100,38 +74,58 @@ export default defineComponent({
 			`,
 		});
 
+		const constryctDeviceMap = () => {
+			let tmp = deviceList.value.reduce((map, curr) => {
+				const [, startU, endU] = curr.upath.match(/(\d{1,2})-(\d{1,2})U/);
+				const uHeight = endU - startU + 1;
+				map[endU] = Object.assign(curr, { uHeight: uHeight });
+				return map;
+			}, {});
+
+			Object.assign(deviceMap, tmp);
+		};
+
 		const init = async (cabinetId) => {
 			try {
 				loadingInfo.loading = true;
 				const { data: res } = await axios.get(`/dcim/custom/energy/getDevicesByCabinet/${cabinetId}`);
 				deviceList.value = res;
+				constryctDeviceMap();
 				loadingInfo.loading = false;
 			} catch (error) {
 				console.log(error);
 				loadingInfo.loading = false;
+				setTimeout(() => {
+					deviceList.value = [
+						{
+							serialNum: 'BJID000011',
+							deviceType: '服务器',
+							upath: '39-42U',
+							useOrg: '单位',
+							sysName: '系统名称',
+							power: '12',
+						},
+						{
+							serialNum: 'BJID000012',
+							deviceType: '服务器',
+							upath: '12-15U',
+							useOrg: '单位',
+							sysName: '系统名称',
+							power: '12',
+						},
+						{
+							serialNum: 'BJID000013',
+							deviceType: '服务器',
+							upath: '1-3U',
+							useOrg: '单位',
+							sysName: '系统名称',
+							power: '12',
+						},
+					];
+					constryctDeviceMap();
+				}, 1000);
 			}
 		};
-
-		watch(
-			deviceList,
-			() => {
-				// {
-				//     serialNum: 'BJID000011',
-				//     deviceType: '服务器',
-				//     upath: '39-42U',
-				//     useOrg: '单位',
-				//     sysName: '系统名称',
-				//     power: '12',
-				// }
-				deviceMap = deviceList.value.reduce((map, curr) => {
-					const [, startU, endU] = curr.upath.match(/(\d{1,2})-(\d{1,2})U/);
-					const uHeight = endU - startU + 1;
-					map[endU] = Object.assign(curr, { uHeight: uHeight });
-					return map;
-				}, {});
-			},
-			{ immediate: true }
-		);
 
 		return { init, deviceList, deviceMap, ...toRefs(loadingInfo) };
 	},

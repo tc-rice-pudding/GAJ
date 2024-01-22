@@ -119,15 +119,17 @@ export default defineComponent({
 		// 根据机房id获取机房的空间结构信息
 		watch(
 			() => props.roomResourceId,
-			async () => {
-				try {
-					loading.value = true;
-					const res = await axios.get(`/dcim/custom/room/list?resourceId=${props.roomResourceId}`);
-					roomConstruction.value = res.data || [];
-				} catch (error) {
-					console.log(error);
-				} finally {
-					loading.value = false;
+			async (val) => {
+				if (val) {
+					try {
+						loading.value = true;
+						const res = await axios.get(`/dcim/custom/room/list?resourceId=${props.roomResourceId}`);
+						roomConstruction.value = res.data || [];
+					} catch (error) {
+						console.log(error);
+					} finally {
+						loading.value = false;
+					}
 				}
 			},
 			{ immediate: true }

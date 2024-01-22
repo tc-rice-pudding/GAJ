@@ -65,12 +65,16 @@ export default defineComponent({
 		},
 	},
 	components: {},
-	setup() {
+	setup(props) {
 		const uList = ref([]);
 		uList.value = new Array(42)
 			.fill(0)
 			.map((it, inx) => inx + 1)
 			.reverse();
+
+		watch(()=>props.deviceMap,()=>{
+			console.log('更新设备...');
+		});
 
 		return { uList };
 	},

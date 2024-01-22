@@ -295,7 +295,7 @@ export default defineComponent({
 
 		return {
 			floorInfo,
-			...toRefs(useInfo(floorInfo)),
+			...toRefs(useInfo(floorInfo.value)),
 			...toRefs(useElectricityTopAndBottom(floorInfo.value)),
 			...toRefs(useTotalEnergy(floorInfo.value)),
 			...toRefs(useITEnergy(floorInfo.value)),
