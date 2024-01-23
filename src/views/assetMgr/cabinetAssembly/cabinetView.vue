@@ -6,7 +6,7 @@
 			<el-popover
 				placement="right"
 				popper-class="custom-popover"
-				:width="200"
+				:width="250"
 				trigger="hover"
 				:disabled="!deviceMap[u]"
 			>

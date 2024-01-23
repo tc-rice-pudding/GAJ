@@ -117,16 +117,23 @@ import axios from 'axios';
 import { useRouter } from 'vue-router';
 
 // 获取「使用单位」和「业务系统」 的 options
-export const useOptions = ({ userName, systemName }) => {
+export const useOptions = (queryInfo) => {
 	const optionMap = reactive({
-		userNameOptions: [], // 使用单位
-		systemNameOptions: [], // 业务系统
+		userNameOptions: [
+			// {label:'1',value:'1'},
+			// {label:'2',value:'2'},
+			// {label:'3',value:'3'},
+		], // 使用单位
+		systemNameOptions: [
+			// {label:'4',value:'4'},
+			// {label:'5',value:'5'},
+		], // 业务系统
 	});
 
 	// 获取使用单位
 	const getOption1 = async () => {
 		try {
-			const res = await axios.get(`/dcim/space/getUserName?key=${systemName}`);
+			const res = await axios.get(`/dcim/space/getUserName?key=${queryInfo.systemName}`);
 			if (res.data.status === 200) {
 				optionMap.userNameOptions = (res.data.result || []).map((it) => ({ label: it, value: it }));
 			}
@@ -137,7 +144,7 @@ export const useOptions = ({ userName, systemName }) => {
 	// 获取业务系统
 	const getOption2 = async () => {
 		try {
-			const res = await axios.get(`/dcim/space/getBusinessSystem?key=${userName}`);
+			const res = await axios.get(`/dcim/space/getBusinessSystem?key=${queryInfo.userName}`);
 			if (res.data.status === 200) {
 				optionMap.systemNameOptions = (res.data.result || []).map((it) => ({ label: it, value: it }));
 			}
@@ -149,7 +156,7 @@ export const useOptions = ({ userName, systemName }) => {
 	getOption2();
 
 	watch(
-		() => userName,
+		() => queryInfo.userName,
 		(val) => {
 			getOption2(val);
 		}

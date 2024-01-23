@@ -341,11 +341,11 @@ export default defineComponent({
 		}
 		.info-item:first-of-type {
 			background-image: url('@/assets/images/roomView/elec.png');
-			background-position: 55px 50%;
+			background-position: 40px 50%;
 		}
 		.info-item:last-of-type {
 			background-image: url('@/assets/images/roomView/power.png');
-			background-position: 70px 50%;
+			background-position: 50px 50%;
 		}
 	}
 

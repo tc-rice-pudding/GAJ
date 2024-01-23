@@ -121,11 +121,11 @@ export default defineComponent({
 	}
 	.center {
 		flex: 2;
-		min-width: 600px;
+		min-width: 550px;
 	}
 	.right {
 		flex: 1;
-		min-width: 400px;
+		min-width: 450px;
 	}
 }
 </style>

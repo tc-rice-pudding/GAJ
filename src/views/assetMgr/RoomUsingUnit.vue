@@ -6,7 +6,7 @@
 			<div class="room-using-unit-view">
 				<section class="left-content">
 					<RoomView
-						:roomName="roomName"
+						:roomName="currRoomInfo.roomName"
 						:roomResourceId="currRoomInfo.resourceId"
 						toolType="property"
 						:deviceCountMap="currCabinetObj"
@@ -37,10 +37,12 @@
 					</div>
 					<div class="table-info">
 						<el-table
+							ref="tableRef"
 							header-row-class-name="table-header"
 							:data="roomInfo.roomList"
 							style="width: 100%; height: 100%"
 							@row-click="rowClick"
+							highlight-current-row
 						>
 							<el-table-column prop="roomName" label="机房名称" min-width="100" align="center" />
 							<el-table-column prop="cabinetCount" label="机柜数量" min-width="95" align="center" />
@@ -53,7 +55,7 @@
 	</container-warp>
 </template>
 <script>
-import { toRefs, reactive, onMounted, watch, ref, defineComponent } from 'vue';
+import { toRefs, reactive, onMounted, watch, ref, defineComponent, computed } from 'vue';
 import axios from 'axios';
 import { useRoute, useRouter } from 'vue-router';
 import RoomView from '@/components/RoomView.vue';
@@ -65,6 +67,7 @@ export default defineComponent({
 	},
 	setup() {
 		const router = useRouter();
+		const tableRef = ref(null);
 		// 机柜视图所有的机柜数量信息 => { resourceId: deviceCount}
 		const currCabinetObj = reactive({
 			// fix:测试数据
@@ -83,21 +86,38 @@ export default defineComponent({
 			deviceCount: '',
 			roomList: [
 				// fix:测试数据
-				// {
-				// 	resourceId: '',
-				// 	roomName: '',
-				// 	deviceCount: 14,
-				// 	cabinetCount: 2,
-				// 	cabinetList: [
-				// 		// 机柜视图悬浮框内容
-				// 		{
-				// 			resourceId: '',
-				// 			deviceCount: 0,
-				// 		},
-				// 	],
-				// },
+				{
+					resourceId: '1',
+					roomName: '111',
+					deviceCount: 14,
+					cabinetCount: 2,
+					cabinetList: [
+						// 机柜视图悬浮框内容
+						{
+							resourceId: '',
+							deviceCount: 0,
+						},
+					],
+				},
+				{
+					resourceId: '2',
+					roomName: '222',
+					deviceCount: 28,
+					cabinetCount: 4,
+					cabinetList: [
+						// 机柜视图悬浮框内容
+						{
+							resourceId: '',
+							deviceCount: 10,
+						},
+					],
+				},
 			],
 		});
+
+		const setCurrent = (row) => {
+			tableRef.value?.setCurrentRow(row);
+		};
 
 		// 获取右侧信息
 		const tableHandler = async () => {
@@ -108,9 +128,7 @@ export default defineComponent({
 				});
 				Object.assign(roomInfo, res);
 
-				// 左侧机房的操作
-				Object.assign(currRoomInfo, res.roomList[0]); // 默认展示第一个机房
-				rowClick(currRoomInfo);
+				rowClick(res.roomList[0]); // 默认展示第一个机房
 			} catch (error) {
 				console.log(error);
 			} finally {
@@ -120,11 +138,13 @@ export default defineComponent({
 
 		// 切换机房视图，统计当前机房所有设备数量
 		const rowClick = (row) => {
+			setCurrent(row);
+			Object.assign(currRoomInfo, row); // 刷新左侧机房
+
 			const transformObj = row.cabinetList.reduce((map, curr) => {
 				map[curr.resourceId] = curr.deviceCount;
 				return map;
 			}, {});
-
 			Object.assign(currCabinetObj, transformObj);
 		};
 
@@ -136,7 +156,7 @@ export default defineComponent({
 			});
 		};
 
-		return { roomInfo, rowClick, currCabinetObj, currRoomInfo, cabinetClickHandler };
+		return { roomInfo, tableRef, rowClick, currCabinetObj, currRoomInfo, cabinetClickHandler };
 	},
 });
 </script>
