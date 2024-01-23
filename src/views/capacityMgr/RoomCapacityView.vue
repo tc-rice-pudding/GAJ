@@ -30,7 +30,7 @@
 					<div class="room-info">
 						<span class="room-info-item">
 							<div class="title">机房名称</div>
-							<div class="content">{{ roomInfo.roomName }} 信息机房</div>
+							<div class="content">{{ roomInfo.roomName }}</div>
 						</span>
 						<span class="room-info-item">
 							<div class="title">全部机柜数</div>

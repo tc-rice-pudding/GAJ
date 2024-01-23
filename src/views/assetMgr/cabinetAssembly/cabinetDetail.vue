@@ -7,11 +7,11 @@
 					<div class="warp">
 						<div class="row">
 							<label class="title">使用单位</label>
-							<label class="content">{{ cabinetInfo.userName | '' }}</label>
+							<label class="content">{{ cabinetInfo.userName || '' }}</label>
 						</div>
 						<div class="row">
 							<label class="title">机柜负责人</label>
-							<label class="content">{{ cabinetInfo.rackPrincial | '' }}</label>
+							<label class="content">{{ cabinetInfo.rackPrincial || '' }}</label>
 						</div>
 						<div class="row">
 							<label class="title">联系方式</label>
