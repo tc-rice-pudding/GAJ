@@ -42,10 +42,10 @@ export const useInfo = ({floorId, floorName}) => {
 	const getFloorInfo = async () => {
 		try {
 			const { data: res } = await axios.post('/dcim/custom/energy/batch/point', {
-				pointIds: [`${floorId}_1_6027_0`, `${floorId}_1_6028_0`],
+				pointIds: [`${floorId}_1_6027_0`, `${floorId}_1_6030_0`],
 			});
 
-			totalElectricity.value = res[`${floorId}_1_6028_0`];
+			totalElectricity.value = res[`${floorId}_1_6030_0`];
 			realPower.value = res[`${floorId}_1_6027_0`];
 		} catch (error) {
 			console.log(error);

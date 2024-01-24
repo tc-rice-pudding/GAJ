@@ -22,6 +22,10 @@
     .el-pagination--small .btn-prev,
     .el-pagination--small .el-pager li {
         margin: 0 1px;
+        color: #fff;
+    }
+    .el-pagination--small .el-pager li.is-active {
+        color: #2188ee;
     }
 
     .table-header th {
@@ -49,6 +53,11 @@
 ::v-deep(header) {
     .el-select {
         --el-fill-color-blank: @background;
-        --el-border-color: @comp-background;
+        --el-border-color: #2D67A5;
+    }
+
+    .el-input {
+        --el-input-bg-color: @background;
+        --el-input-border-color: #2D67A5;
     }
 }
