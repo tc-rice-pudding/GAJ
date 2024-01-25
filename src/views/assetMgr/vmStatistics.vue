@@ -12,7 +12,7 @@
 				<header>
 					<div class="query-item">
 						<span>使用单位</span>
-						<el-select v-model="queryInfo.useUnit" placeholder="请选择" clearable filterable multiple>
+						<el-select style="width: 150px" v-model="queryInfo.useUnit" placeholder="请选择" clearable filterable multiple>
 							<el-option
 								v-for="item in useUnitOptions"
 								:key="item.value"
@@ -23,7 +23,7 @@
 					</div>
 					<div class="query-item">
 						<span>业务系统</span>
-						<el-select v-model="queryInfo.systemName" placeholder="请选择" clearable filterable multiple>
+						<el-select style="width: 150px" v-model="queryInfo.systemName" placeholder="请选择" clearable filterable multiple>
 							<el-option
 								v-for="item in systemNameOptions"
 								:key="item.value"
@@ -34,11 +34,11 @@
 					</div>
 					<div class="query-item">
 						<span>虚拟机名称</span>
-						<el-input v-model="queryInfo.name" style="width: 190px" clearable />
+						<el-input style="width: 150px" v-model="queryInfo.name" clearable />
 					</div>
 					<div class="query-item">
 						<span>机房</span>
-						<el-select v-model="queryInfo.roomId" placeholder="请选择" clearable filterable multiple>
+						<el-select style="width: 150px" v-model="queryInfo.roomId" placeholder="请选择" clearable filterable multiple>
 							<el-option
 								v-for="item in roomOptions"
 								:key="item.value"
@@ -285,7 +285,7 @@ export default defineComponent({
 			loadingInfo.loading = true;
 
 			Promise.all([
-				axios.post('/dcim/custom/device/virtualMachine/usage', getParams()),
+				axios.post('/dcim/custom/device/virtualMachine/getVMUsage', getParams()),
 				axios.post(
 					`/dcim/custom/device/virtualMachine/getPage?pageSize=${pageInfo.pageSize}&pageNum=${pageInfo.currentPage}`,
 					getParams()
@@ -321,7 +321,7 @@ export default defineComponent({
 		const onUploadSuccess = (res) => {
 			console.log('onUploadSuccess');
 			importLoading.value = false;
-			ElMessage.success(res.data || '导入成功......');
+			ElMessage.success(res || '导入成功......');
 			Object.assign(queryInfo, {
 				useUnit: [], // 使用单位
 				systemName: [], // 业务系统

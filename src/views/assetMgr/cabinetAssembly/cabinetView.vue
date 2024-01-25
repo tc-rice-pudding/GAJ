@@ -180,6 +180,7 @@ export default defineComponent({
 	background-repeat: no-repeat;
 	background-color: transparent;
 	border: none;
+	margin-left: 20px;
 	.el-popper__arrow {
 		display: none;
 	}

@@ -6,7 +6,7 @@
 		</nav>
 		<section class="room-matrix">
 			<div class="cabinet-column" v-for="col in roomConstruction" :key="col">
-				<div class="cabinet-column-title">{{ col.cabinetRowInfo.name }} 列</div>
+				<div class="cabinet-column-title">{{ col.cabinetRowInfo.name }}</div>
 				<template v-for="cabinet in col.cabinetList" :key="cabinet">
 					<el-popover
 						placement="right"

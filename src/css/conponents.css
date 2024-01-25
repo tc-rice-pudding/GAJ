@@ -17,9 +17,13 @@
 ::v-deep(section) .el-pagination--small .el-pager li {
   margin: 0 1px;
   color: #fff;
+  background: #022444;
 }
 ::v-deep(section) .el-pagination--small .el-pager li.is-active {
   color: #2188ee;
+}
+::v-deep(section) .el-pagination--small .el-input__wrapper {
+  background: #022444;
 }
 ::v-deep(section) .table-header th {
   height: 40px !important;

@@ -64,6 +64,7 @@ export default defineComponent({
 	display: flex;
 	align-items: center;
 	justify-content: space-evenly;
+	padding-right: 240px;
 
 	.left {
 		width: 250px;

@@ -62,6 +62,7 @@
 						:data="resInfo.tableData"
 						@row-click="rowClick"
 						stripe
+						border
 						style="width: 100%"
 					>
 						<el-table-column
@@ -69,16 +70,16 @@
 							label="使用单位"
 							show-overflow-tooltip
 							min-width="90"
-							align="left"
+							align="center"
 						/>
 						<el-table-column
 							prop="systemName"
 							label="业务系统上报名称"
 							show-overflow-tooltip
 							min-width="90"
-							align="left"
+							align="center"
 						/>
-						<el-table-column prop="location" label="部署楼层" show-overflow-tooltip align="left" />
+						<el-table-column prop="location" label="部署楼层" show-overflow-tooltip align="center" />
 						<el-table-column
 							prop="cabinetCount"
 							label="机柜数量"
@@ -326,6 +327,7 @@ export default defineComponent({
 						deviceCount: '', //设备数量
 					},
 				];
+				pageInfo.total = 100;
 				buildSpan(resInfo.tableData);
 				console.log(resInfo.data);
 			} finally {
