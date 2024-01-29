@@ -112,7 +112,7 @@ export default {
 		});
 		const pageInfo = reactive({
 			currentPage: 1,
-			pageSize: 10,
+			pageSize: 50,
 			total: 0,
 		});
 		const loadingInfo = reactive({
@@ -275,6 +275,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
+@import 'src/css/conponents.less';
 @background: #051b3d;
 @comp-background: #09367a;
 

@@ -6,7 +6,7 @@
 			<el-popover
 				placement="right"
 				popper-class="custom-popover"
-				:width="250"
+				:width="280"
 				trigger="hover"
 				:disabled="!deviceMap[u]"
 			>
@@ -24,22 +24,22 @@
 					></div>
 					<div class="center" v-else />
 				</template>
-				<p class="tip-row"><span class="tip-label">U位</span>{{ deviceMap[u]?.uposition }}</p>
-				<p class="tip-row"><span class="tip-label">高度</span>{{ deviceMap[u]?.uheight }}</p>
-				<p class="tip-row"><span class="tip-label">品牌</span>{{ deviceMap[u]?.brand }}</p>
-				<p class="tip-row"><span class="tip-label">型号</span>{{ deviceMap[u]?.model }}</p>
-				<p class="tip-row"><span class="tip-label">类型</span>{{ deviceMap[u]?.deviceType }}</p>
-				<p class="tip-row"><span class="tip-label">编号</span>{{ deviceMap[u]?.deviceNum }}</p>
-				<p class="tip-row"><span class="tip-label">使用状态</span>{{ deviceMap[u]?.usage }}</p>
-				<p class="tip-row"><span class="tip-label">设备电源</span>{{ deviceMap[u]?.electricSocket }}</p>
-				<p class="tip-row"><span class="tip-label">联网类型</span>{{ deviceMap[u]?.networkingType }}</p>
-				<p class="tip-row"><span class="tip-label">业务系统</span>{{ deviceMap[u]?.systemName }}</p>
-				<p class="tip-row"><span class="tip-label">使用单位</span>{{ deviceMap[u]?.userName }}</p>
-				<p class="tip-row"><span class="tip-label">使用部门</span>{{ deviceMap[u]?.deptName }}</p>
-				<p class="tip-row"><span class="tip-label">设备管理人</span>{{ deviceMap[u]?.ownerName }}</p>
-				<p class="tip-row"><span class="tip-label">联系电话</span>{{ deviceMap[u]?.telephone }}</p>
-				<p class="tip-row"><span class="tip-label">资产备注</span>{{ deviceMap[u]?.decription }}</p>
-				<p class="tip-row"><span class="tip-label">录入时间</span>{{ deviceMap[u]?.createTime }}</p>
+				<p class="tip-row"><span class="tip-label">U位</span><span class="tip-content">{{ deviceMap[u]?.uposition }}</span></p>
+				<p class="tip-row"><span class="tip-label">高度</span><span class="tip-content">{{ deviceMap[u]?.uheight }}</span></p>
+				<p class="tip-row"><span class="tip-label">品牌</span><span class="tip-content">{{ deviceMap[u]?.brand }}</span></p>
+				<p class="tip-row"><span class="tip-label">型号</span><span class="tip-content">{{ deviceMap[u]?.model }}</span></p>
+				<p class="tip-row"><span class="tip-label">类型</span><span class="tip-content">{{ deviceMap[u]?.deviceType }}IT设施>服务器>机架式服务器</span></p>
+				<p class="tip-row"><span class="tip-label">编号</span><span class="tip-content">{{ deviceMap[u]?.deviceNum }}</span></p>
+				<p class="tip-row"><span class="tip-label">使用状态</span><span class="tip-content">{{ deviceMap[u]?.usage }}</span></p>
+				<p class="tip-row"><span class="tip-label">设备电源</span><span class="tip-content">{{ deviceMap[u]?.electricSocket }}</span></p>
+				<p class="tip-row"><span class="tip-label">联网类型</span><span class="tip-content">{{ deviceMap[u]?.networkingType }}</span></p>
+				<p class="tip-row"><span class="tip-label">业务系统</span><span class="tip-content">{{ deviceMap[u]?.systemName }}</span></p>
+				<p class="tip-row"><span class="tip-label">使用单位</span><span class="tip-content">{{ deviceMap[u]?.userName }}</span></p>
+				<p class="tip-row"><span class="tip-label">使用部门</span><span class="tip-content">{{ deviceMap[u]?.deptName }}</span></p>
+				<p class="tip-row"><span class="tip-label">设备管理人</span><span class="tip-content">{{ deviceMap[u]?.ownerName }}</span></p>
+				<p class="tip-row"><span class="tip-label">联系电话</span><span class="tip-content">{{ deviceMap[u]?.telephone }}</span></p>
+				<p class="tip-row"><span class="tip-label">资产备注</span><span class="tip-content">{{ deviceMap[u]?.decription }}</span></p>
+				<p class="tip-row"><span class="tip-label">录入时间</span><span class="tip-content">{{ deviceMap[u]?.createTime }}</span></p>
 			</el-popover>
 			<div class="right" />
 		</div>
@@ -164,12 +164,16 @@ export default defineComponent({
 	}
 }
 .tip-row {
+	display: flex;
 	color: #03c2f2;
 	margin: 5px 3px 8px;
 	.tip-label {
 		color: #fff;
 		display: inline-block;
-		width: 125px;
+		width: 80px;
+	}
+	.tip-content{
+		flex: 1;
 	}
 }
 </style>

@@ -131,7 +131,6 @@ export default defineComponent({
 				rowClick(res.roomList[0]); // 默认展示第一个机房
 			} catch (error) {
 				console.log(error);
-			} finally {
 			}
 		};
 		tableHandler();

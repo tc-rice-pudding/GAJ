@@ -10,7 +10,7 @@
 				<template v-for="cabinet in col.cabinetList" :key="cabinet">
 					<el-popover
 						placement="right"
-						:width="200"
+						:width="230"
 						trigger="hover"
 						:disabled="!(cabinet.resourceId in deviceCountMap)"
 					>
@@ -22,27 +22,31 @@
 								@click="cabinetClickHandler(cabinet)"
 							></div>
 						</template>
-						<div class="tip-row">
-							<label class="tip-title">机柜编号：</label>
-							<label class="tip-content">{{ cabinet.deviceNum }}</label>
-						</div>
 						<!-- 资产展示 -->
 						<template v-if="toolType === 'property'">
 							<div class="tip-row">
-								<label class="tip-title">系统名称：</label>
+								<label class="tip-title maxWidth">机柜编号：</label>
+								<label class="tip-content">{{ cabinet.deviceNum }}</label>
+							</div>
+							<div class="tip-row">
+								<label class="tip-title maxWidth">系统名称：</label>
 								<label class="tip-content">{{ cabinet.name }}</label>
 							</div>
 							<div class="tip-row" v-if="'userName' in tooltipFieldMap">
-								<label class="tip-title">使用单位：</label>
+								<label class="tip-title maxWidth">使用单位：</label>
 								<label class="tip-content">{{ tooltipFieldMap.userName }}</label>
 							</div>
 							<div class="tip-row">
-								<label class="tip-title">机柜编号：</label>
+								<label class="tip-title maxWidth">设备数量：</label>
 								<label class="tip-content">{{ deviceCountMap[cabinet.resourceId] }}</label>
 							</div>
 						</template>
 						<!-- 资产 展示 -->
 						<template v-if="toolType === 'capacity'">
+							<div class="tip-row">
+								<label class="tip-title">机柜编号：</label>
+								<label class="tip-content">{{ cabinet.deviceNum }}</label>
+							</div>
 							<div class="tip-row">
 								<label class="tip-title">可用U位：</label>
 								<label class="tip-content algin-right">{{
@@ -125,9 +129,9 @@ export default defineComponent({
 						loading.value = true;
 						const res = await axios.get(`/dcim/custom/room/list?resourceId=${props.roomResourceId}`);
 						roomConstruction.value = res.data || [];
+						loading.value = false;
 					} catch (error) {
 						console.log(error);
-					} finally {
 						loading.value = false;
 					}
 				}
@@ -221,6 +225,9 @@ export default defineComponent({
 	.tip-title {
 		color: #fff;
 		flex: 2;
+	}
+	.maxWidth{
+		max-width: 80px;
 	}
 	.tip-content {
 		color: #2fc3ff;

@@ -99,7 +99,7 @@
 						class="pagenation"
 						:current-page="currentPage"
 						:page-size="pageSize"
-						:page-sizes="[10, 30, 50, 100]"
+						:page-sizes="[10, 15, 30, 50, 100]"
 						small="small"
 						layout="sizes, prev, pager, next"
 						:total="total"
@@ -214,7 +214,7 @@ export default defineComponent({
 		});
 		const pageInfo = reactive({
 			currentPage: 1,
-			pageSize: 10,
+			pageSize: 15,
 			total: 0,
 		});
 		const loadingInfo = reactive({
