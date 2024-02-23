@@ -9,6 +9,15 @@
 		element-loading-background="rgba(122, 122, 122, 0.2)"
 	>
 		<el-select
+			v-model="cycle"
+			filterable
+			size="small"
+			style="width: 120px; position: absolute; right: 300px; z-index: 1000"
+		>
+			<el-option key="month" label="月" value="month" />
+			<el-option key="day" label="天" value="day" />
+		</el-select>
+		<el-select
 			v-model="unitCheckd"
 			multiple
 			:multiple-limit="10"
@@ -17,7 +26,8 @@
 			filterable
 			clearable
 			placeholder="请选择单位"
-			style="width: 240px; position: absolute; right: 100px"
+			size="small"
+			style="width: 240px; position: absolute; right: 42px; z-index: 1000"
 		>
 			<el-option v-for="item in unitOptions" :key="item.value" :label="item.label" :value="item.value" />
 		</el-select>
@@ -76,6 +86,14 @@ export const useTableAndLine = (unitList) => {
 		defaultOps.title.text = '各单位月度能耗';
 		defaultOps.xAxis.data = tableColumn.value;
 		defaultOps.legend.data = unitList.value.map((it) => it.userName) || [];
+		defaultOps.grid.bottom = '18%';
+		defaultOps.dataZoom = [
+			{
+				type: 'slider',
+				xAxisIndex: 0,
+				filterMode: 'none',
+			},
+		];
 		defaultOps.series = unitList.value.map((it) => {
 			return {
 				name: it.userName,
@@ -134,6 +152,7 @@ export default defineComponent({
 			{ label: '11', value: '21' },
 			{ label: '12', value: '22' },
 		]);
+		const cycle = ref('month');
 		const unitCheckd = ref([]);
 		const unitList = ref([
 			// fix
@@ -207,6 +226,7 @@ export default defineComponent({
 				const { data: res } = await axios.post(`/dcim/custom/energy/userName/list`, {
 					resoureId: floorInfo.value.floorId || '',
 					userNameList: unitCheckd.value || [],
+					type: cycle.value || '',
 				});
 				unitList.value = res;
 				loadingInfo.loading = false;
@@ -216,12 +236,16 @@ export default defineComponent({
 			}
 		};
 
-		watch(unitCheckd, () => {
-			getUnitInfo();
+		watch([cycle, unitCheckd], (query) => {
+			const [cycleVal, unitCheckdVal] = query;
+			if (cycleVal && unitCheckdVal.length) {
+				getUnitInfo();
+			}
 		});
 
 		return {
 			unitOptions,
+			cycle,
 			unitCheckd,
 			...toRefs(loadingInfo),
 			...toRefs(useTableAndLine(unitList)),

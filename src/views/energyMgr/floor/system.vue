@@ -9,6 +9,15 @@
 		element-loading-background="rgba(122, 122, 122, 0.2)"
 	>
 		<el-select
+			v-model="cycle"
+			filterable
+			size="small"
+			style="width: 120px; position: absolute; right: 300px; z-index: 1000"
+		>
+			<el-option key="month" label="月" value="month" />
+			<el-option key="day" label="天" value="day" />
+		</el-select>
+		<el-select
 			v-model="systemCheckd"
 			multiple
 			:multiple-limit="10"
@@ -17,7 +26,8 @@
 			filterable
 			clearable
 			placeholder="请选择系统"
-			style="width: 240px; position: absolute; right: 100px"
+			size="small"
+			style="width: 240px; position: absolute; right: 42px; z-index: 1000"
 		>
 			<el-option v-for="item in systemOptions" :key="item.value" :label="item.label" :value="item.value" />
 		</el-select>
@@ -84,6 +94,14 @@ export const useTableAndLine = (systemList) => {
 		defaultOps.title.text = '各系统月度能耗';
 		defaultOps.xAxis.data = tableColumn.value;
 		defaultOps.legend.data = systemList.value.map((it) => it.systemName) || [];
+		defaultOps.grid.bottom = '18%';
+		defaultOps.dataZoom = [
+			{
+				type: 'slider',
+				xAxisIndex: 0,
+				filterMode: 'none',
+			},
+		];
 		defaultOps.series = systemList.value.map((it) => {
 			return {
 				name: it.systemName,
@@ -142,6 +160,7 @@ export default defineComponent({
 			{ label: '11', value: '21' },
 			{ label: '12', value: '22' },
 		]);
+		const cycle = ref('month');
 		const systemCheckd = ref([]);
 		const systemList = ref([
 			// fix
@@ -227,6 +246,7 @@ export default defineComponent({
 				const { data: res } = await axios.post(`/dcim/custom/energy/system/list`, {
 					resoureId: floorInfo.value.floorId || '',
 					systemNameList: systemCheckd.value || [],
+					type: cycle.value || '',
 				});
 				systemList.value = res;
 				loadingInfo.loading = false;
@@ -236,12 +256,16 @@ export default defineComponent({
 			}
 		};
 
-		watch(systemCheckd, () => {
-			getSystemInfo();
+		watch([cycle, systemCheckd], (query) => {
+			const [cycleVal, systemCheckdVal] = query;
+			if (cycleVal && systemCheckdVal.length) {
+				getSystemInfo();
+			}
 		});
 
 		return {
 			systemOptions,
+			cycle,
 			systemCheckd,
 			...toRefs(loadingInfo),
 			...toRefs(useTableAndLine(systemList)),

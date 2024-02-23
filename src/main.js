@@ -6,6 +6,7 @@ import 'element-plus/dist/index.css'
 import './css/common.css';
 import router from '@/router/main';
 // import "./mockjs/index";
+import 'echarts/lib/component/dataZoom';
 
 import ContainerWarp from '@/components/containerWarp.vue';
 const app = createApp(App);

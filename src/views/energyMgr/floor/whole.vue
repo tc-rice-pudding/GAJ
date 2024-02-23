@@ -14,10 +14,28 @@
 		<section class="echarts-comp horizontal">
 			<Chart-Bar ref="electricityMinRef" class="chart-item" :options="electricityMinimumOps"></Chart-Bar>
 			<Chart-Line class="chart-item" :options="totalEnergyOps" />
+			<el-select
+				v-model="energyCycle"
+				filterable
+				size="small"
+				style="width: 120px; position: absolute; right: 30px; z-index: 1000; margin-top: 15px"
+			>
+				<el-option key="month" label="月" value="3" />
+				<el-option key="day" label="天" value="2" />
+			</el-select>
 		</section>
 		<section class="echarts-comp vertical">
 			<Chart-Bar ref="electricityHighRef" class="chart-item" :options="electricityHighestOps"></Chart-Bar>
 			<Chart-Line class="chart-item" :options="ITEnergyOps" />
+			<el-select
+				v-model="itCycle"
+				filterable
+				size="small"
+				style="width: 120px; position: absolute; right: 30px; z-index: 1000; margin-top: 15px"
+			>
+				<el-option key="month" label="月" value="3" />
+				<el-option key="day" label="天" value="2" />
+			</el-select>
 		</section>
 	</div>
 
@@ -35,7 +53,7 @@ import { barOpsDefault, lineOpsDefault } from '../options';
 import DialogCabinet from './dialogCabinet.vue';
 import { deepClone } from '@/utils';
 
-export const useInfo = ({floorId, floorName}) => {
+export const useInfo = ({ floorId, floorName }) => {
 	let realPower = ref('');
 	let totalElectricity = ref('');
 
@@ -134,9 +152,9 @@ export const useElectricityTopAndBottom = ({ floorId, floorName }) => {
 
 	const getFloorInfo = async () => {
 		try {
-			const { data: { top10List, bot10List } } = await axios.get(
-				`/dcim/custom/energy/cabinet/power/topAndBot10/${floorId}`
-			);
+			const {
+				data: { top10List, bot10List },
+			} = await axios.get(`/dcim/custom/energy/cabinet/power/topAndBot10/${floorId}`);
 			top10.value = top10List || [];
 			bot10.value = bot10List || [];
 			hash = [...top10.value, ...bot10.value].reduce((map, curr) => {
@@ -197,6 +215,7 @@ export const useElectricityTopAndBottom = ({ floorId, floorName }) => {
 
 // 总功耗
 export const useTotalEnergy = ({ floorId, floorName }) => {
+	const energyCycle = ref('3');
 	const totalEnergyList = ref([
 		// fix
 		{ value: '1', time: '2020-01' },
@@ -208,13 +227,24 @@ export const useTotalEnergy = ({ floorId, floorName }) => {
 	]);
 	const getTotalEnergy = async () => {
 		try {
-			const { data: list } = await axios.get(`/dcim/custom/energy/floor/power/statistics/${floorId}/2`);
+			const { data: list } = await axios.get(
+				`/dcim/custom/energy/floor/power/statistics/${floorId}/${energyCycle.value}`
+			);
 			totalEnergyList.value = list || [];
 		} catch (error) {
 			console.log(error);
 		}
 	};
-	getTotalEnergy();
+
+	watch(
+		energyCycle,
+		() => {
+			getTotalEnergy();
+		},
+		{
+			immediate: true,
+		}
+	);
 
 	let totalEnergyOps = computed(() => {
 		let defaultOps = deepClone(lineOpsDefault);
@@ -234,11 +264,12 @@ export const useTotalEnergy = ({ floorId, floorName }) => {
 		return defaultOps;
 	});
 
-	return { totalEnergyOps };
+	return { totalEnergyOps, energyCycle };
 };
 
 // IT功耗
 export const useITEnergy = ({ floorId, floorName }) => {
+	const itCycle = ref('3');
 	const ITEnergyList = ref([
 		// fix
 		{ value: '1', time: '2020-01' },
@@ -250,13 +281,24 @@ export const useITEnergy = ({ floorId, floorName }) => {
 	]);
 	const getITEnergy = async () => {
 		try {
-			const { data: list } = await axios.get(`/dcim/custom/energy/floor/itpower/statistics/${floorId}/2`);
+			const { data: list } = await axios.get(
+				`/dcim/custom/energy/floor/itpower/statistics/${floorId}/${itCycle.value}`
+			);
 			ITEnergyList.value = list || [];
 		} catch (error) {
 			console.log(error);
 		}
 	};
-	getITEnergy();
+
+	watch(
+		itCycle,
+		() => {
+			getITEnergy();
+		},
+		{
+			immediate: true,
+		}
+	);
 
 	let ITEnergyOps = computed(() => {
 		let defaultOps = deepClone(lineOpsDefault);
@@ -276,7 +318,7 @@ export const useITEnergy = ({ floorId, floorName }) => {
 
 		return defaultOps;
 	});
-	return { ITEnergyOps };
+	return { ITEnergyOps, itCycle };
 };
 
 export default defineComponent({
