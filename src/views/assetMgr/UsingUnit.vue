@@ -7,7 +7,7 @@
 				<header>
 					<div class="query-item">
 						<span>使用单位</span>
-						<el-select v-model="queryInfo.userName" placeholder="请选择" clearable filterable multiple>
+						<el-select v-model="queryInfo.userName" style="width: 140px;" placeholder="请选择" clearable filterable multiple>
 							<el-option
 								v-for="item in optionMap.userNameOptions"
 								:key="item.value"
@@ -18,7 +18,7 @@
 					</div>
 					<div class="query-item">
 						<span>业务系统</span>
-						<el-select v-model="queryInfo.systemName" placeholder="请选择" clearable filterable multiple>
+						<el-select v-model="queryInfo.systemName" style="width: 140px;" placeholder="请选择" clearable filterable multiple>
 							<el-option
 								v-for="item in optionMap.systemNameOptions"
 								:key="item.value"
@@ -262,11 +262,10 @@ export default defineComponent({
 			let userNameList = list.map((it) => it.userName);
 			resInfo.spanObject = Array.from(new Set(userNameList)).reduce((map, curr) => {
 				const firstInx = userNameList.findIndex((it) => it === curr);
-				const lastInx = userNameList.findLastIndex((it) => it === curr);
+				const nameList = userNameList.filter((it) => it === curr);
 				map[curr] = {
 					firstInx,
-					lastInx,
-					spanCount: lastInx - firstInx + 1,
+					spanCount: nameList.length,
 				};
 				return map;
 			}, {});
