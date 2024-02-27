@@ -97,6 +97,8 @@
 						border
 						style="width: 100%"
 					>
+						<el-table-column prop="location" label="部署楼层" show-overflow-tooltip align="center" />
+						<el-table-column prop="room" label="部署机房" show-overflow-tooltip align="center" />
 						<el-table-column
 							prop="userName"
 							label="使用单位"
@@ -111,7 +113,6 @@
 							min-width="90"
 							align="center"
 						/>
-						<el-table-column prop="location" label="部署楼层" show-overflow-tooltip align="center" />
 						<el-table-column
 							prop="cabinetCount"
 							label="机柜数量"
@@ -148,71 +149,7 @@
 import { toRefs, reactive, onMounted, watch, ref, defineComponent } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
-
-// 获取「使用单位」和「业务系统」 的 options
-export const useOptions = (queryInfo) => {
-	const optionMap = reactive({
-		userNameOptions: [
-			// {label:'1',value:'1'},
-			// {label:'2',value:'2'},
-			// {label:'3',value:'3'},
-		], // 使用单位
-		systemNameOptions: [
-			// {label:'4',value:'4'},
-			// {label:'5',value:'5'},
-		], // 业务系统
-		floorOptions: [
-			// {label:'4',value:'4'},
-			// {label:'5',value:'5'},
-		], // 楼层
-	});
-
-	// 获取使用单位
-	const getOption1 = async () => {
-		try {
-			const res = await axios.get(`/dcim/space/getUserName?key=${queryInfo.systemName}`);
-			if (res.data.status === 200) {
-				optionMap.userNameOptions = (res.data.result || []).map((it) => ({ label: it, value: it }));
-			}
-		} catch (error) {
-			console.log(error);
-		}
-	};
-	// 获取业务系统
-	const getOption2 = async () => {
-		try {
-			const res = await axios.get(`/dcim/space/getBusinessSystem?key=${queryInfo.userName}`);
-			if (res.data.status === 200) {
-				optionMap.systemNameOptions = (res.data.result || []).map((it) => ({ label: it, value: it }));
-			}
-		} catch (error) {
-			console.log(error);
-		}
-	};
-	// 获取楼层
-	const getOption3 = async () => {
-		try {
-			const res = await axios.get('/dcim/custom/device/floor/selectBox');
-			if (res.data.status === 200) {
-				optionMap.floorOptions = (res.data.result || []).map((it) => ({ label: it.text, value: it.value }));
-			}
-		} catch (error) {
-			console.log(error);
-		}
-	};
-	getOption1();
-	getOption2();
-	getOption3();
-
-	watch(
-		() => queryInfo.userName,
-		(val) => {
-			getOption2(val);
-		}
-	);
-
-	return { optionMap };
-};
+import { useOptions } from './UsingUnit.vue';
 
 // 获取使用单位的合计数据
 export const useTotal = ({ userName, systemName, floor }) => {
@@ -229,6 +166,7 @@ export const useTotal = ({ userName, systemName, floor }) => {
 				userName: userName || [], //使用单位可多选
 				systemName: systemName || [], //业务系统可多选
 				floorIds: floor || [],
+				isFloor: true,
 			});
 
 			Object.assign(totalInfo, res);
@@ -258,7 +196,9 @@ export default defineComponent({
 				// 	firstInx: 0,
 				// 	spanCount: 3,
 				// }
-			},
+			}, // 第一列合并信息
+			spanObject2: {}, // 第二列合并信息
+			spanObject3: {}, // 第三列合并信息
 		});
 		const pageInfo = reactive({
 			currentPage: 1,
@@ -297,6 +237,8 @@ export default defineComponent({
 			const params = {
 				userName: queryInfo.userName || [], //使用单位可多选
 				systemName: queryInfo.systemName || [], //业务系统可多选
+				floorIds: queryInfo.floor || [],
+				isFloor: true,
 				page: {
 					number: pageInfo.currentPage,
 					size: pageInfo.pageSize,
@@ -305,16 +247,35 @@ export default defineComponent({
 			return params;
 		};
 
-		// 合并单元格
-		const buildSpan = (list) => {
-			let userNameList = list.map((it) => it.userName);
-			resInfo.spanObject = Array.from(new Set(userNameList)).reduce((map, curr) => {
+		// 第三列合并单元格
+		const build3column = (list) => {
+			let userNameList = list.map((it) => `${it.location}_${it.room}_${it.userName}`);
+			resInfo.spanObject3 = Array.from(new Set(userNameList)).reduce((map, curr) => {
 				const firstInx = userNameList.findIndex((it) => it === curr);
 				const nameList = userNameList.filter((it) => it === curr);
-				map[curr] = {
-					firstInx,
-					spanCount: nameList.length,
-				};
+				map[curr] = { firstInx: firstInx, spanCount: nameList.length };
+				return map;
+			}, {});
+		};
+
+		// 第二列合并单元格
+		const build2column = (list) => {
+			let roomList = list.map((it) => `${it.location}_${it.room}`);
+			resInfo.spanObject2 = Array.from(new Set(roomList)).reduce((map, curr) => {
+				const firstInx = roomList.findIndex((it) => it === curr);
+				const nameList = roomList.filter((it) => it === curr);
+				map[curr] = { firstInx: firstInx, spanCount: nameList.length };
+				return map;
+			}, {});
+		};
+
+		// 第一列合并单元格
+		const buildSpan = (list) => {
+			let locationList = list.map((it) => it.location);
+			resInfo.spanObject = Array.from(new Set(locationList)).reduce((map, curr, inx) => {
+				const firstInx = locationList.findIndex((it) => it === curr);
+				const nameList = locationList.filter((it) => it === curr);
+				map[curr] = { firstInx, spanCount: nameList.length };
 				return map;
 			}, {});
 		};
@@ -327,55 +288,89 @@ export default defineComponent({
 				pageInfo.total = total;
 				resInfo.tableData = rows;
 				buildSpan(rows);
+				build2column(rows);
+				build3column(rows);
 			} catch (error) {
 				console.log(error);
 				resInfo.tableData = [
 					// fix
 					{
 						userName: 'gx', //单位名称
+						room: 'dxc1101',
 						systemName: 'niemp', //业务系统
-						location: '', //部署位置
+						location: '1f', //部署位置
 						cabinetCount: '', //机柜数量
 						deviceCount: '', //设备数量
 					},
 					{
 						userName: 'gx', //单位名称
+						room: 'dxc1101',
 						systemName: 'niemp', //业务系统
-						location: '', //部署位置
+						location: '1f', //部署位置
+						cabinetCount: '', //机柜数量
+						deviceCount: '', //设备数量
+					},
+					{
+						userName: 'gx', //单位名称
+						room: 'dxc1102',
+						systemName: 'niemp', //业务系统
+						location: '1f', //部署位置
+						cabinetCount: '', //机柜数量
+						deviceCount: '', //设备数量
+					},
+					{
+						userName: 'gx', //单位名称
+						room: 'dxc1102',
+						systemName: 'niemp', //业务系统
+						location: '1f', //部署位置
 						cabinetCount: '', //机柜数量
 						deviceCount: '', //设备数量
 					},
 					{
 						userName: 'gx2', //单位名称
+						room: 'dxc1102',
 						systemName: 'niemp', //业务系统
-						location: '', //部署位置
+						location: '1f', //部署位置
+						cabinetCount: '', //机柜数量
+						deviceCount: '', //设备数量
+					},
+					{
+						userName: 'gx', //单位名称
+						room: 'dxc1103',
+						systemName: 'niemp', //业务系统
+						location: '1f', //部署位置
+						cabinetCount: '', //机柜数量
+						deviceCount: '', //设备数量
+					},
+					{
+						userName: 'gx', //单位名称
+						room: 'dxc1103',
+						systemName: 'niemp', //业务系统
+						location: '1f', //部署位置
 						cabinetCount: '', //机柜数量
 						deviceCount: '', //设备数量
 					},
 					{
 						userName: 'gx2', //单位名称
+						room: 'dxc1101',
 						systemName: 'niemp', //业务系统
-						location: '', //部署位置
+						location: '2f', //部署位置
 						cabinetCount: '', //机柜数量
 						deviceCount: '', //设备数量
 					},
 					{
 						userName: 'gx3', //单位名称
+						room: 'dxc1101',
 						systemName: 'niemp', //业务系统
-						location: '', //部署位置
-						cabinetCount: '', //机柜数量
-						deviceCount: '', //设备数量
-					},
-					{
-						userName: 'gx8', //单位名称
-						systemName: 'niemp', //业务系统
-						location: '', //部署位置
+						location: '3f', //部署位置
 						cabinetCount: '', //机柜数量
 						deviceCount: '', //设备数量
 					},
 				];
 				pageInfo.total = 100;
 				buildSpan(resInfo.tableData);
+				build2column(resInfo.tableData);
+				build3column(resInfo.tableData);
 				console.log(resInfo.data);
 			} finally {
 				loadingInfo.loading = false;
@@ -384,20 +379,18 @@ export default defineComponent({
 		tableHandler();
 
 		const objectSpanMethod = ({ row, column, rowIndex, columnIndex }) => {
-			const { firstInx, lastInx, spanCount } = resInfo.spanObject[row.userName];
+			const { firstInx, spanCount } = resInfo.spanObject[row.location];
+			const { firstInx: firstInx2, spanCount: spanCount2 } =
+				resInfo.spanObject2[`${row.location}_${row.room}`] || {};
+			const { firstInx: firstInx3, spanCount: spanCount3 } =
+				resInfo.spanObject3[`${row.location}_${row.room}_${row.userName}`] || {};
 
 			if (columnIndex === 0 && spanCount > 1) {
-				if (rowIndex === firstInx) {
-					return {
-						rowspan: spanCount,
-						colspan: 1,
-					};
-				} else {
-					return {
-						rowspan: 0,
-						colspan: 0,
-					};
-				}
+				return rowIndex === firstInx ? { rowspan: spanCount, colspan: 1 } : { rowspan: 0, colspan: 0 };
+			} else if (columnIndex === 1 && spanCount2 > 1) {
+				return rowIndex === firstInx2 ? { rowspan: spanCount2, colspan: 1 } : { rowspan: 0, colspan: 0 };
+			} else if (columnIndex === 2 && spanCount3 > 1) {
+				return rowIndex === firstInx3 ? { rowspan: spanCount3, colspan: 1 } : { rowspan: 0, colspan: 0 };
 			}
 		};
 

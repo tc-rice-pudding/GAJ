@@ -29,6 +29,12 @@ export const routes = [
         component: () => import(/* webpackChunkName: 'UsingUnit' */ '/src/views/assetMgr/UsingUnit.vue'),
     },
     {
+        path: '/floorUsingUnit',
+        label: '资产管理：使用单位查询（楼层）',
+        type: 2,
+        component: () => import(/* webpackChunkName: 'UsingUnit' */ '/src/views/assetMgr/floorUsingUnit.vue'),
+    },
+    {
         path: '/roomUsingUnit',
         label: '资产管理：机房使用单位',
         type: 2,
