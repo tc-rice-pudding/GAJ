@@ -10,6 +10,69 @@
 			element-loading-svg-view-box="-10, -10, 50, 50"
 			element-loading-background="rgba(122, 122, 122, 0.2)"
 		>
+			<header ref="headerRef">
+				<div class="query-item">
+					<span>机房</span>
+					<el-select
+						v-model="queryInfo.floors"
+						style="width: 140px"
+						placeholder="请选择"
+						clearable
+						filterable
+						multiple
+					>
+						<el-option
+							v-for="item in optionMap.roomsOptions"
+							:key="item.value"
+							:label="item.label"
+							:value="item.value"
+						/>
+					</el-select>
+				</div>
+				<div class="query-item">
+					<span>机柜编号</span>
+					<el-input type="text" style="width: 140px" v-model="queryInfo.deviceNum" />
+				</div>
+				<div class="query-item">
+					<span>产生原因</span>
+					<el-select
+						v-model="queryInfo.reasons"
+						style="width: 140px"
+						placeholder="请选择"
+						clearable
+						filterable
+						multiple
+					>
+						<el-option
+							v-for="item in optionMap.reasonsOptions"
+							:key="item.value"
+							:label="item.label"
+							:value="item.value"
+						/>
+					</el-select>
+				</div>
+				<div class="query-item">
+					<span>上升/下降</span>
+					<el-select v-model="queryInfo.sort" style="width: 140px" placeholder="请选择" clearable>
+						<el-option key="上升" label="上升" value="asc" />
+						<el-option key="下降" label="下降" value="desc" />
+					</el-select>
+				</div>
+				<div class="query-item">
+					<span>产生日期</span>
+					<el-date-picker
+						v-model="queryInfo.timeRange"
+						type="daterange"
+						style="width: 200px"
+						range-separator="-"
+						start-placeholder="开始时间"
+						end-placeholder="结束时间"
+						popper-class="custom-date-picker"
+					/>
+				</div>
+
+				<el-button type="primary" size="small" @click="onSearch">查询</el-button>
+			</header>
 			<el-table
 				header-row-class-name="table-header"
 				:height="tableHeight"
@@ -19,6 +82,7 @@
 			>
 				<el-table-column prop="deviceNum" label="机柜编号" show-overflow-tooltip min-width="90" align="left" />
 				<el-table-column prop="name" label="机柜名称" show-overflow-tooltip min-width="90" align="left" />
+				<el-table-column prop="room" label="机房位置" show-overflow-tooltip min-width="90" align="left" />
 				<el-table-column prop="avgValue" label="平均功率 W" show-overflow-tooltip min-width="90" align="center">
 					<template v-slot="{ row }">
 						<span style="color: #2bbdf7">{{ row.avgValue }}</span>
@@ -31,18 +95,14 @@
 				</el-table-column>
 				<el-table-column prop="volatility" label="波动率 %" show-overflow-tooltip min-width="90" align="center">
 					<template v-slot="{ row }">
-						<span style="color: #d80000" v-if="(row.volatility || '').includes('-')">{{
+						<span style="color: #d80000" v-if="(row.volatility || '').includes('上升')">{{
 							row.volatility
 						}}</span>
 						<span style="color: #2aca6e" v-else>{{ row.volatility }}</span>
 					</template>
 				</el-table-column>
-				<el-table-column prop="userName" label="波动原因" show-overflow-tooltip min-width="90" align="left" />
-				<el-table-column prop="userName" label="产生日期" show-overflow-tooltip min-width="90" align="left">
-					<template v-slot="{ row }">
-						<span>{{ yesterday }}</span>
-					</template>
-				</el-table-column>
+				<el-table-column prop="reason" label="波动原因" show-overflow-tooltip min-width="90" align="left" />
+				<el-table-column prop="time" label="产生日期" show-overflow-tooltip min-width="90" align="left" />
 			</el-table>
 			<el-pagination
 				class="pagenation"
@@ -64,6 +124,7 @@ import { toRefs, reactive, onMounted, watch, ref, defineComponent, computed } fr
 import axios from 'axios';
 import { useRoute, useRouter } from 'vue-router';
 import dayjs from 'dayjs';
+import { useOptions } from '@/views/energyMgr/floor/cabinet.vue';
 
 export default defineComponent({
 	name: 'cabinet',
@@ -75,6 +136,14 @@ export default defineComponent({
 			floorId: route.query.floorId,
 			floorName: route.query.floorName,
 		}));
+
+		const queryInfo = reactive({
+			deviceNum: '',
+			floors: [],
+			sort: '',
+			timeRange: [],
+			reasons: '',
+		});
 
 		const abnormalData = ref([
 			// FIX
@@ -105,11 +174,20 @@ export default defineComponent({
 
 		const getAbnormalInfo = async () => {
 			try {
-				const { data: { total, rows } } = await axios.post('/dcim/custom/energy/abnormal/list', {
+				const [start, end] = queryInfo.timeRange || [];
+				const {
+					data: { total, rows },
+				} = await axios.post('/dcim/custom/energy/abnormal/list', {
 					page: {
 						number: pageInfo.currentPage,
 						size: pageInfo.pageSize,
 					},
+					deviceNum: queryInfo.deviceNum,
+					floors: queryInfo.floors,
+					sort: queryInfo.sort,
+					reasons: queryInfo.reasons,
+					startTime: start || '',
+					endTime: end || '',
 				});
 				pageInfo.total = total;
 				abnormalData.value = rows || [];
@@ -120,6 +198,7 @@ export default defineComponent({
 		getAbnormalInfo();
 
 		let tableContainerRef = ref(null);
+		let headerRef = ref(null);
 		let tableHeight = ref(500);
 
 		const onSearch = () => {
@@ -137,17 +216,19 @@ export default defineComponent({
 		onMounted(() => {
 			setTimeout(() => {
 				if (tableContainerRef.value) {
-					const containerH = tableContainerRef.value.clientHeight - 54; // 减去分页的高度
+					const containerH = tableContainerRef.value.clientHeight - 54 - headerRef.value.clientHeight; // 减去分页的高度
 					tableHeight.value = `${containerH}`;
 				}
 			}, 100);
 		});
 
 		return {
-			yesterday,
+			queryInfo,
 			...toRefs(pageInfo),
 			...toRefs(loadingInfo),
+			...toRefs(useOptions()),
 			tableContainerRef,
+			headerRef,
 			tableHeight,
 			handleSizeChange,
 			handleCurrentChange,
@@ -199,6 +280,31 @@ export default defineComponent({
 			display: flex;
 			justify-content: flex-end;
 			padding: 10px 5px;
+		}
+
+		> header {
+			height: 40px;
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			color: #c5dff9;
+			padding: 10px;
+			.query-item {
+				margin-right: 20px;
+				> span {
+					font-size: 16px;
+					vertical-align: middle;
+					display: inline-block;
+					margin-right: 5px;
+				}
+			}
+			.btn {
+				width: 80px;
+				background: #0576bf;
+				border-radius: 4px;
+				color: #c5dff9;
+				line-height: 30px;
+			}
 		}
 	}
 }

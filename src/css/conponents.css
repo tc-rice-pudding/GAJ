@@ -48,5 +48,11 @@
 }
 ::v-deep(header) .el-input {
   --el-input-bg-color: #051b3d;
+  --el-fill-color-blank: #051b3d;
+  --el-input-border-color: #2D67A5;
+}
+::v-deep(header) .el-date-editor {
+  --el-input-bg-color: #051b3d;
+  --el-fill-color-blank: #051b3d;
   --el-input-border-color: #2D67A5;
 }
