@@ -50,6 +50,8 @@
 							clearable
 							filterable
 							multiple
+							collapse-tags
+							collapse-tags-tooltip
 						>
 							<el-option
 								v-for="item in optionMap.floorOptions"
@@ -162,8 +164,8 @@ export const useOptions = (queryInfo) => {
 			// {label:'5',value:'5'},
 		], // 业务系统
 		floorOptions: [
-			// {label:'4',value:'4'},
-			// {label:'5',value:'5'},
+			{ label: '4', value: '4' },
+			{ label: '5', value: '5' },
 		], // 楼层
 	});
 
@@ -194,7 +196,7 @@ export const useOptions = (queryInfo) => {
 		try {
 			const res = await axios.get('/dcim/custom/device/floor/selectBox');
 			if (res.data.status === 200) {
-				optionMap.floorOptions = (res.data.result || []).map((it) => ({ label: it.text, value: it.value }));
+				optionMap.floorOptions = (res.data.data || []).map((it) => ({ label: it.text, value: it.value }));
 			}
 		} catch (error) {
 			console.log(error);
@@ -297,6 +299,7 @@ export default defineComponent({
 			const params = {
 				userName: queryInfo.userName || [], //使用单位可多选
 				systemName: queryInfo.systemName || [], //业务系统可多选
+				floorIds: queryInfo.floor || [],
 				page: {
 					number: pageInfo.currentPage,
 					size: pageInfo.pageSize,

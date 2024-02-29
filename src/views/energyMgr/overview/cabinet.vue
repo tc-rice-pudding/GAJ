@@ -20,6 +20,8 @@
 						clearable
 						filterable
 						multiple
+						collapse-tags
+						collapse-tags-tooltip
 					>
 						<el-option
 							v-for="item in optionMap.roomsOptions"
@@ -42,6 +44,8 @@
 						clearable
 						filterable
 						multiple
+						collapse-tags
+						collapse-tags-tooltip
 					>
 						<el-option
 							v-for="item in optionMap.reasonsOptions"
@@ -68,6 +72,7 @@
 						start-placeholder="开始时间"
 						end-placeholder="结束时间"
 						popper-class="custom-date-picker"
+						value-format="YYYY-MM-DD"
 					/>
 				</div>
 
@@ -142,7 +147,7 @@ export default defineComponent({
 			floors: [],
 			sort: '',
 			timeRange: [],
-			reasons: '',
+			reasons: [],
 		});
 
 		const abnormalData = ref([

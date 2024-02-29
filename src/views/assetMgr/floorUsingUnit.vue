@@ -1,7 +1,7 @@
 <template>
 	<!-- 使用单位查询 -->
 	<container-warp>
-		<template #title> 使用单位查询 </template>
+		<template #title> 按楼层查询单位设备 </template>
 		<template #body>
 			<div class="using-unit-query">
 				<header>
@@ -50,6 +50,8 @@
 							clearable
 							filterable
 							multiple
+							collapse-tags
+							collapse-tags-tooltip
 						>
 							<el-option
 								v-for="item in optionMap.floorOptions"

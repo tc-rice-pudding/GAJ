@@ -20,6 +20,8 @@
 						clearable
 						filterable
 						multiple
+						collapse-tags
+						collapse-tags-tooltip
 					>
 						<el-option
 							v-for="item in optionMap.roomsOptions"
@@ -42,6 +44,8 @@
 						clearable
 						filterable
 						multiple
+						collapse-tags
+						collapse-tags-tooltip
 					>
 						<el-option
 							v-for="item in optionMap.reasonsOptions"
@@ -68,6 +72,7 @@
 						start-placeholder="开始时间"
 						end-placeholder="结束时间"
 						popper-class="custom-date-picker"
+						value-format="YYYY-MM-DD"
 					/>
 				</div>
 
@@ -125,39 +130,41 @@ import axios from 'axios';
 import { useRoute, useRouter } from 'vue-router';
 import dayjs from 'dayjs';
 
-export const useOptions = (queryInfo) => {
+export const useOptions = () => {
 	const route = useRoute();
 	const optionMap = reactive({
-		roomsOptions: [
-			// {label:'1',value:'1'},
-			// {label:'2',value:'2'},
-			// {label:'3',value:'3'},
-		],
-		reasonsOptions: [
-			// {label:'1',value:'1'},
-			// {label:'2',value:'2'},
-			// {label:'3',value:'3'},
-		],
+		roomsOptions: [],
+		reasonsOptions: [],
 	});
 
 	const getOption1 = async () => {
 		try {
 			const res = await axios.get(`/dcim/custom/energy/get/room?resourceId=${route.query.floorId || ''}`);
 			if (res.data.status === 200) {
-				optionMap.roomsOptions = res.data.result || [];
+				optionMap.roomsOptions = res.data.data || [];
 			}
 		} catch (error) {
 			console.log(error);
+			optionMap.roomsOptions = [
+				{ label: '1', value: '1' },
+				{ label: '2', value: '2' },
+				{ label: '3', value: '3' },
+			];
 		}
 	};
 	const getOption2 = async () => {
 		try {
 			const res = await axios.get(`/dcim/custom/energy/get/reason?resourceId=${route.query.floorId || ''}`);
 			if (res.data.status === 200) {
-				optionMap.reasonsOptions = res.data.result || [];
+				optionMap.reasonsOptions = res.data.data || [];
 			}
 		} catch (error) {
 			console.log(error);
+			optionMap.reasonsOptions = [
+				{ label: '1', value: '1' },
+				{ label: '2', value: '2' },
+				{ label: '3', value: '3' },
+			];
 		}
 	};
 	getOption1();
@@ -180,7 +187,7 @@ export default defineComponent({
 			floors: [],
 			sort: '',
 			timeRange: [],
-			reasons: '',
+			reasons: [],
 		});
 
 		const abnormalData = ref([
