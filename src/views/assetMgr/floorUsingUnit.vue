@@ -14,6 +14,8 @@
 							clearable
 							filterable
 							multiple
+							collapse-tags
+							collapse-tags-tooltip
 						>
 							<el-option
 								v-for="item in optionMap.userNameOptions"
@@ -32,6 +34,8 @@
 							clearable
 							filterable
 							multiple
+							collapse-tags
+							collapse-tags-tooltip
 						>
 							<el-option
 								v-for="item in optionMap.systemNameOptions"
@@ -154,7 +158,7 @@ import { useRouter } from 'vue-router';
 import { useOptions } from './UsingUnit.vue';
 
 // 获取使用单位的合计数据
-export const useTotal = ({ userName, systemName, floor }) => {
+export const useTotal = (queryInfo) => {
 	const totalInfo = reactive({
 		userCount: 0, //单位数量
 		systemCount: 0, //系统数量
@@ -165,9 +169,9 @@ export const useTotal = ({ userName, systemName, floor }) => {
 	const getTotal = async () => {
 		try {
 			const { data: res } = await axios.post('/dcim/custom/system/total', {
-				userName: userName || [], //使用单位可多选
-				systemName: systemName || [], //业务系统可多选
-				floorIds: floor || [],
+				userName: queryInfo.userName || [], //使用单位可多选
+				systemName: queryInfo.systemName || [], //业务系统可多选
+				floorIds: queryInfo.floor || [],
 				isFloor: true,
 			});
 

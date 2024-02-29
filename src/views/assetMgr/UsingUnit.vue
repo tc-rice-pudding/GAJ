@@ -14,6 +14,8 @@
 							clearable
 							filterable
 							multiple
+							collapse-tags
+							collapse-tags-tooltip
 						>
 							<el-option
 								v-for="item in optionMap.userNameOptions"
@@ -32,6 +34,8 @@
 							clearable
 							filterable
 							multiple
+							collapse-tags
+							collapse-tags-tooltip
 						>
 							<el-option
 								v-for="item in optionMap.systemNameOptions"
@@ -195,8 +199,8 @@ export const useOptions = (queryInfo) => {
 	const getOption3 = async () => {
 		try {
 			const res = await axios.get('/dcim/custom/device/floor/selectBox');
-			if (res.data.status === 200) {
-				optionMap.floorOptions = (res.data.data || []).map((it) => ({ label: it.text, value: it.value }));
+			if (res.status === 200) {
+				optionMap.floorOptions = (res.data || []).map((it) => ({ label: it.text, value: it.value }));
 			}
 		} catch (error) {
 			console.log(error);
@@ -217,7 +221,7 @@ export const useOptions = (queryInfo) => {
 };
 
 // 获取使用单位的合计数据
-export const useTotal = ({ userName, systemName, floor }) => {
+export const useTotal = (queryInfo) => {
 	const totalInfo = reactive({
 		userCount: 0, //单位数量
 		systemCount: 0, //系统数量
@@ -228,9 +232,9 @@ export const useTotal = ({ userName, systemName, floor }) => {
 	const getTotal = async () => {
 		try {
 			const { data: res } = await axios.post('/dcim/custom/system/total', {
-				userName: userName || [], //使用单位可多选
-				systemName: systemName || [], //业务系统可多选
-				floorIds: floor || [],
+				userName: queryInfo.userName || [], //使用单位可多选
+				systemName: queryInfo.systemName || [], //业务系统可多选
+				floorIds: queryInfo.floor || [],
 			});
 
 			Object.assign(totalInfo, res);

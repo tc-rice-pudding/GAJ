@@ -140,8 +140,8 @@ export const useOptions = () => {
 	const getOption1 = async () => {
 		try {
 			const res = await axios.get(`/dcim/custom/energy/get/room?resourceId=${route.query.floorId || ''}`);
-			if (res.data.status === 200) {
-				optionMap.roomsOptions = res.data.data || [];
+			if (res.status === 200) {
+				optionMap.roomsOptions = res.data || [];
 			}
 		} catch (error) {
 			console.log(error);
@@ -155,8 +155,8 @@ export const useOptions = () => {
 	const getOption2 = async () => {
 		try {
 			const res = await axios.get(`/dcim/custom/energy/get/reason?resourceId=${route.query.floorId || ''}`);
-			if (res.data.status === 200) {
-				optionMap.reasonsOptions = res.data.data || [];
+			if (res.status === 200) {
+				optionMap.reasonsOptions = res.data || [];
 			}
 		} catch (error) {
 			console.log(error);

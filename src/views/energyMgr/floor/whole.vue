@@ -22,6 +22,7 @@
 			>
 				<el-option key="month" label="月" value="3" />
 				<el-option key="day" label="天" value="2" />
+				<el-option key="day" label="小时" value="1" />
 			</el-select>
 		</section>
 		<section class="echarts-comp vertical">
@@ -35,6 +36,7 @@
 			>
 				<el-option key="month" label="月" value="3" />
 				<el-option key="day" label="天" value="2" />
+				<el-option key="day" label="小时" value="1" />
 			</el-select>
 		</section>
 	</div>
