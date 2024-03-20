@@ -1,6 +1,6 @@
 <template>
 	<div class="line-container">
-		<div ref="lineDomRef" class="chart-line" :style="{ width: `${chartWidth}px`, height: `${chartHeight}px` }" />
+		<div ref="lineDomRef" v-if="refresh" class="chart-line" :style="{ width: `${chartWidth}px`, height: `${chartHeight}px` }" />
 	</div>
 </template>
 
@@ -135,6 +135,7 @@ export default {
 	data() {
 		return {
 			myChart: null,
+			refresh: true,
 		};
 	},
 	mounted() {
@@ -185,6 +186,15 @@ export default {
 				this.myChart && this.myChart.resize();
 			}, 100);
 		},
+		reflushHandler(){
+			if (this.$refs.lineDomRef) {
+				this.myChart = markRaw(echarts.init(this.$refs.lineDomRef));
+				this.myChart.setOption(this.optionsRef);
+			}
+
+			window.removeEventListener('resize', this.handleResize);
+			window.addEventListener('resize', this.handleResize);
+		}
 	},
 };
 </script>

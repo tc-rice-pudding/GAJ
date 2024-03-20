@@ -14,12 +14,8 @@
 		<section class="echarts-comp horizontal">
 			<Chart-Bar ref="electricityMinRef" class="chart-item" :options="electricityMinimumOps"></Chart-Bar>
 			<Chart-Line class="chart-item" :options="totalEnergyOps" />
-			<el-select
-				v-model="energyCycle"
-				filterable
-				size="small"
-				style="width: 120px; position: absolute; right: 30px; z-index: 1000; margin-top: 15px"
-			>
+			<el-select v-model="energyCycle" filterable size="small"
+				style="width: 120px; position: absolute; right: 30px; z-index: 1000; margin-top: 15px">
 				<el-option key="month" label="月" value="3" />
 				<el-option key="day" label="天" value="2" />
 				<el-option key="day" label="小时" value="1" />
@@ -28,12 +24,8 @@
 		<section class="echarts-comp vertical">
 			<Chart-Bar ref="electricityHighRef" class="chart-item" :options="electricityHighestOps"></Chart-Bar>
 			<Chart-Line class="chart-item" :options="ITEnergyOps" />
-			<el-select
-				v-model="itCycle"
-				filterable
-				size="small"
-				style="width: 120px; position: absolute; right: 30px; z-index: 1000; margin-top: 15px"
-			>
+			<el-select v-model="itCycle" filterable size="small"
+				style="width: 120px; position: absolute; right: 30px; z-index: 1000; margin-top: 15px">
 				<el-option key="month" label="月" value="3" />
 				<el-option key="day" label="天" value="2" />
 				<el-option key="day" label="小时" value="1" />
@@ -193,9 +185,10 @@ export const useElectricityTopAndBottom = ({ floorId, floorName }) => {
 		return defaultOps;
 	});
 
+	// 弹窗页面-机柜信息
 	const chartHandler = (params) => {
 		const cabinetRid = hash[params.name]?.resourceId;
-		Object.assign(dialogInfo, { dialogCabinetVisible: true, cabinetName: `机柜编号：${params.name}` });
+		Object.assign(dialogInfo, { dialogCabinetVisible: true, cabinetName: `机柜编号：${params.name}`, resourceId: cabinetRid });
 		setTimeout(() => {
 			cabinetRef.value?.init(cabinetRid); // 获取机柜信息
 		}, 300);
@@ -242,10 +235,9 @@ export const useTotalEnergy = ({ floorId, floorName }) => {
 		energyCycle,
 		() => {
 			getTotalEnergy();
-		},
-		{
-			immediate: true,
-		}
+		}, {
+		immediate: true,
+	}
 	);
 
 	let totalEnergyOps = computed(() => {
@@ -296,10 +288,9 @@ export const useITEnergy = ({ floorId, floorName }) => {
 		itCycle,
 		() => {
 			getITEnergy();
-		},
-		{
-			immediate: true,
-		}
+		}, {
+		immediate: true,
+	}
 	);
 
 	let ITEnergyOps = computed(() => {
@@ -367,6 +358,7 @@ export default defineComponent({
 		background-repeat: no-repeat;
 		margin-left: 10px;
 		display: flex;
+
 		.info-item {
 			flex: 1;
 			display: flex;
@@ -374,19 +366,23 @@ export default defineComponent({
 			justify-content: center;
 			padding-left: 100px;
 			background-repeat: no-repeat;
-			> span {
+
+			>span {
 				color: #fff;
 				font-size: 14px;
 			}
-			> label {
+
+			>label {
 				color: #0be7fb;
 				font-size: 18px;
 			}
 		}
+
 		.info-item:first-of-type {
 			background-image: url('@/assets/images/roomView/elec.png');
 			background-position: 40px 50%;
 		}
+
 		.info-item:last-of-type {
 			background-image: url('@/assets/images/roomView/power.png');
 			background-position: 50px 50%;
@@ -399,12 +395,14 @@ export default defineComponent({
 		flex: 1;
 		display: flex;
 		position: relative;
+
 		.chart-item {
 			width: 50%;
 			height: 100%;
 			padding: 5px;
 		}
 	}
+
 	.horizontal::after {
 		content: '';
 		background-image: linear-gradient(to right, transparent, #0262af, transparent);
@@ -417,6 +415,7 @@ export default defineComponent({
 		margin-left: 50%;
 		bottom: 0;
 	}
+
 	.vertical::before {
 		content: '';
 		background-image: linear-gradient(to right, transparent, #0262af, transparent);
