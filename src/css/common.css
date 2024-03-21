@@ -10,8 +10,8 @@ body {
 
 :root {
   --el-bg-color-overlay  : #051b3d;
-  --el-border-color-light: #081f68;
-  --el-fill-color-light  : #07227a;
-  --el-fill-color-blank  : #092581;
+  --el-border-color-light: #4065dedb;
+  --el-fill-color-light  : #4065dedb;
+  --el-fill-color-blank  : #4065dedb;
   --el-text-color-regular: #9ce1fc;
 }

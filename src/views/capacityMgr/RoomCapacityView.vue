@@ -124,7 +124,7 @@ export const useRoomInfo = () => {
 		},
 	]); // 多个机房信息
 	const roomInfo = reactive({
-		resourceId: '', // 机房ID
+		resourceId: 'room_resourceId', // 机房ID
 		roomName: '', //机房名称
 		totalCount: 0, //机柜总数
 		device2UCount: 0, //可部署2U数

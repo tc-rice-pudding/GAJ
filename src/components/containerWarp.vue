@@ -81,6 +81,6 @@ export default defineComponent({});
 	}
 }
 .rotate-animation {
-	animation: rotateIcon 2s linear 0s infinite;
+	// animation: rotateIcon 2s linear 0s infinite;
 }
 </style>
