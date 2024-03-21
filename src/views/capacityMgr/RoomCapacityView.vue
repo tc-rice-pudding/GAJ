@@ -84,15 +84,16 @@ export const useRoomInfo = () => {
 	const route = useRoute();
 	const tabInfo = reactive({ activeName: '' });
 
+	// 多个机房信息
 	const roomList = ref([
 		// fix: 测试数据
 		{
 			resourceId: '222', // 机房ID
 			roomName: '222', //机房名称
-			totalCount: 0, //机柜总数
-			device2UCount: 0, //可部署2U数
-			device3UCount: 0, //可部署3U数
-			device23UCount: 0,
+			totalCount: 60, //机柜总数
+			device2UCount: 10, //可部署2U数
+			device3UCount: 20, //可部署3U数
+			device23UCount: 30,
 			cabinetList: [
 				{
 					resourceId: '0_101', //资源ID
@@ -122,7 +123,9 @@ export const useRoomInfo = () => {
 				},
 			],
 		},
-	]); // 多个机房信息
+	]); 
+
+	// 当前机房信息
 	const roomInfo = reactive({
 		resourceId: 'room_resourceId', // 机房ID
 		roomName: '', //机房名称
@@ -267,6 +270,7 @@ export default defineComponent({
 				background-image: url('@/assets/images/roomView/warp.png');
 				background-repeat: no-repeat;
 				background-size: 100% 100%;
+				cursor: pointer;
 			}
 			&-item:hover {
 				background-image: url('@/assets/images/roomView/warpHover.png');
