@@ -3,7 +3,7 @@
 		<header>
 			<div class="query-item">
 				<span>使用单位</span>
-				<el-select v-model="queryInfo.userName" style="width: 120px" placeholder="请选择" size="small" clearable filterable>
+				<el-select v-model="queryInfo.userName" style="width: 120px" placeholder="请选择" size="small" clearable >
 					<el-option
 						v-for="item in optionMap.userNameOptions"
 						:key="item.value"
@@ -14,7 +14,7 @@
 			</div>
 			<div class="query-item">
 				<span>业务系统</span>
-				<el-select v-model="queryInfo.systemName" style="width: 120px" placeholder="请选择" size="small" clearable filterable>
+				<el-select v-model="queryInfo.systemName" style="width: 120px" placeholder="请选择" size="small" clearable >
 					<el-option
 						v-for="item in optionMap.systemNameOptions"
 						:key="item.value"

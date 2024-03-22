@@ -10,7 +10,7 @@
 	>
 		<el-select
 			v-model="cycle"
-			filterable
+			
 			size="small"
 			style="width: 120px; position: absolute; right: 300px; z-index: 1000"
 		>
@@ -23,7 +23,7 @@
 			:multiple-limit="10"
 			collapse-tags
 			collapse-tags-tooltip
-			filterable
+			
 			clearable
 			size="small"
 			style="width: 240px; position: absolute; right: 42px; z-index: 1000"

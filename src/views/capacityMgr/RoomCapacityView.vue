@@ -82,6 +82,10 @@ export const useRoomInfo = () => {
 			device2UCount: 10, //可部署2U数
 			device3UCount: 20, //可部署3U数
 			device23UCount: 30,
+			// todo
+			cabinet2u: 'number0_101,',
+			cabinet3u: 'number0_102',
+			cabinet23u: 'number0_103',
 			cabinetList: [
 				{
 					resourceId: '0_101', //资源ID
@@ -90,6 +94,10 @@ export const useRoomInfo = () => {
 					device2UCount: 11, //可部署2U数
 					device3UCount: 4, //可部署3U数
 					device23UCount: 1, //可部署2+3U数
+					startu2u: '41,38,35,32,29,26,23,20',
+					startu3u: '41,37,33,29,25,21,17',
+					startu23u: '41,34,27,20',
+					deviceInfo: "[{startU:1,u:2}]"
 				},
 			],
 		},
@@ -101,7 +109,7 @@ export const useRoomInfo = () => {
 			device3UCount: 0, //可部署3U数
 			device23UCount: 0,
 			// todo
-			cabinet2u: 'number0_101',
+			cabinet2u: 'number0_101,',
 			cabinet3u: 'number0_102',
 			cabinet23u: 'number0_103',
 			cabinetList: [
@@ -157,7 +165,7 @@ export const useRoomInfo = () => {
 		device3UCount: 0, //可部署3U数
 		device23UCount: 0,
 		// todo
-		cabinet2u: 'number0_101',
+		cabinet2u: 'number0_101,',
 		cabinet3u: 'number0_102',
 		cabinet23u: 'number0_103',
 		cabinetList: [
@@ -262,12 +270,12 @@ export const useRoomInfo = () => {
 		return new Fn('return ' + fn)();
 	};
 	const cabinetClickHandler = (currCabinet) => {
-		Object.assign(dialogInfo, currCabinet, { dialogCabinetVisible: true, cabinetName: currCabinet.deviceNum });
-		// 根据 currCabinetObj 展示u位信息
-		console.log(currCabinet);
 		const cabinetInfo = roomInfo.cabinetList.find(cabinet => cabinet.deviceNum === currCabinet.deviceNum);
-
 		if (cabinetInfo) {
+			// 打开弹窗
+			Object.assign(dialogInfo, currCabinet, { dialogCabinetVisible: true, cabinetName: currCabinet.deviceNum });
+			console.log(currCabinet);
+
 			cabinetRef.value.setHighlightUInfo({
 				list2u: cabinetInfo.startu2u && cabinetInfo.startu2u.split(',').reduce((map, currU) => {
 					map[currU] = { uHeight: 2 };
@@ -282,7 +290,7 @@ export const useRoomInfo = () => {
 					return map;
 				}, {}),
 			},
-				evalTransform(cabinetInfo.deviceInfo || '').reduce((map, currU) => {
+				evalTransform(cabinetInfo.deviceInfo || '[]').reduce((map, currU) => {
 					map[currU.startU] = { uHeight: currU.u };
 					return map;
 				}, {})

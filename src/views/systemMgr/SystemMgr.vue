@@ -24,7 +24,7 @@
 				</div>
 				<div class="query-row-item" v-show="checkedCities.includes('Usage')">
 					<span>使用状态</span>
-					<el-select v-model="queryInfo.Usage" placeholder="请选择" size="small" clearable filterable>
+					<el-select v-model="queryInfo.Usage" placeholder="请选择" size="small" clearable >
 						<el-option
 							v-for="item in UsageOptions"
 							:key="item.code"
@@ -60,7 +60,7 @@
 						placeholder="请选择"
 						size="small"
 						clearable
-						filterable
+						
 					>
 						<el-option
 							v-for="item in Networking_typeOptions"
@@ -84,7 +84,7 @@
 				</div>
 				<div class="query-row-item" v-show="checkedCities.includes('department')">
 					<span>使用部门</span>
-					<el-select v-model="queryInfo.department" placeholder="请选择" size="small" clearable filterable>
+					<el-select v-model="queryInfo.department" placeholder="请选择" size="small" clearable >
 						<el-option
 							v-for="item in departmentOptions"
 							:key="item.code"
@@ -95,7 +95,7 @@
 				</div>
 				<div class="query-row-item" v-show="checkedCities.includes('owner')">
 					<span>设备管理人</span>
-					<el-select v-model="queryInfo.owner" placeholder="请选择" size="small" clearable filterable>
+					<el-select v-model="queryInfo.owner" placeholder="请选择" size="small" clearable >
 						<el-option
 							v-for="item in ownerOptions"
 							:key="item.code"

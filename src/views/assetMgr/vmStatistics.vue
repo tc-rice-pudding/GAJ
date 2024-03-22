@@ -10,7 +10,7 @@
 					<div class="query-item">
 						<span>使用单位</span>
 						<el-select style="width: 150px" v-model="queryInfo.useUnit" placeholder="请选择" clearable
-							filterable multiple collapse-tags collapse-tags-tooltip>
+							 multiple collapse-tags collapse-tags-tooltip>
 							<el-option v-for="item in useUnitOptions" :key="item.value" :label="item.text"
 								:value="item.value" />
 						</el-select>
@@ -18,7 +18,7 @@
 					<div class="query-item">
 						<span>业务系统</span>
 						<el-select style="width: 150px" v-model="queryInfo.systemName" placeholder="请选择" clearable
-							filterable
+							
 							multiple
 							collapse-tags
 							collapse-tags-tooltip>
@@ -33,7 +33,7 @@
 					<div class="query-item">
 						<span>机房</span>
 						<el-select style="width: 150px" v-model="queryInfo.roomId" placeholder="请选择" clearable
-							filterable
+							
 							multiple
 							collapse-tags
 							collapse-tags-tooltip>

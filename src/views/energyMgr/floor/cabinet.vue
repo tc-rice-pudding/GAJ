@@ -18,7 +18,7 @@
 						style="width: 140px"
 						placeholder="请选择"
 						clearable
-						filterable
+						
 						multiple
 						collapse-tags
 						collapse-tags-tooltip
@@ -42,7 +42,7 @@
 						style="width: 140px"
 						placeholder="请选择"
 						clearable
-						filterable
+						
 						multiple
 						collapse-tags
 						collapse-tags-tooltip

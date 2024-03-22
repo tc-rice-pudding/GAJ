@@ -14,7 +14,7 @@
 		<section class="echarts-comp horizontal">
 			<Chart-Bar ref="electricityMinRef" class="chart-item" :options="electricityMinimumOps"></Chart-Bar>
 			<Chart-Line class="chart-item" :options="totalEnergyOps" />
-			<el-select v-model="energyCycle" filterable size="small"
+			<el-select v-model="energyCycle"  size="small"
 				style="width: 120px; position: absolute; right: 30px; z-index: 1000; margin-top: 15px">
 				<el-option key="month" label="月" value="3" />
 				<el-option key="day" label="天" value="2" />
@@ -24,7 +24,7 @@
 		<section class="echarts-comp vertical">
 			<Chart-Bar ref="electricityHighRef" class="chart-item" :options="electricityHighestOps"></Chart-Bar>
 			<Chart-Line class="chart-item" :options="ITEnergyOps" />
-			<el-select v-model="itCycle" filterable size="small"
+			<el-select v-model="itCycle"  size="small"
 				style="width: 120px; position: absolute; right: 30px; z-index: 1000; margin-top: 15px">
 				<el-option key="month" label="月" value="3" />
 				<el-option key="day" label="天" value="2" />
