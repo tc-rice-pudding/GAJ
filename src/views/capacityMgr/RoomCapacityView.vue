@@ -84,8 +84,8 @@ export const useRoomInfo = () => {
 			device23UCount: 30,
 			// todo
 			cabinet2u: 'number0_101,',
-			cabinet3u: 'number0_102',
-			cabinet23u: 'number0_103',
+			cabinet3u: '',
+			cabinet23u: '',
 			cabinetList: [
 				{
 					resourceId: '0_101', //资源ID
@@ -207,7 +207,7 @@ export const useRoomInfo = () => {
 				startu2u: '41,38,35,32,29,26,23,20',
 				startu3u: '41,37,33,29,25,21,17',
 				startu23u: '41,34,27,20',
-				deviceInfo: "[{startU:2,u:2}]"
+				deviceInfo: "[{startU:1,u:2}]"
 			},
 		],
 	});
@@ -247,6 +247,7 @@ export const useRoomInfo = () => {
 	});
 
 	const handleClick = () => {
+		utype.value = '';
 		const currRoom = roomList.value.find((room) => room.resourceId === tabInfo.activeName) || {};
 		Object.assign(roomInfo, currRoom);
 	};
@@ -291,7 +292,7 @@ export const useRoomInfo = () => {
 				}, {}),
 			},
 				evalTransform(cabinetInfo.deviceInfo || '[]').reduce((map, currU) => {
-					map[currU.startU] = { uHeight: currU.u };
+					map[currU.startU + currU.u - 1] = { uHeight: currU.u };
 					return map;
 				}, {})
 			);
