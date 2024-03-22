@@ -72,11 +72,16 @@ export const roomConstruct = [
             {
                 // ......
                 resourceId: '0_101',
+                deviceNum:'number0_101',
             },
             {
+                resourceId: '0_102',
+                deviceNum:'number0_102',
                 // ......
             },
             {
+                resourceId: '0_103',
+                deviceNum:'number0_103',
                 // ......
             },
             {

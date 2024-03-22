@@ -8,19 +8,12 @@
 			<div class="cabinet-column" v-for="col in roomConstruction" :key="col">
 				<div class="cabinet-column-title">{{ col.cabinetRowInfo.name }}</div>
 				<template v-for="cabinet in col.cabinetList" :key="cabinet">
-					<el-popover
-						placement="right"
-						:width="230"
-						trigger="hover"
-						:disabled="!(cabinet.resourceId in deviceCountMap)"
-					>
+					<el-popover placement="right" :width="230" trigger="hover"
+						:disabled="!(cabinet.resourceId in deviceCountMap)">
 						<template #reference>
-							<div
-								class="cabinet-item empty-cabinet"
-								:class="{ 'use-cabinet-item': cabinet.resourceId in deviceCountMap }"
-								:data-rid="cabinet.resourceId"
-								@click="cabinetClickHandler(cabinet)"
-							></div>
+							<div class="cabinet-item empty-cabinet"
+								:class="{ 'use-cabinet-item': cabinet.resourceId in deviceCountMap, 'cabinet-border-highlight': highlightCabinetNumberList.includes(cabinet.deviceNum) }"
+								:data-rid="cabinet.resourceId" @click="cabinetClickHandler(cabinet)"></div>
 						</template>
 						<!-- 资产展示 -->
 						<template v-if="toolType === 'property'">
@@ -50,26 +43,26 @@
 							<div class="tip-row">
 								<label class="tip-title">可用U位：</label>
 								<label class="tip-content algin-right">{{
-									deviceCountMap[cabinet.resourceId]?.freeU || ''
-								}}</label>
+		deviceCountMap[cabinet.resourceId]?.freeU || ''
+	}}</label>
 							</div>
 							<div class="tip-row">
 								<label class="tip-title">可部署2U数：</label>
 								<label class="tip-content algin-right">{{
-									deviceCountMap[cabinet.resourceId]?.device2UCount || ''
-								}}</label>
+			deviceCountMap[cabinet.resourceId]?.device2UCount || ''
+		}}</label>
 							</div>
 							<div class="tip-row">
 								<label class="tip-title">可部署3U数：</label>
 								<label class="tip-content algin-right">{{
-									deviceCountMap[cabinet.resourceId]?.device3UCount || ''
-								}}</label>
+			deviceCountMap[cabinet.resourceId]?.device3UCount || ''
+		}}</label>
 							</div>
 							<div class="tip-row">
 								<label class="tip-title">可部署2+3U数：</label>
 								<label class="tip-content algin-right">{{
-									deviceCountMap[cabinet.resourceId]?.device23UCount || ''
-								}}</label>
+			deviceCountMap[cabinet.resourceId]?.device23UCount || ''
+		}}</label>
 							</div>
 						</template>
 					</el-popover>
@@ -115,6 +108,7 @@ export default defineComponent({
 	},
 	setup(props, { attrs, slots, emit }) {
 		const loading = ref(true);
+		const highlightCabinetNumberList = ref([]);
 		// 机房空间结构信息
 		const roomConstruction = ref([]);
 		// fix: 测试数据
@@ -143,13 +137,14 @@ export default defineComponent({
 			emit('cabinetClickHandler', cabinetInfo, props.roomName);
 		};
 
-		return { loading, roomConstruction, cabinetClickHandler };
+		return { loading, highlightCabinetNumberList, roomConstruction, cabinetClickHandler };
 	},
 });
 </script>
 
 <style lang="less" scoped>
 @import 'src/css/conponents.less';
+
 .room-component-view {
 	width: 100%;
 	height: 100%;
@@ -158,11 +153,12 @@ export default defineComponent({
 	background: @background;
 	padding: 10px 20px;
 
-	> nav {
+	>nav {
 		height: 50px;
 		display: flex;
 		justify-content: center;
 		align-items: center;
+
 		.title {
 			height: 30px;
 			line-height: 30px;
@@ -179,7 +175,8 @@ export default defineComponent({
 			// }
 		}
 	}
-	> section {
+
+	>section {
 		height: calc(100% - 70px);
 		padding: 10px 0;
 		display: flex;
@@ -188,11 +185,13 @@ export default defineComponent({
 
 		.cabinet-column {
 			margin: 0 5px;
+
 			.cabinet-column-title {
 				height: 30px;
 				color: #9cc9f1;
 				font-weight: 600;
 			}
+
 			.cabinet-item {
 				width: 60px;
 				height: 25px;
@@ -202,15 +201,23 @@ export default defineComponent({
 				background-repeat: no-repeat;
 				background-size: 100%;
 				transition: all 0.3s;
+				box-sizing: border-box;
 			}
+
 			.empty-cabinet {
 				background-image: url('@/assets/images/roomView/empty-cabinet.png');
 			}
+
 			.use-cabinet-item {
 				background-image: url('@/assets/images/roomView/used-cabinet.png');
 			}
+
 			.use-cabinet-item:hover {
 				background-image: url('@/assets/images/roomView/cabinet-hover.png');
+			}
+
+			.cabinet-border-highlight {
+				border: 1px solid red;
 			}
 		}
 	}
@@ -219,20 +226,25 @@ export default defineComponent({
 .tip-row {
 	padding: 2px 0;
 	display: flex;
-	> label {
+
+	>label {
 		display: inline-block;
 	}
+
 	.tip-title {
 		color: #fff;
 		flex: 2;
 	}
-	.maxWidth{
+
+	.maxWidth {
 		max-width: 80px;
 	}
+
 	.tip-content {
 		color: #2fc3ff;
 		flex: 1;
 	}
+
 	.algin-right {
 		flex: 1;
 		text-align: right;
