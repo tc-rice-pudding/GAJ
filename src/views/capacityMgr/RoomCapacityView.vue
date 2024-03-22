@@ -181,7 +181,7 @@ export const useRoomInfo = () => {
 				startu2u: '41,38,35,32,29,26,23,20',
 				startu3u: '41,37,33,29,25,21,17',
 				startu23u: '41,34,27,20',
-				deviceInfo: "[{startU:1,u:2}]"
+				deviceInfo: "[{startU:3,u:2}]"
 			},
 			{
 				resourceId: '0_102', //资源ID
@@ -194,7 +194,7 @@ export const useRoomInfo = () => {
 				startu2u: '41,38,35,32,29,26,23,20',
 				startu3u: '41,37,33,29,25,21,17',
 				startu23u: '41,34,27,20',
-				deviceInfo: "[{startU:1,u:2}]"
+				deviceInfo: "[{startU:4,u:2}]"
 			},
 			{
 				resourceId: '0_103', //资源ID
@@ -207,7 +207,7 @@ export const useRoomInfo = () => {
 				startu2u: '41,38,35,32,29,26,23,20',
 				startu3u: '41,37,33,29,25,21,17',
 				startu23u: '41,34,27,20',
-				deviceInfo: "[{startU:1,u:2}]"
+				deviceInfo: "[{startU:2,u:2}]"
 			},
 		],
 	});

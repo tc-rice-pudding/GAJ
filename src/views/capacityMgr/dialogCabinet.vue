@@ -2,12 +2,15 @@
 	<el-dialog v-model="dialogInfo.dialogCabinetVisible" :title="dialogInfo.cabinetName" align-center :center="false"
 		:width="480" class="custom-dialog">
 		<div class="cabinet-dialog-view">
-			<cabinetView class="cabinet" :deviceMap="deviceMap" :hightlightUMap="uMap[highlightType]" />
+			<cabinetView class="cabinet" :deviceMap="uMap.deviceMap" :hightlightUMap="uMap[highlightType]" />
 			<div style="padding-left: 30px;">
-				<p :class="{ hightlight: true, active: highlightType === 'list2u' }" @click="highlightType = 'list2u'">可部署
+				<p :class="{ hightlight: true, active: highlightType === 'list2u' }" @click="highlightType = 'list2u'">
+					可部署
 					2U 设备</p>
-				<p :class="{ hightlight: true, active: highlightType === 'list3u' }" @click="highlightType = 'list3u'">可部署 3U 设备</p>
-				<p :class="{ hightlight: true, active: highlightType === 'list23u' }" @click="highlightType = 'list23u'">可部署 23U 设备</p>
+				<p :class="{ hightlight: true, active: highlightType === 'list3u' }" @click="highlightType = 'list3u'">
+					可部署 3U 设备</p>
+				<p :class="{ hightlight: true, active: highlightType === 'list23u' }"
+					@click="highlightType = 'list23u'">可部署 23U 设备</p>
 			</div>
 		</div>
 	</el-dialog>
@@ -36,33 +39,30 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const deviceMap = reactive({
-			3: {
-				uHeight: 3,
-			},
-			8: {
-				uHeight: 2,
-			},
-			12: {
-				uHeight: 1,
-			},
-		});
-
 		const highlightType = ref('list2u');
 		const uMap = reactive({
 			list2u: {},
 			list3u: {},
 			list23u: {},
+			deviceMap: {
+				// 3: {
+				// 	uHeight: 3,
+				// },
+				// 8: {
+				// 	uHeight: 2,
+				// },
+				// 12: {
+				// 	uHeight: 1,
+				// },
+			}
 		});
 
 		const setHighlightUInfo = (uInfo, deviceObj) => {
-			Object.assign(uMap, uInfo);
-			Object.assign(deviceMap, deviceObj);
-			console.log(uMap, deviceMap);
+			Object.assign(uMap, uInfo, { deviceMap: deviceObj });
+			console.log(uMap);
 		};
 
 		return {
-			deviceMap,
 			setHighlightUInfo,
 			highlightType,
 			uMap,
