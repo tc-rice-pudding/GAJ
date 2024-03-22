@@ -273,11 +273,11 @@ export const useRoomInfo = () => {
 					map[currU] = { uHeight: 2 };
 					return map;
 				}, {}),
-				list3u: cabinetInfo.startu2u && cabinetInfo.startu2u.split(',').reduce((map, currU) => {
+				list3u: cabinetInfo.startu2u && cabinetInfo.startu3u.split(',').reduce((map, currU) => {
 					map[currU] = { uHeight: 3 };
 					return map;
 				}, {}),
-				list23u: cabinetInfo.startu2u && cabinetInfo.startu2u.split(',').reduce((map, currU) => {
+				list23u: cabinetInfo.startu2u && cabinetInfo.startu23u.split(',').reduce((map, currU) => {
 					map[currU] = { uHeight: 6 };
 					return map;
 				}, {}),
