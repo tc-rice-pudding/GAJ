@@ -206,7 +206,7 @@ export default defineComponent({
 	position: relative;
 
 	.calc-item {
-		width: 300px;
+		width: 340px;
 		// overflow: hidden;
 		position: absolute;
 		background-image: url('@/assets/images/asset/calculation-bg.png');
@@ -231,14 +231,14 @@ export default defineComponent({
 		&::after {
 			content: '';
 			background-image: url('@/assets/images/asset/calculation-direct.png');
-			background-size: 40%;
+			background-size: 30% 100%;
 			background-repeat: no-repeat;
-			background-position: bottom;
+			background-position: center;
 			width: 100px;
 			display: block;
 			height: 100px;
 			position: absolute;
-			transform: translate(95px, 10px);
+			transform: translate(120px, 10px);
 		}
 	}
 
@@ -250,9 +250,9 @@ export default defineComponent({
 		&::before {
 			content: '';
 			background-image: url('@/assets/images/asset/calculation-direct.png');
-			background-size: 50%;
+			background-size: 30% 100%;
 			background-repeat: no-repeat;
-			background-position: bottom;
+			background-position: center;
 			width: 100px;
 			display: block;
 			height: 100px;
@@ -263,27 +263,27 @@ export default defineComponent({
 		&::after {
 			content: '';
 			background-image: url('@/assets/images/asset/calculation-direct.png');
-			background-size: 50%;
+			background-size: 30% 100%;
 			background-repeat: no-repeat;
-			background-position: bottom;
+			background-position: center;
 			width: 100px;
 			display: block;
 			height: 100px;
 			position: absolute;
-			transform: translate(325px, -100px) rotate(90deg);
+			transform: translate(355px, -90px) rotate(90deg);
 		}
 	}
 
 	.calc-left {
 		bottom: 30px;
 		left: 50%;
-		margin-left: -600px;
+		margin-left: -630px;
 	}
 
 	.calc-right {
 		bottom: 30px;
 		left: 50%;
-		margin-left: 300px;
+		margin-left: 330px;
 	}
 }
 
