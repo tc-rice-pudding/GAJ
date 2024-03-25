@@ -161,7 +161,7 @@ export default defineComponent({
 
 		const useInfoList = ref([]);
 		const deviceInfoList = ref([]);
-		const pageInfo = reactive({ currentPage: 1, pageSize: 10, total: 0 });
+		const pageInfo = reactive({ currentPage: 1, pageSize: 50, total: 0 });
 		const loadingInfo = reactive({
 			loading: ref(false),
 			svg: `

@@ -247,7 +247,10 @@ export const useRoomInfo = () => {
 	});
 
 	const handleClick = () => {
+		// 切换机房tab，清除选中效果
 		utype.value = '';
+		roomViewRef.value.highlightCabinetNumberList = [];
+
 		const currRoom = roomList.value.find((room) => room.resourceId === tabInfo.activeName) || {};
 		Object.assign(roomInfo, currRoom);
 	};
