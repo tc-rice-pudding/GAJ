@@ -159,26 +159,30 @@ import { useRouter } from 'vue-router';
 export const useOptions = (queryInfo) => {
 	const optionMap = reactive({
 		userNameOptions: [
-			// {label:'1',value:'1'},
-			// {label:'2',value:'2'},
-			// {label:'3',value:'3'},
+			{label:'1',value:'1'},
+			{label:'2',value:'2'},
+			{label:'3',value:'3'},
 		], // 使用单位
 		systemNameOptions: [
-			// {label:'4',value:'4'},
-			// {label:'5',value:'5'},
+			{label:'4',value:'4'},
+			{label:'5',value:'5'},
 		], // 业务系统
 		floorOptions: [
-			{ label: '4', value: '4' },
-			{ label: '5', value: '5' },
+			{ label: '6', value: '6' },
+			{ label: '7', value: '7' },
 		], // 楼层
 	});
 
 	// 获取使用单位
 	const getOption1 = async () => {
 		try {
-			const res = await axios.get(`/dcim/space/getUserName?key=${queryInfo.systemName}`);
-			if (res.data.status === 200) {
-				optionMap.userNameOptions = (res.data.result || []).map((it) => ({ label: it, value: it }));
+			const res = await axios.post('/dcim/custom/device/userName/selectBox/userName',{
+				// userName: (queryInfo.userName||[]).toString(),
+				businessSystem:(queryInfo.systemName||[]).toString(),
+				room: (queryInfo.floor||[]).toString(),
+			});
+			if (res.status === 200) {
+				optionMap.userNameOptions = (res.data || []).map((it) => ({ label: it.text, value: it.value }));
 			}
 		} catch (error) {
 			console.log(error);
@@ -187,9 +191,13 @@ export const useOptions = (queryInfo) => {
 	// 获取业务系统
 	const getOption2 = async () => {
 		try {
-			const res = await axios.get(`/dcim/space/getBusinessSystem?key=${queryInfo.userName}`);
-			if (res.data.status === 200) {
-				optionMap.systemNameOptions = (res.data.result || []).map((it) => ({ label: it, value: it }));
+			const res = await axios.post('/dcim/custom/device/userName/selectBox/businessType',{
+				userName: (queryInfo.userName||[]).toString(),
+				// businessSystem:(queryInfo.systemName||[]).toString(),
+				room: (queryInfo.floor||[]).toString(),
+			});
+			if (res.status === 200) {
+				optionMap.systemNameOptions = (res.data || []).map((it) => ({ label: it.text, value: it.value }));
 			}
 		} catch (error) {
 			console.log(error);
@@ -198,7 +206,11 @@ export const useOptions = (queryInfo) => {
 	// 获取楼层
 	const getOption3 = async () => {
 		try {
-			const res = await axios.get('/dcim/custom/device/floor/selectBox');
+			const res = await axios.post('/dcim/custom/device/userName/selectBox/room',{
+				userName: (queryInfo.userName||[]).toString(),
+				businessSystem:(queryInfo.systemName||[]).toString(),
+				// room: (queryInfo.floor||[]).toString(),
+			});
 			if (res.status === 200) {
 				optionMap.floorOptions = (res.data || []).map((it) => ({ label: it.text, value: it.value }));
 			}
@@ -213,7 +225,28 @@ export const useOptions = (queryInfo) => {
 	watch(
 		() => queryInfo.userName,
 		(val) => {
-			getOption2(val);
+			if(val&&val.length){
+				getOption2();
+				getOption3();
+			}
+		}
+	);
+	watch(
+		() => queryInfo.systemName,
+		(val) => {
+			if(val&&val.length){
+				getOption1();
+				getOption3();
+			}
+		}
+	);
+	watch(
+		() => queryInfo.floor,
+		(val) => {
+			if(val&&val.length){
+				getOption1();
+				getOption2();
+			}
 		}
 	);
 
