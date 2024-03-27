@@ -105,7 +105,7 @@
 		</template>
 	</container-warp>
 	
-	<el-dialog v-model="checkDialog" title="核对" width="440" class="custom-dialog">
+	<el-dialog v-model="checkDialog" title="核对" width="440" class="custom-dialog" :close-on-click-modal="false">
 		<div style="display: flex; line-height: 32px; margin-bottom: 10px">
 			<label style="width: 80px">波动原因：</label>
 			<el-autocomplete v-model="checkInfo.reasion" style="width: 300px; display: flex; align-content: flex-start"
@@ -125,16 +125,27 @@
 	</el-dialog>
 
 
-	<el-dialog v-model="sheldDialog" title="设置屏蔽机柜" width="500" class="custom-dialog">
+	<el-dialog v-model="sheldDialog" title="设置屏蔽机柜" width="500" class="custom-dialog" :close-on-click-modal="false">
 		<p style="font-size: 18px;">选择机柜，设置数据屏蔽规则，机柜平均功耗将使用屏蔽结束后的数据重新计算</p>
 		<div style="display: flex; line-height: 32px; margin-bottom: 10px">
 			<label style="width: 80px"><span style="color:red;">*</span>选择机柜：</label>
-			<!-- todo -->
-			<el-select v-model="sheldInfo.cabinet" style="width: 350px" placeholder="请选择" clearable multiple filterable
-							collapse-tags collapse-tags-tooltip>
-				<el-option v-for="item in cabinetsOptions" :key="item.value" :label="item.name"
-					:value="item.cabinetId" />
-			</el-select>
+			<el-popover placement="bottom" :width="400" trigger="click">
+				<template #reference>
+					<el-input v-model="sheldInfo.spaceNodeNames" style="width: 350px;" size="small" readonly></el-input>
+				</template>
+				<el-tree
+					ref="treeRef"
+					style="max-width: 600px"
+					:data="cabinetsOptions"
+					show-checkbox
+					default-expand-all
+					node-key="resourceId"
+					highlight-current
+					:props="defaultProps"
+					check-strictly
+					@check-change="checkChange"
+				/>
+			</el-popover>
 		</div>
 		<div style="display: flex; line-height: 32px">
 			<label style="width: 80px"><span style="color:red;">*</span>忽略日期：</label>
@@ -156,6 +167,7 @@ import { toRefs, reactive, onMounted, watch, ref, defineComponent } from "vue";
 import axios from "axios";
 import { useOptions } from "@/views/energyMgr/floor/cabinet.vue";
 import { ElMessage } from "element-plus";
+import { deepClone } from "@/utils";
 
 export default defineComponent({
   name: "AbnormalEnergyCabinet",
@@ -167,10 +179,58 @@ export default defineComponent({
       checkSpec: "",
     });
     const sheldInfo = reactive({
-		cabinetIds:[], 
+		spaceNodeList:[], 
+		spaceNodeNames:'', 
 		timeRange:[]
 	});
-	let cabinetsOptions = ref([]);
+	let cabinetsOptions = ref([
+		{
+			name:'floor1',
+			resourceId:'1',
+			children: [
+				{
+					name:'room1',
+					resourceId:'1-1',
+				},
+				{
+					name:'room2',
+					resourceId:'1-2',
+				},
+			],
+		},
+		{
+			name:'floor2',
+			resourceId:'2',
+			children: [
+				{
+					name:'room2',
+					resourceId:'2-1',
+				},
+				{
+					name:'room2',
+					resourceId:'2-2',
+				},
+			],
+		},
+	]);
+	const defaultProps = {
+		children: 'children',
+		label: 'name',
+	}
+	const treeRef = ref(null);
+	const checkChange = ()=>{
+		setTimeout(()=>{
+			const checkNodeList = treeRef.value.getCheckedNodes(false, false);
+			console.log(checkNodeList);
+			sheldInfo.spaceNodeNames = checkNodeList.map(it=>it.name).toString();
+			sheldInfo.spaceNodeList = deepClone(checkNodeList).map(it=>{
+				delete it.children;
+				return it;
+			});
+		},100);
+	};
+
+
     const queryInfo = reactive({
       deviceNum: "",
       floors: [],
@@ -239,10 +299,7 @@ export default defineComponent({
 	
     const getCabinetsOptions = async () => {
       try {
-        const { data } = await axios.post("/dcim/custom/energy/location", {
-			spaceType: 8,
-			location: 'project_root/0_970/0_971/0_972',
-        });
+        const { data } = await axios.post("/dcim/custom/energy/location");
 		cabinetsOptions.value = data||[];
       } catch (error) {
         console.log(error);
@@ -286,17 +343,21 @@ export default defineComponent({
 
     const onSheld = async() => {
 		try {
-			// fix
+			if(!sheldInfo.timeRange ||sheldInfo.timeRange.length===0 || sheldInfo.spaceNodeList.length===0){
+				ElMessage.warning('请填写必填项！');
+				return;
+			}
 			const [start, end] = sheldInfo.timeRange || [];
 			const { code } = await axios.post("/dcim/custom/energy/save/ignore", {
-				locationDtos: cabinetsOptions.value.filter(it=>sheldInfo.cabinetIds.includes(it.cabinetIds)),
+				locationDtos: sheldInfo.spaceNodeList,
 				startTime: start || "",
 				endTime: end || "",
 			});
 			if(code===200){
 				ElMessage.success('操作成功');
 				sheldInfo.timeRange=[];
-				sheldInfo.cabinetIds=[];
+				sheldInfo.spaceNodeList=[];
+				sheldInfo.spaceNodeNames='';
       			sheldDialog.value=false;
 			}
 		} catch (error) {
@@ -327,6 +388,8 @@ export default defineComponent({
 
     return {
 		cabinetsOptions,
+		defaultProps,
+		treeRef,checkChange,
       checkDialog,
       sheldDialog,
       queryInfo,
