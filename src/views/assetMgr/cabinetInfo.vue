@@ -68,7 +68,7 @@ export default defineComponent({
 			try {
 				const { data: res } = await axios.get(`/dcim/custom/cabinet/info?resourceId=${route.query.cabinetRid}`);
 				Object.assign(resInfo, res);
-				cabinetName.value = `${res.room}-${res.deviceNum}`;
+				cabinetName.value = `${res.room}-${res.name}`;
 			} catch (error) {
 				console.log(error);
 			}

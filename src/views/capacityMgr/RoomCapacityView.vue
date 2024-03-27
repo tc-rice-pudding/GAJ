@@ -277,7 +277,7 @@ export const useRoomInfo = () => {
 		const cabinetInfo = roomInfo.cabinetList.find(cabinet => cabinet.deviceNum === currCabinet.deviceNum);
 		if (cabinetInfo) {
 			// 打开弹窗
-			Object.assign(dialogInfo, currCabinet, { dialogCabinetVisible: true, cabinetName: currCabinet.deviceNum });
+			Object.assign(dialogInfo, currCabinet, { dialogCabinetVisible: true, cabinetName: currCabinet.name });
 			console.log(currCabinet);
 
 			cabinetRef.value.setHighlightUInfo({

@@ -6,8 +6,28 @@
 				<section class="left">
 					<div class="warp">
 						<div class="row">
+							<label class="title">机柜名称</label>
+							<label class="content">{{ cabinetInfo.name || '' }}</label>
+						</div>
+						<div class="row">
+							<label class="title">机柜属性</label>
+							<label class="content">{{ cabinetInfo.rackType || '' }}</label>
+						</div>
+						<div class="row">
+							<label class="title">是否启用</label>
+							<label class="content">{{ cabinetInfo.isUsed || '' }}</label>
+						</div>
+						<div class="row">
 							<label class="title">使用单位</label>
 							<label class="content">{{ cabinetInfo.userName || '' }}</label>
+						</div>
+						<div class="row">
+							<label class="title">机柜容量</label>
+							<label class="content">{{ cabinetInfo.uTotal || '' }}</label>
+						</div>
+						<div class="row">
+							<label class="title">机柜承重</label>
+							<label class="content">{{ cabinetInfo.weight || '' }}</label>
 						</div>
 						<div class="row">
 							<label class="title">机柜负责人</label>

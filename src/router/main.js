@@ -25,6 +25,12 @@ export const routes = [{
         component: () => import( /* webpackChunkName: 'SystemMgr' */ '/src/views/systemMgr/SystemMgr.vue'),
     },
     {
+        path: '/assetSearch',
+        label: '资产管理：资产查询',
+        type: 2,
+        component: () => import( /* webpackChunkName: 'AssetSearch' */ '/src/views/assetMgr/assetSearch/index.vue'),
+    },
+    {
         path: '/usingUnit',
         label: '资产管理：使用单位查询',
         type: 2,

@@ -7,7 +7,7 @@
 					<div class="row-info">
 						<div class="info-item">
 							<div class="label">机柜编码</div>
-							<div class="content">{{ info.deviceNum }}</div>
+							<div class="content">{{ info.name }}</div>
 						</div>
 						<div class="info-item">
 							<div class="label">楼层</div>
