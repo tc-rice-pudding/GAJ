@@ -66,9 +66,10 @@
 				<section ref="tableContainerRef" style="height: calc(100% - 80px); overflow: hidden" v-loading="loading"
 					element-loading-text="Loading..." :element-loading-spinner="svg"
 					element-loading-svg-view-box="-10, -10, 50, 50" element-loading-background="rgba(122, 122, 122, 0.2)"
-					@selection-change="(selectedList)=>selectedData=selectedList"
 					>
 					<el-table header-row-class-name="table-header" :height="tableHeight" :data="abnormalData" stripe border
+						@select="(selection)=>selectedData=selection"
+						:row-key="row => row.id"
 						style="width: 100%">
 						<el-table-column
 							type="selection"
@@ -241,11 +242,11 @@ export default defineComponent({
     });
 
     const abnormalData = ref([
-      { volatility: "-10%" },
-      { volatility: "10%" },
-      { volatility: "50%" },
-      { volatility: "-50%" },
-      { volatility: "-20%" },
+      { id:'1',volatility: "-10%" },
+      { id:'2',volatility: "10%" },
+      { id:'3',volatility: "50%" },
+      { id:'4',volatility: "-50%" },
+      { id:'5',volatility: "-20%" },
     ]);
     const pageInfo = reactive({
       currentPage: 1,
