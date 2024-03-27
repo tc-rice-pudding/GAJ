@@ -191,7 +191,7 @@ export const useOptions = (queryInfo) => {
 	// 获取业务系统
 	const getOption2 = async () => {
 		try {
-			const res = await axios.post('/dcim/custom/device/userName/selectBox/businessType',{
+			const res = await axios.post('/dcim/custom/device/userName/selectBox/businessSystem',{
 				userName: (queryInfo.userName||[]).toString(),
 				// businessSystem:(queryInfo.systemName||[]).toString(),
 				room: (queryInfo.floor||[]).toString(),
@@ -223,32 +223,31 @@ export const useOptions = (queryInfo) => {
 	getOption3();
 
 	watch(
-		() => queryInfo.userName,
+		() => queryInfo,
 		(val) => {
-			if(val&&val.length){
-				getOption2();
-				getOption3();
-			}
+			getOption1();
+			getOption2();
+			getOption3();
+		},{
+			deep: true
 		}
 	);
-	watch(
-		() => queryInfo.systemName,
-		(val) => {
-			if(val&&val.length){
-				getOption1();
-				getOption3();
-			}
-		}
-	);
-	watch(
-		() => queryInfo.floor,
-		(val) => {
-			if(val&&val.length){
-				getOption1();
-				getOption2();
-			}
-		}
-	);
+	// watch(
+	// 	() => queryInfo.systemName,
+	// 	(val) => {
+	// 		getOption1();
+	// 		getOption2();
+	// 		getOption3();
+	// 	}
+	// );
+	// watch(
+	// 	() => queryInfo.floor,
+	// 	(val) => {
+	// 		getOption1();
+	// 		getOption2();
+	// 		getOption3();
+	// 	}
+	// );
 
 	return { optionMap };
 };

@@ -23,7 +23,7 @@
 						</div>
 						<div class="row">
 							<label class="title">机柜容量</label>
-							<label class="content">{{ cabinetInfo.uTotal || '' }}</label>
+							<label class="content">{{ cabinetInfo.utotal || '' }}</label>
 						</div>
 						<div class="row">
 							<label class="title">机柜承重</label>
@@ -94,7 +94,7 @@ export default defineComponent({
 		.warp {
 			background-image: url('@/assets/images/asset/cabinet-bg.png');
 			background-size: 100% 100%;
-			height: 85px;
+			height: 240px;
 			padding: 20px;
 			.row {
 				margin: 5px 0;

@@ -116,7 +116,14 @@
 					<span>导入时间</span>
 					<el-date-picker v-model="queryInfo.create_date" type="datetime" size="small" />
 				</div>
-				<!-- todo use_unit: '', system_name: '', -->
+				<div class="query-row-item" v-show="checkedCities.includes('system_name')&&resInfo.trendFields.length">
+					<span>虚拟机</span>
+					<el-input v-model="queryInfo.system_name" size="small" clearable></el-input>
+				</div>
+				<div class="query-row-item" v-show="checkedCities.includes('use_unit')&&resInfo.trendFields.length">
+					<span>虚拟机使用单位</span>
+					<el-input v-model="queryInfo.use_unit" size="small" clearable></el-input>
+				</div>
 			</div>
 			<div class="btn-row">
 				<el-button
@@ -155,15 +162,31 @@
 						>全选</el-checkbox
 					>
 					<el-checkbox-group v-model="checkedCities" @change="handleCheckedCitiesChange">
-						<el-checkbox style="width: 150px" v-for="city in cities" :key="city" :label="city.value">{{
+						<el-checkbox style="width: 150px" v-for="city in cities" :disabled="['system_name','use_unit'].includes(city.value)&&resInfo.trendFields.length===0" :key="city" :label="city.value">{{
 							city.label
 						}}</el-checkbox>
+					</el-checkbox-group>
+				</el-popover>
+
+				<el-popover placement="bottom" :width="400" trigger="click" popper-class="custom-popper-class">
+					<template #reference>
+						<el-button
+							style="background: transparent; color: #73e0cd; margin-left: 10px"
+							type="primary"
+							size="small"
+							@click="columnsDropHandler"
+							>设置展示字段</el-button>
+					</template>
+					<el-checkbox v-model="checkAllColumns" :indeterminate="isIndeterminateColumns" @change="handleColumnsCheckAllChange"
+						>全选</el-checkbox
+					>
+					<el-checkbox-group v-model="checkedColumns" @change="handleCheckedColumnsChange">
+						<el-checkbox class="dragItem move" style="width: 150px" v-for="col in tableColumns" :key="col" :label="col.label">{{col.label}}</el-checkbox>
 					</el-checkbox-group>
 				</el-popover>
 			</div>
 		</header>
 
-		<!-- todo 统计 -->
 		<section
 			v-loading="loading1"
 			element-loading-text="Loading..."
@@ -173,15 +196,16 @@
 		>
 			<el-table header-row-class-name="table-header" :data="resInfo.tableStatData" stripe style="width: 100%">
 				<el-table-column prop="userName" label="使用单位" />
+				<el-table-column prop="systemNum" label="系统数量" />
 				<el-table-column prop="roomNum" label="机房数量" />
 				<el-table-column prop="deviceNum" label="设备数量" />
 				<el-table-column prop="typeNum" label="设备类型" />
 			</el-table>
 		</section>
 
-		<!-- todo 列表 -->
 		<section ref="tableContainerRef" style="height: calc(100% - 100px); overflow: hidden">
 			<el-table
+				v-if="reflushTable"
 				header-row-class-name="table-header"
 				:height="tableHeight"
 				:data="resInfo.tableData"
@@ -193,83 +217,15 @@
 			>
 				<el-table-column type="selection" width="55" />
 				<el-table-column type="index" width="80" label="序号" align="center" sortable />
-				<el-table-column
-					prop="Machineroom_num"
-					label="机房名称"
+				<el-table-column v-for="field in tableColumns.filter(col=>col.show)" :key="field.prop"
+					:prop="field.prop"
+					:label="field.label"
+					:min-width="field.minWidth"
 					show-overflow-tooltip
-					min-width="90"
-					align="center" sortable
+					align="center"
+					sortable
 				/>
-				<el-table-column
-					prop="Cabinet_num"
-					label="机柜编码"
-					show-overflow-tooltip
-					min-width="90"
-					align="center" sortable
-				/>
-				<el-table-column prop="device_num" label="编号" show-overflow-tooltip align="center" sortable />
-				<el-table-column prop="Usage" label="使用状态" show-overflow-tooltip min-width="90" align="center" sortable />
-				<el-table-column prop="startU" label="起始U位" show-overflow-tooltip min-width="90" align="center" sortable />
-				<el-table-column prop="endU" label="结束U位" show-overflow-tooltip min-width="90" align="center" sortable />
-				<el-table-column prop="u" label="高度" show-overflow-tooltip align="center" sortable />
-				<el-table-column
-					prop="device_type_cn"
-					label="设备类型"
-					show-overflow-tooltip
-					min-width="90"
-					align="center" sortable
-				/>
-				<el-table-column
-					prop="manufacture"
-					label="设备品牌"
-					show-overflow-tooltip
-					min-width="90"
-					align="center" sortable
-				/>
-				<el-table-column prop="logo" label="设备型号" show-overflow-tooltip min-width="90" align="center" sortable />
-				<el-table-column
-					prop="power"
-					label="设备额定功率（KW）"
-					show-overflow-tooltip
-					min-width="90"
-					align="center" sortable
-				/>
-				<el-table-column
-					prop="electric_socket"
-					label="设备电源"
-					show-overflow-tooltip
-					min-width="90"
-					align="center" sortable
-				/>
-				<el-table-column
-					prop="Networking_type"
-					label="业务系统"
-					show-overflow-tooltip
-					min-width="90"
-					align="center" sortable
-				/>
-				<el-table-column
-					prop="User_name"
-					label="使用单位"
-					show-overflow-tooltip
-					min-width="90"
-					align="center" sortable
-				/>
-				<el-table-column prop="owner" label="设备管理人" show-overflow-tooltip min-width="90" align="center" sortable />
-				<el-table-column
-					prop="Telephone"
-					label="联系电话"
-					show-overflow-tooltip
-					min-width="90"
-					align="center" sortable
-				/>
-				<el-table-column
-					prop="create_date"
-					label="导入时间"
-					show-overflow-tooltip
-					min-width="90"
-					align="center" sortable
-				/>
+				<!-- 虚拟机 -->
 				<el-table-column v-for="field in resInfo.trendFields" :key="field.prop"
 					:prop="field.prop"
 					:label="field.label"
@@ -298,6 +254,7 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 import { exportHandler, resizeWindow } from '@/utils/index.js';
 import { ElMessage } from 'element-plus';
+import Sortable from 'sortablejs';
 
 const useReLayout = () => {
 	const rootWarpRef = ref(null);
@@ -328,6 +285,7 @@ const useCustomFields = () => {
 	const checkAll = ref(false);
 	const isIndeterminate = ref(true);
 	const checkedCities = ref(['Machineroom_num', 'Cabinet_num', 'device_num', 'Usage', 'startU']);
+	let lastCheckedCities = (window.localStorage.getItem('assetSearch_checkedCities')||'').split(',').filter(it=>it);
 	const cities = [
 		{ value: 'Machineroom_num', label: '机房名称/机房编码' },
 		{ value: 'Cabinet_num', label: '机柜编码' },
@@ -347,16 +305,24 @@ const useCustomFields = () => {
 		{ value: 'Telephone', label: '联系电话' },
 		{ value: 'description', label: '资产备注' },
 		{ value: 'create_date', label: '导入时间' },
+		{ value: 'system_name', label: '虚拟机' },
+		{ value: 'use_unit', label: '虚拟机使用单位' },
 	];
+	if(lastCheckedCities.length){
+		checkedCities.value = lastCheckedCities;
+		checkAll.value = checkedCities.value.length ===cities.length;
+	}
 
 	const handleCheckAllChange = (val) => {
 		checkedCities.value = val ? cities.map((it) => it.value) : [];
 		isIndeterminate.value = false;
+		window.localStorage.setItem('assetSearch_checkedCities',checkedCities.value.toString());
 	};
 	const handleCheckedCitiesChange = (list) => {
 		const checkedCount = list.length;
 		checkAll.value = checkedCount === cities.length;
 		isIndeterminate.value = checkedCount > 0 && checkedCount < cities.length;
+		window.localStorage.setItem('assetSearch_checkedCities',list.toString());
 	};
 
 	const reLayout = useReLayout();
@@ -433,6 +399,31 @@ export default {
 				" style="stroke-width: 4px; fill: rgba(0, 0, 0, 0)"/>`,
 		});
 
+		let tableColumns = ref([
+			{ prop:"Machineroom_num",label:"机房名称",minWidth:'110',show: true},
+			{ prop:"Cabinet_num",label:"机柜编码",minWidth:'110',show: true},
+			{ prop:"device_num",label:"编号",minWidth:'110',show: true},
+			{ prop:"Usage",label:"使用状态",minWidth:'110',show: true},
+			{ prop:"startU",label:"起始U位",minWidth:'110',show: true},
+			{ prop:"endU",label:"结束U位",minWidth:'110',show: true},
+			{ prop:"u",label:"高度",minWidth:'110',show: true},
+			{ prop:"Empty_U_cfcient",label:"空U系数",minWidth:'110',show: true},
+			{ prop:"device_type_cn",label:"设备类型",minWidth:'110',show: true},
+			{ prop:"manufacture",label:"设备品牌",minWidth:'110',show: true},
+			{ prop:"logo",label:"设备型号",minWidth:'110',show: true},
+			{ prop:"power",label:"设备额定功率（KW）",minWidth:'200',show: true},
+			{ prop:"electric_socket",label:"设备电源",minWidth:'110',show: true},
+			{ prop:"Networking_type",label:"联网类型",minWidth:'110',show: true},
+			{ prop:"Business_system_name",label:"业务系统上报名称",minWidth:'180',show: true},
+			{ prop:"Business_system_Dispname",label:"业务系统展示名称",minWidth:'180',show: true},
+			{ prop:"User_name",label:"使用单位",minWidth:'110',show: true},
+			{ prop:"department",label:"使用部门",minWidth:'110',show: true},
+			{ prop:"owner",label:"设备管理人",minWidth:'130',show: true},
+			{ prop:"Telephone",label:"联系电话",minWidth:'110',show: true},
+			{ prop:"description",label:"资产备注",minWidth:'110',show: true},
+			{ prop:"create_date",label:"导入时间",minWidth:'110',show: true},
+		]);
+
 		const props = {
 			lazy: true,
 			lazyLoad(node, resolve) {
@@ -482,6 +473,7 @@ export default {
 		};
 
 		const queryInfo = reactive({
+			userName:'',
 			Machineroom_num: '', //机房名称
 			// Machineroom_num: '', //机房编码
 			Cabinet_num: '', // 机柜编码
@@ -521,6 +513,17 @@ export default {
 			total: 0,
 		});
 
+
+		const propList = ['Machineroom_num',
+			'Cabinet_num',
+			'Usage',
+			'Empty_U_cfcient',
+			'Networking_type',
+			'Business_system_name',
+			'Business_system_Dispname',
+			'User_name',
+			'Telephone'];
+		const spotsList = ['u','power','electric_socket'];
 		const getParams = (pageInx, pageSize, prop, order) => {
 			const terms = [];
 			// fix: 动态属性
@@ -687,7 +690,7 @@ export default {
 				where2: termsList2.length?[{ terms: [ ...termsList2 ]}]:[],
 				page: { number: pageInx, size: pageSize },
 				sorts:  prop && order ? 
-					[{ field: prop, type: order === 'ascending' ? 'ASC' : 'DESC'}]:
+					[{ field: propList.includes(prop)?`properties.${prop}`:spotsList.includes(prop)?`spots.${prop}`:prop, type: order === 'ascending' ? 'ASC' : 'DESC'}]:
 					 [{ field: 'create_date', type: 'DESC' }],
 				translate: 1,
 			};
@@ -730,12 +733,31 @@ export default {
 				loadingInfo.loading = false;
 			}
 		};
+		// 统计接口
+		const tableStatHandler = async () => {
+			try {
+				loadingInfo.loading1 = true;
+				const res = await axios.post(
+					`/dcim/space/assetListDetail?userName=${queryInfo.userName}`,
+					getParams(pageInfo.currentPage, 100000)
+				);
+				if (res.data.status === 200) {
+					resInfo.tableStatData = res.data.result;
+				}
+			} catch (error) {
+				console.log(error);
+			} finally {
+				loadingInfo.loading1 = false;
+			}
+		};
 
 		const sortChange = ({ prop, order }) =>{
+			tableStatHandler();
 			tableHandler(prop, order);
 		};
 
 		const onSearch = () => {
+			tableStatHandler();
 			tableHandler();
 		};
 		const onExportAll = () => {
@@ -766,7 +788,10 @@ export default {
 		};
 
 		// 分页
-		watch([() => pageInfo.pageSize, () => pageInfo.currentPage], () => tableHandler());
+		watch([() => pageInfo.pageSize, () => pageInfo.currentPage], () => {
+			tableStatHandler();
+			tableHandler();
+		});
 
 		watchEffect(() => {
 			console.log(1111);
@@ -777,6 +802,60 @@ export default {
 		});
 
 		console.log(useGetOptions());
+
+
+		// 字段展示
+		const checkAllColumns = ref(false);
+		const isIndeterminateColumns = ref(true);
+		const checkedColumns = ref([...tableColumns.value.filter(col=>col.show).map(col=>col.label)]);
+
+		let lastTableColumns = window.localStorage.getItem('assetSearch_tableColumns');
+		if(lastTableColumns){
+			lastTableColumns = JSON.parse(lastTableColumns) || [];
+			checkAllColumns.value = tableColumns.value.length ===lastTableColumns.length;
+		}
+		if(lastTableColumns.length){
+			tableColumns.value = lastTableColumns;
+		}
+
+		const handleColumnsCheckAllChange = (val) => {
+			checkedColumns.value = val ? tableColumns.value.map(col=>col.label) : [];
+			isIndeterminateColumns.value = false;
+
+			tableColumns.value.forEach(col=>{
+				col.show=checkedColumns.value.includes(col.label)?true:false;
+			});
+			window.localStorage.setItem('assetSearch_tableColumns', JSON.stringify(tableColumns.value));
+		};
+		const handleCheckedColumnsChange = (list) => {
+			const checkedCount = list.length;
+			checkAllColumns.value = checkedCount === tableColumns.value.length;
+			isIndeterminateColumns.value = checkedCount > 0 && checkedCount < tableColumns.value.length;
+			
+			list.length && tableColumns.value.forEach(col=>{
+				col.show=list.includes(col.label)?true:false;
+			});
+			window.localStorage.setItem('assetSearch_tableColumns', JSON.stringify(tableColumns.value));
+		};
+
+		let reflushTable = ref(true);
+		const columnsDropHandler = ()=>{
+			const tbody = document.querySelector('.custom-popper-class .el-checkbox-group');
+			Sortable.create(tbody, {
+				draggable:'.dragItem',
+				animation: 1000,
+				handle: '.move',
+				onEnd: ({newIndex,oldIndex})=>{
+					reflushTable.value=false;
+					[tableColumns.value[newIndex],tableColumns.value[oldIndex]]=[tableColumns.value[oldIndex],tableColumns.value[newIndex]];
+					console.log(tableColumns.value);
+					setTimeout(()=>{
+						reflushTable.value=true;
+						handleCheckedColumnsChange([]);
+					},100);
+				}
+			});
+		};
 
 		return {
 			queryInfo,
@@ -790,6 +869,12 @@ export default {
 			sortChange,
 			onExportAll,
 			onExportMuti,
+			tableColumns,
+			checkedColumns,
+			handleCheckedColumnsChange,
+			columnsDropHandler,
+			reflushTable,
+			checkAllColumns,isIndeterminateColumns,handleColumnsCheckAllChange
 		};
 	},
 };

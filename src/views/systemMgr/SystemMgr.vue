@@ -173,6 +173,7 @@
 				@selection-change="(list) => (resInfo.selectedData = list)"
 			>
 				<el-table-column type="selection" width="55" />
+				<!-- todo -->
 				<el-table-column type="index" width="80" label="序号" align="center" />
 				<el-table-column
 					prop="Machineroom_num"
@@ -181,13 +182,6 @@
 					min-width="90"
 					align="center"
 				/>
-				<!-- <el-table-column
-					prop="Machineroom_num"
-					label="机房编码"
-					show-overflow-tooltip
-					min-width="90"
-					align="center"
-				/> -->
 				<el-table-column
 					prop="Cabinet_num"
 					label="机柜编码"

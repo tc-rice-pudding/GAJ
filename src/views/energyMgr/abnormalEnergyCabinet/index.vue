@@ -70,16 +70,18 @@
 					>
 					<el-table header-row-class-name="table-header" :height="tableHeight" :data="abnormalData" stripe border
 						style="width: 100%">
+						<el-table-column
+							type="selection"
+							align="center"
+							fixed
+							width="50"
+							:reserve-selection="true"
+						></el-table-column>
 						<el-table-column type="index" width="60" label="序号" align="center" />
-	
 						<el-table-column prop="deviceNum" label="机柜编号" show-overflow-tooltip min-width="90" align="left" />
-	
 						<el-table-column prop="name" label="机房编号" show-overflow-tooltip min-width="90" align="left" />
-	
-						<el-table-column prop="room" label="近8天平均功率(W)" show-overflow-tooltip min-width="90" align="left" />
-	
-						<el-table-column prop="room" label="昨日平均功率(W)" show-overflow-tooltip min-width="90" align="left" />
-	
+						<el-table-column prop="avgValue" label="近8天平均功率(W)" show-overflow-tooltip min-width="120" align="left" />
+						<el-table-column prop="value" label="昨日平均功率(W)" show-overflow-tooltip min-width="120" align="left" />
 						<el-table-column prop="volatility" label="波动率 %" show-overflow-tooltip min-width="90"
 							align="center">
 							<template v-slot="{ row }">
@@ -91,11 +93,9 @@
 						</el-table-column>
 						<el-table-column prop="time" label="产生日期" show-overflow-tooltip min-width="90" align="left" />
 						<el-table-column prop="reason" label="波动原因" show-overflow-tooltip min-width="90" align="left" />
-						<el-table-column prop="reason" label="核对说明" show-overflow-tooltip min-width="90" align="left" />
-						<el-table-column prop="reason" label="核对人" show-overflow-tooltip min-width="90" align="left" />
-						<el-table-column prop="reason" label="核对时间" show-overflow-tooltip min-width="90" align="left" />
-						<el-table-column prop="reason" label="恢复状态" show-overflow-tooltip min-width="90" align="left" />
-						<el-table-column prop="reason" label="恢复时间" show-overflow-tooltip min-width="90" align="left" />
+						<el-table-column prop="checkSpec" label="核对说明" show-overflow-tooltip min-width="90" align="left" />
+						<el-table-column prop="checkPerson" label="核对人" show-overflow-tooltip min-width="90" align="left" />
+						<el-table-column prop="checkTime" label="核对时间" show-overflow-tooltip min-width="90" align="left" />
 					</el-table>
 					<el-pagination class="pagenation" :current-page="currentPage" :page-size="pageSize"
 						:page-sizes="[10, 15, 30, 50, 100]" small="small" layout="sizes, prev, pager, next" :total="total"
@@ -128,7 +128,8 @@
 	<el-dialog v-model="sheldDialog" title="设置屏蔽机柜" width="500" class="custom-dialog">
 		<p style="font-size: 18px;">选择机柜，设置数据屏蔽规则，机柜平均功耗将使用屏蔽结束后的数据重新计算</p>
 		<div style="display: flex; line-height: 32px; margin-bottom: 10px">
-			<label style="width: 80px">选择机柜：</label>
+			<label style="width: 80px"><span style="color:red;">*</span>选择机柜：</label>
+			<!-- todo -->
 			<el-select v-model="sheldInfo.cabinet" style="width: 350px" placeholder="请选择" clearable multiple filterable
 							collapse-tags collapse-tags-tooltip>
 				<el-option v-for="item in cabinetsOptions" :key="item.value" :label="item.name"
@@ -136,7 +137,7 @@
 			</el-select>
 		</div>
 		<div style="display: flex; line-height: 32px">
-			<label style="width: 80px">忽略日期：</label>
+			<label style="width: 80px"><span style="color:red;">*</span>忽略日期：</label>
 			<el-date-picker v-model="sheldInfo.timeRange" type="daterange" style="width: 300px"
 							range-separator="-" start-placeholder="开始时间" end-placeholder="结束时间"
 							popper-class="custom-date-picker" value-format="YYYY-MM-DD" />
@@ -180,7 +181,6 @@ export default defineComponent({
     });
 
     const abnormalData = ref([
-      // FIX
       { volatility: "-10%" },
       { volatility: "10%" },
       { volatility: "50%" },
@@ -286,6 +286,7 @@ export default defineComponent({
 
     const onSheld = async() => {
 		try {
+			// fix
 			const [start, end] = sheldInfo.timeRange || [];
 			const { code } = await axios.post("/dcim/custom/energy/save/ignore", {
 				locationDtos: cabinetsOptions.value.filter(it=>sheldInfo.cabinetIds.includes(it.cabinetIds)),
@@ -343,6 +344,7 @@ export default defineComponent({
       checkInfo,
 	  sheldInfo,
       querySearch,
+	  abnormalData,
     };
   },
 });

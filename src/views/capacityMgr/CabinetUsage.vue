@@ -167,8 +167,8 @@ export default defineComponent({
 			});
 		});
 
-		let cumtomHeight = ref(360);
-		let calcuFlag = ref(true);
+		let cumtomHeight = ref(0);
+		let calcuFlag = ref(false);
 		let calcuRef = ref(null);
 		const onCalculation = () => {
 			calcuFlag.value = !calcuFlag.value;
