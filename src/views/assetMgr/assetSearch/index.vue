@@ -179,7 +179,7 @@
 					</template>
 					<el-checkbox v-model="checkAllColumns" :indeterminate="isIndeterminateColumns" @change="handleColumnsCheckAllChange"
 						>全选</el-checkbox
-					>
+					> <span style="vertical-align: text-top; font-size: 12px; margin-left: 20px; color: #aba8a8;">支持拖动展示排序</span>
 					<el-checkbox-group v-model="checkedColumns" @change="handleCheckedColumnsChange">
 						<el-checkbox class="dragItem move" style="width: 150px" v-for="col in tableColumns" :key="col" :label="col.label">{{col.label}}</el-checkbox>
 					</el-checkbox-group>
@@ -223,7 +223,7 @@
 					:min-width="field.minWidth"
 					show-overflow-tooltip
 					align="center"
-					sortable
+					:sortable="field.sortable"
 				/>
 				<!-- 虚拟机 -->
 				<el-table-column v-for="field in resInfo.trendFields" :key="field.prop"
@@ -400,28 +400,28 @@ export default {
 		});
 
 		let tableColumns = ref([
-			{ prop:"Machineroom_num",label:"机房名称",minWidth:'110',show: true},
-			{ prop:"Cabinet_num",label:"机柜编码",minWidth:'110',show: true},
-			{ prop:"device_num",label:"编号",minWidth:'110',show: true},
-			{ prop:"Usage",label:"使用状态",minWidth:'110',show: true},
+			{ prop:"Machineroom_num",label:"机房名称",minWidth:'110',show: true,sortable: true},
+			{ prop:"Cabinet_num",label:"机柜编码",minWidth:'110',show: true,sortable: true},
+			{ prop:"device_num",label:"编号",minWidth:'110',show: true,sortable: true},
+			{ prop:"Usage",label:"使用状态",minWidth:'110',show: true,sortable: true},
 			{ prop:"startU",label:"起始U位",minWidth:'110',show: true},
 			{ prop:"endU",label:"结束U位",minWidth:'110',show: true},
-			{ prop:"u",label:"高度",minWidth:'110',show: true},
-			{ prop:"Empty_U_cfcient",label:"空U系数",minWidth:'110',show: true},
-			{ prop:"device_type_cn",label:"设备类型",minWidth:'110',show: true},
+			{ prop:"u",label:"高度",minWidth:'110',show: true,sortable: true},
+			{ prop:"Empty_U_cfcient",label:"空U系数",minWidth:'110',show: true,sortable: true},
+			{ prop:"device_type_cn",label:"设备类型",minWidth:'110',show: true,sortable: true},
 			{ prop:"manufacture",label:"设备品牌",minWidth:'110',show: true},
 			{ prop:"logo",label:"设备型号",minWidth:'110',show: true},
-			{ prop:"power",label:"设备额定功率（KW）",minWidth:'200',show: true},
-			{ prop:"electric_socket",label:"设备电源",minWidth:'110',show: true},
-			{ prop:"Networking_type",label:"联网类型",minWidth:'110',show: true},
-			{ prop:"Business_system_name",label:"业务系统上报名称",minWidth:'180',show: true},
-			{ prop:"Business_system_Dispname",label:"业务系统展示名称",minWidth:'180',show: true},
-			{ prop:"User_name",label:"使用单位",minWidth:'110',show: true},
-			{ prop:"department",label:"使用部门",minWidth:'110',show: true},
-			{ prop:"owner",label:"设备管理人",minWidth:'130',show: true},
-			{ prop:"Telephone",label:"联系电话",minWidth:'110',show: true},
-			{ prop:"description",label:"资产备注",minWidth:'110',show: true},
-			{ prop:"create_date",label:"导入时间",minWidth:'110',show: true},
+			{ prop:"power",label:"设备额定功率（KW）",minWidth:'200',show: true,sortable: true},
+			{ prop:"electric_socket",label:"设备电源",minWidth:'110',show: true,sortable: true},
+			{ prop:"Networking_type",label:"联网类型",minWidth:'110',show: true,sortable: true},
+			{ prop:"Business_system_name",label:"业务系统上报名称",minWidth:'180',show: true,sortable: true},
+			{ prop:"Business_system_Dispname",label:"业务系统展示名称",minWidth:'180',show: true,sortable: true},
+			{ prop:"User_name",label:"使用单位",minWidth:'110',show: true,sortable: true},
+			{ prop:"department",label:"使用部门",minWidth:'110',show: true,sortable: true},
+			{ prop:"owner",label:"设备管理人",minWidth:'130',show: true,sortable: true},
+			{ prop:"Telephone",label:"联系电话",minWidth:'110',show: true,sortable: true},
+			{ prop:"description",label:"资产备注",minWidth:'110',show: true,sortable: true},
+			{ prop:"create_date",label:"导入时间",minWidth:'110',show: true,sortable: true},
 		]);
 
 		const props = {
@@ -700,12 +700,12 @@ export default {
 		const findTrendFields = (row)=>{
 			const list = Object.entries(row).map(arr=>arr[0]);
 			resInfo.trendFields = [
-				...list.filter(it => it.includes('system_name')).sort((a, b) => a.slice(-1) - b.slice(-1)).map((it, inx) => ({
+				...list.filter(it => it.startsWith('system_name')).sort((a, b) => a.slice(-1) - b.slice(-1)).map((it, inx) => ({
 					label: `虚拟机${it.slice(-1)}`,
 					prop: it,
 					index: inx * 2
 				})),
-				...unitList = list.filter(it => it.includes('use_unit')).sort((a, b) => a.slice(-1) - b.slice(-1)).map((it, inx) => ({
+				...list.filter(it => it.startsWith('use_unit')).sort((a, b) => a.slice(-1) - b.slice(-1)).map((it, inx) => ({
 					label: `虚拟机使用单位${it.slice(-1)}`,
 					prop: it,
 					index: inx * 2 + 1
@@ -799,6 +799,7 @@ export default {
 
 		onMounted(() => {
 			tableHandler();
+			tableStatHandler();
 		});
 
 		console.log(useGetOptions());
@@ -814,7 +815,7 @@ export default {
 			lastTableColumns = JSON.parse(lastTableColumns) || [];
 			checkAllColumns.value = tableColumns.value.length ===lastTableColumns.length;
 		}
-		if(lastTableColumns.length){
+		if(Array.isArray(lastTableColumns)&&lastTableColumns.length){
 			tableColumns.value = lastTableColumns;
 		}
 

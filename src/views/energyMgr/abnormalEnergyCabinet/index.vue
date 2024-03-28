@@ -109,7 +109,7 @@
 	<el-dialog v-model="checkDialog" title="核对" width="440" class="custom-dialog" :close-on-click-modal="false">
 		<div style="display: flex; line-height: 32px; margin-bottom: 10px">
 			<label style="width: 80px">波动原因：</label>
-			<el-autocomplete v-model="checkInfo.reasion" style="width: 300px; display: flex; align-content: flex-start"
+			<el-autocomplete v-model="checkInfo.reason" style="width: 300px; display: flex; align-content: flex-start"
 				:fetch-suggestions="querySearch" clearable />
 		</div>
 		<div style="display: flex; line-height: 32px">
@@ -176,7 +176,7 @@ export default defineComponent({
     let checkDialog = ref(false);
     let sheldDialog = ref(false);
     const checkInfo = reactive({
-      reasion: "",
+      reason: "",
       checkSpec: "",
     });
     const sheldInfo = reactive({
@@ -349,18 +349,19 @@ export default defineComponent({
 				return;
 			}
 			const [start, end] = sheldInfo.timeRange || [];
-			const { code } = await axios.post("/dcim/custom/energy/save/ignore", {
+			const res = await axios.post("/dcim/custom/energy/save/ignore", {
 				locationDtos: sheldInfo.spaceNodeList,
 				startTime: start || "",
 				endTime: end || "",
 			});
-			if(code===200){
+			if(res.data.code===200){
 				ElMessage.success('操作成功');
 				sheldInfo.timeRange=[];
 				sheldInfo.spaceNodeList=[];
 				sheldInfo.spaceNodeNames='';
-      			sheldDialog.value=false;
+				onSearch();
 			}
+			sheldDialog.value=false;
 		} catch (error) {
 			console.log(error);
 		}
@@ -375,13 +376,14 @@ export default defineComponent({
 	  
 	  try {
 		const paramsList = selectedData.value.map(it=>({id:it.id,...checkInfo}));
-        const { code } = await axios.post("/dcim/custom/energy/update/abnormal", paramsList);
-		if(code===200){
+        const res = await axios.post("/dcim/custom/energy/update/abnormal", paramsList);
+		if(res.data.code===200){
 			ElMessage.success('操作成功');
 			checkInfo.checkSpec='';
-			checkInfo.reasion='';
-			checkDialog.value=false;
+			checkInfo.reason='';
+			onSearch();
 		}
+		checkDialog.value=false;
       } catch (error) {
         console.log(error);
       }
@@ -391,24 +393,24 @@ export default defineComponent({
 		cabinetsOptions,
 		defaultProps,
 		treeRef,checkChange,
-      checkDialog,
-      sheldDialog,
-      queryInfo,
-      ...toRefs(pageInfo),
-      ...toRefs(loadingInfo),
-      ...toRefs(useOptions()),
-      onSearch,
-      handleSizeChange,
-      handleCurrentChange,
-      tableContainerRef,
-      tableHeight,
-	  selectedData,
-      onSheld,
-      onCheck,
-      checkInfo,
-	  sheldInfo,
-      querySearch,
-	  abnormalData,
+		checkDialog,
+		sheldDialog,
+		queryInfo,
+		...toRefs(pageInfo),
+		...toRefs(loadingInfo),
+		...toRefs(useOptions()),
+		onSearch,
+		handleSizeChange,
+		handleCurrentChange,
+		tableContainerRef,
+		tableHeight,
+		selectedData,
+		onSheld,
+		onCheck,
+		checkInfo,
+		sheldInfo,
+		querySearch,
+		abnormalData,
     };
   },
 });
