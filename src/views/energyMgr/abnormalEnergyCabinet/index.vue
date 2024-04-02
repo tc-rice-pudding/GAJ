@@ -130,7 +130,7 @@
 		<p style="font-size: 18px;">选择机柜，设置数据屏蔽规则，机柜平均功耗将使用屏蔽结束后的数据重新计算</p>
 		<div style="display: flex; line-height: 32px; margin-bottom: 10px">
 			<label style="width: 80px"><span style="color:red;">*</span>选择机柜：</label>
-			<el-popover placement="bottom" :width="400" trigger="click">
+			<el-popover placement="bottom" :width="400" trigger="click" popper-style="max-height: 300px; overflow: auto;">
 				<template #reference>
 					<el-input v-model="sheldInfo.spaceNodeNames" style="width: 350px;" size="small" readonly></el-input>
 				</template>
@@ -197,12 +197,68 @@ export default defineComponent({
 					name:'room2',
 					resourceId:'1-2',
 				},
+				{
+					name:'room1',
+					resourceId:'1-1',
+				},
+				{
+					name:'room2',
+					resourceId:'1-2',
+				},
+				{
+					name:'room1',
+					resourceId:'1-1',
+				},
+				{
+					name:'room2',
+					resourceId:'1-2',
+				},
 			],
 		},
 		{
 			name:'floor2',
 			resourceId:'2',
 			children: [
+				{
+					name:'room2',
+					resourceId:'2-1',
+				},
+				{
+					name:'room2',
+					resourceId:'2-2',
+				},
+				{
+					name:'room2',
+					resourceId:'2-1',
+				},
+				{
+					name:'room2',
+					resourceId:'2-2',
+				},
+				{
+					name:'room2',
+					resourceId:'2-1',
+				},
+				{
+					name:'room2',
+					resourceId:'2-2',
+				},
+				{
+					name:'room2',
+					resourceId:'2-1',
+				},
+				{
+					name:'room2',
+					resourceId:'2-2',
+				},
+				{
+					name:'room2',
+					resourceId:'2-1',
+				},
+				{
+					name:'room2',
+					resourceId:'2-2',
+				},
 				{
 					name:'room2',
 					resourceId:'2-1',

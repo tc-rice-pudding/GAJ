@@ -94,10 +94,14 @@ export default defineComponent({
 		.warp {
 			background-image: url('@/assets/images/asset/cabinet-bg.png');
 			background-size: 100% 100%;
-			height: 240px;
-			padding: 20px;
+			height: 260px;
+			padding: 10px 20px;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-around;
 			.row {
 				margin: 5px 0;
+				display: flex;
 				.title {
 					width: 80px;
 					display: inline-block;

@@ -116,11 +116,11 @@
 					<span>导入时间</span>
 					<el-date-picker v-model="queryInfo.create_date" type="datetime" size="small" />
 				</div>
-				<div class="query-row-item" v-show="checkedCities.includes('system_name')&&resInfo.trendFields.length">
+				<div class="query-row-item" v-show="checkedCities.includes('system_name')">
 					<span>虚拟机</span>
 					<el-input v-model="queryInfo.system_name" size="small" clearable></el-input>
 				</div>
-				<div class="query-row-item" v-show="checkedCities.includes('use_unit')&&resInfo.trendFields.length">
+				<div class="query-row-item" v-show="checkedCities.includes('use_unit')">
 					<span>虚拟机使用单位</span>
 					<el-input v-model="queryInfo.use_unit" size="small" clearable></el-input>
 				</div>
@@ -162,7 +162,7 @@
 						>全选</el-checkbox
 					>
 					<el-checkbox-group v-model="checkedCities" @change="handleCheckedCitiesChange">
-						<el-checkbox style="width: 150px" v-for="city in cities" :disabled="['system_name','use_unit'].includes(city.value)&&resInfo.trendFields.length===0" :key="city" :label="city.value">{{
+						<el-checkbox style="width: 150px" v-for="city in cities" :key="city" :label="city.value">{{
 							city.label
 						}}</el-checkbox>
 					</el-checkbox-group>
@@ -713,6 +713,15 @@ export default {
 			].sort((a, b) => a.index - b.index);
 		};
 
+		const findTrendFieldsByNum = (count)=>{
+			if(isNaN(Number(count))) return;
+			resInfo.trendFields = [];
+			for(let i=0; i<count; i++){
+				resInfo.trendFields.push({label:`虚拟机${i+1}`,prop: `system_name${i+1}`});
+				resInfo.trendFields.push({label:`虚拟机使用单位${i+1}`,prop: `use_unit${i+1}`});
+			}
+		};
+
 		// 列表接口
 		const tableHandler = async (prop, order) => {
 			try {
@@ -724,11 +733,13 @@ export default {
 				if (res.status === 200) {
 					resInfo.tableData = res.data.data || [];
 					pageInfo.total = res.data.total;
-					findTrendFields(resInfo.tableData[0]);
+					// findTrendFields(resInfo.tableData[0]);
+					findTrendFieldsByNum(res.data.vmCount);
 				}
 			} catch (error) {
 				console.log(error);
 				resInfo.tableData = [];
+				// findTrendFieldsByNum(4);
 			} finally {
 				loadingInfo.loading = false;
 			}

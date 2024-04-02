@@ -42,7 +42,7 @@
 					v-for="col in tableColumn"
 					:key="col"
 					:prop="col"
-					:label="col"
+					:label="`${col} (kW)`"
 					show-overflow-tooltip
 					align="center"
 				>
@@ -82,7 +82,7 @@ export const useTableAndLine = (unitList) => {
 
 	let lineOptions = computed(() => {
 		let defaultOps = deepClone(lineOpsDefault);
-		defaultOps.title.text = '各单位月度能耗';
+		defaultOps.title.text = '各单位月度能耗（kW）';
 		defaultOps.xAxis.data = tableColumn.value;
 		defaultOps.legend.data = unitList.value.map((it) => it.userName) || [];
 		defaultOps.grid.bottom = '18%';

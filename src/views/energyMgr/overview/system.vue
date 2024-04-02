@@ -50,7 +50,7 @@
 					v-for="col in tableColumn"
 					:key="col"
 					:prop="col"
-					:label="col"
+					:label="`${col} (kW)`"
 					show-overflow-tooltip
 					align="center"
 				>
@@ -91,7 +91,7 @@ export const useTableAndLine = (systemList) => {
 
 	let lineOptions = computed(() => {
 		let defaultOps = deepClone(lineOpsDefault);
-		defaultOps.title.text = '各系统月度能耗';
+		defaultOps.title.text = '各系统月度能耗（kW）';
 		defaultOps.xAxis.data = tableColumn.value;
 		defaultOps.legend.data = systemList.value.map((it) => it.systemName) || [];
 		defaultOps.grid.bottom = '18%';
