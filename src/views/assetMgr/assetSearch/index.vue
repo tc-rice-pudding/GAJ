@@ -14,9 +14,9 @@
 					<span>机房名称</span>
 					<el-input v-model="queryInfo.Machineroom_num" size="small" clearable></el-input>
 				</div>
-				<div class="query-row-item" v-show="checkedCities.includes('Cabinet_num')">
-					<span>机柜编码</span>
-					<el-input v-model="queryInfo.Cabinet_num" size="small" clearable></el-input>
+				<div class="query-row-item" v-show="checkedCities.includes('name')">
+					<span>所在机柜</span>
+					<el-input v-model="queryInfo.name" size="small" clearable></el-input>
 				</div>
 				<div class="query-row-item" v-show="checkedCities.includes('device_num')">
 					<span>编号</span>
@@ -284,11 +284,11 @@ const useReLayout = () => {
 const useCustomFields = () => {
 	const checkAll = ref(false);
 	const isIndeterminate = ref(true);
-	const checkedCities = ref(['Machineroom_num', 'Cabinet_num', 'device_num', 'Usage', 'startU']);
+	const checkedCities = ref(['Machineroom_num', 'name', 'device_num', 'Usage', 'startU']);
 	let lastCheckedCities = (window.localStorage.getItem('assetSearch_checkedCities')||'').split(',').filter(it=>it);
 	const cities = [
 		{ value: 'Machineroom_num', label: '机房名称/机房编码' },
-		{ value: 'Cabinet_num', label: '机柜编码' },
+		{ value: 'name', label: '所在机柜' },
 		{ value: 'device_num', label: '编号' },
 		{ value: 'Usage', label: '使用状态' },
 		{ value: 'u', label: '高度' },
@@ -401,7 +401,7 @@ export default {
 
 		let tableColumns = ref([
 			{ prop:"Machineroom_num",label:"机房名称",minWidth:'110',show: true,sortable: true},
-			{ prop:"Cabinet_num",label:"机柜编码",minWidth:'110',show: true,sortable: true},
+			{ prop:"name",label:"所在机柜",minWidth:'110',show: true,sortable: true},
 			{ prop:"device_num",label:"编号",minWidth:'110',show: true,sortable: true},
 			{ prop:"Usage",label:"使用状态",minWidth:'110',show: true,sortable: true},
 			{ prop:"startU",label:"起始U位",minWidth:'110',show: true},
@@ -476,7 +476,7 @@ export default {
 			userName:'',
 			Machineroom_num: '', //机房名称
 			// Machineroom_num: '', //机房编码
-			Cabinet_num: '', // 机柜编码
+			name: '', // 所在机柜
 			device_num: '', // 编号
 			Usage: '', // 使用状态
 			// startU: '', // 起始U位
@@ -515,7 +515,7 @@ export default {
 
 
 		const propList = ['Machineroom_num',
-			'Cabinet_num',
+			'name',
 			'Usage',
 			'Empty_U_cfcient',
 			'Networking_type',
@@ -534,10 +534,10 @@ export default {
 					operator: 'like',
 				});
 			}
-			if (queryInfo.Cabinet_num) {
+			if (queryInfo.name) {
 				terms.push({
-					field: 'properties.Cabinet_num',
-					value: `%${queryInfo.Cabinet_num}%`,
+					field: 'properties.name',
+					value: `%${queryInfo.name}%`,
 					operator: 'like',
 				});
 			}
