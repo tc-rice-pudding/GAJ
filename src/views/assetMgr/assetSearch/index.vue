@@ -536,8 +536,8 @@ export default {
 			}
 			if (queryInfo.name) {
 				terms.push({
-					field: 'properties.name',
-					value: `%${queryInfo.name}%`,
+					field: 'location_cn',
+					value: `%/%${queryInfo.name}%`,
 					operator: 'like',
 				});
 			}
